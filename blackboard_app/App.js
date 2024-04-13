@@ -6,6 +6,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
+      {/* Background image for welcome page from local assets */}
+      <Image source={require('./assets/blackboard1.jpg')} style={styles.backgroundImage} />
+      {/* Kitten image used as logo */}
       <Image source={{ uri: 'https://placekitten.com/200/200' }} style={styles.logo} />
       <Button
         title="Get Started"
