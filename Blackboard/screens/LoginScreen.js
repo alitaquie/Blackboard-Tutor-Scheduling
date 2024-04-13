@@ -2,7 +2,7 @@ import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, Tou
 import React, { useState } from 'react'
 import { auth } from '../firebase'
 
-const image = {uri: '/Users/bruce/Documents/GitHub/blackboard/Blackboard/assets/blackboard(3).jpeg'};
+const image = {uri: ''};
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
@@ -15,8 +15,9 @@ const LoginScreen = () => {
         })
     }
     return (
-        <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+        <ImageBackground source={require('../assets/blackboard(1).jpeg')} resizeMode="cover" style={styles.image}>
             <KeyboardAvoidingView style={styles.container} behavior="padding">
+                    <Text style={styles.greetings}>Welcome!</Text>
                     <View style={styles.inputContainer}>
                         <TextInput placeholder="Email/Username" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
                         <TextInput placeholder="Password" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
@@ -40,6 +41,12 @@ const LoginScreen = () => {
 export default LoginScreen
 
 const styles = StyleSheet.create({
+    greetings: {
+        color: 'white',
+        fontStyle: 'italic',
+        fontSize: 40,
+        marginBottom: 40
+    },
     image: {
         flex: 1,
         justifyContent: 'center',
