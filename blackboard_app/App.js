@@ -56,6 +56,7 @@ function SignUpScreen({ navigation }) {
           // Profile updated!
           // ...
           alert("Account Created!")
+          navigation.navigate('Home');
         }).catch(error => alert(error.message))
 
         // ...
@@ -126,9 +127,10 @@ function LoginScreen({ navigation }) {
       // Signed in 
       const user = userCredential.user;
       alert("Logged In!")
+      navigation.navigate('Home');
       // ...
     })
-    .catch(error => alert(error.message))
+    .catch(error => alert("There was an error logging in"))
   }  
 
   return (
@@ -171,6 +173,18 @@ function LoginScreen({ navigation }) {
   );
 }
 
+
+//bullshit testing chat gpt ass code
+function HomeScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Welcome to Home Screen!</Text>
+      {/* Add any other content you want to display */}
+    </View>
+  );
+}
+
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -180,6 +194,7 @@ function App() {
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
