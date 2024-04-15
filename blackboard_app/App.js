@@ -1,23 +1,28 @@
 import * as React from 'react';
-import { useState } from 'react';
-import { KeyboardAvoidingView, View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword} from "firebase/auth"; // Firebase connectivity
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from "firebase/auth"; // Firebase connectivity
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeApp } from 'firebase/app'; // Firebase connectivity
 
 function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
+      {/* Background image from local assets */}
+      <Image source={require('./assets/blackboard1.jpeg')} style={styles.backgroundImage} />
+      {/* Kitten image used as logo, with explicit positioning and zIndex */}
       <Image source={{ uri: 'https://placekitten.com/200/200' }} style={styles.logo} />
-      <Button
-        title="Get Started"
-        onPress={() => navigation.navigate('SignUp')}
-      />
-      <Button
-        title="Login"
-        onPress={() => navigation.navigate('Login')}
-      />
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Get Started"
+          onPress={() => navigation.navigate('SignUp')}
+        />
+        <Button
+          title="Login"
+          onPress={() => navigation.navigate('Login')}
+        />
+      </View>
     </View>
   );
 }
@@ -125,7 +130,7 @@ function LoginScreen({ navigation }) {
       // ...
     })
     .catch(error => alert(error.message))
-  }  
+  }
 
   return (
     <View style={styles.container}>
@@ -133,13 +138,6 @@ function LoginScreen({ navigation }) {
       <Image source={require('./assets/blackboard1.jpeg')} style={styles.backgroundImage} />
       <Text style={styles.header}>Log In</Text>
       <View style={styles.inputContainer}>
-        {/* <TextInput
-          style={styles.input}
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-          autoCapitalize="none"
-        /> */}
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -160,9 +158,20 @@ function LoginScreen({ navigation }) {
           onPress={() => {
             console.log('Logging in with:', email, password);
             handleLogin();
+            navigation.navigate("Home");
           }}
         />
       </View>
+    </View>
+  );
+}
+
+function HomeScreen({ navigation }) {
+  // Implement sign-up logic
+  return (
+    <View style={styles.container}>
+      <Text>Home Screen</Text>
+      {/* Implement your sign-up form here */}
     </View>
   );
 }
@@ -176,7 +185,7 @@ function App() {
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -185,53 +194,45 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: 'flex-start',  // Adjust content alignment
+    alignItems: 'center',
+    paddingTop: 40,  // Additional padding at the top
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#fff',  // Text color set to white
+  },
+  inputContainer: {
+    width: '80%',  // Control the width to center the inputs better
+    marginTop: 100,  // Increased margin top to move the fields up
+  },
+  input: {
+    width: '100%',
+    marginVertical: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    color: '#fff',  // Text color inside the inputs set to white
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Optional: Add background color to enhance visibility of white text
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%'
   },
   logo: {
     width: 200,
     height: 200,
-    marginBottom: 20
+    marginTop: 120,
+    marginBottom: 60,
+    zIndex: 1  // Ensure the logo appears on top of the background image
   },
-  inputContainer: {
-    width: '80%'
-},
-input: {
-    backgroundColor: 'white',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 10,
-    marginTop: 5,
-},
-buttonContainer: {
-    width: '60%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 40,
-},
-button:{
-    backgroundColor: '#0782F9',
-    width: '100%',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-},
-buttonOutline:{
-    backgroundColor: 'white',
-    marginTop: 5,
-    borderColor: '#0782F9',
-    borderWidth: 2,
-},
-buttonText:{
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
-},
-buttonOutlineText:{
-    color: '#0782F9',
-    fontWeight: '700',
-    fontSize: 16,
-},
+  buttonContainer: {
+    zIndex: 1  // Ensure buttons appear on top of the background image
+  }
 });
 
 export default App;
