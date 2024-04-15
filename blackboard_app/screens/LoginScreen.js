@@ -1,20 +1,12 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View, TouchableOpacity, } from 'react-native'
-import React, { useState } from 'react'
-import { auth } from '../firebase'
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View, TouchableOpacity, } from 'react-native';
+import HomeScreen from './HomeScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useState } from 'react';
+
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-
-  const handleSignUp = () => {
-    auth
-    .createdUserWithEmailAndPassword(email, password)
-    .then(userCredentials => {
-      const user = userCredentials.user;
-      console.log(user.email);
-    })
-    .catch(error => alert(error.message))
-  }
 
   return (
     <KeyboardAvoidingView
@@ -24,12 +16,14 @@ const LoginScreen = () => {
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"
+          placeholderTextColor="#000"
           value={email}
           onChangeText={text => setEmail(text)} 
           style={styles.input}
         />
         <TextInput
           placeholder="Password"
+          placeholderTextColor="#000"
           value={password}
           onChangeText={text => setPassword(text)}
           style={styles.input}
@@ -39,20 +33,14 @@ const LoginScreen = () => {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={() => navigation.navigate("WelcomeScreen", { screen: "HomeScreen" })}
           style = {styles.button}
         >
             <Text style={styles.buttonText }>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handleSignUp}
-          style = {[styles.button, styles.buttonOutline]}
-        >
-            <Text style={styles.buttonOutlineText}>Register</Text>
-        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
-  )
+  );
 }
 
 export default LoginScreen
