@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { KeyboardAvoidingView, View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword} from "firebase/auth"; // Firebase connectivity
+import { initializeApp } from 'firebase/app'; // Firebase connectivity
 
 function WelcomeScreen({ navigation }) {
   return (
@@ -21,61 +23,146 @@ function WelcomeScreen({ navigation }) {
 }
 
 function SignUpScreen({ navigation }) {
-  // Implement sign-up logic
+  // Note: Need to provide AsyncStorage
+  const [name, setName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const handleSignUp = () => {
+    const firebaseConfig = {
+      apiKey: "AIzaSyAPWJQdZePfzjpRlRtMT_gY3HktQvqizAw",
+      authDomain: "blackboard-41f8a.firebaseapp.com",
+      projectId: "blackboard-41f8a",
+      storageBucket: "blackboard-41f8a.appspot.com",
+      messagingSenderId: "52140658788",
+      appId: "1:52140658788:web:46a71eb9e5a26e86ce0f71",
+      measurementId: "G-W7BR765CXM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed up 
+        const user = userCredential.user;
+        
+        updateProfile(auth.currentUser, {
+          displayName: name
+        }).then(() => {
+          // Profile updated!
+          // ...
+          alert("Account Created!")
+        }).catch(error => alert(error.message))
+
+        // ...
+      })
+      .catch(error => alert(error.message))
+  }    
+
   return (
     <View style={styles.container}>
-      <Text>Sign Up Screen</Text>
-      {/* Implement your sign-up form here */}
+      {/* Background image from local assets, same as used in the WelcomeScreen */}
+      <Image source={require('./assets/blackboard1.jpeg')} style={styles.backgroundImage} />
+      <Text style={styles.header}>Sign Up</Text>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={true}  // Ensures the password is hidden
+        />
+        <Button
+          title="Sign Up"
+          onPress={() => {
+            console.log('Signing up with:', name, email, password);
+            handleSignUp();
+          }}
+        />
+      </View>
     </View>
   );
 }
 
 function LoginScreen({ navigation }) {
   // Implement login logic
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
 
-  return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior="padding"
-    >
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor="#000"
-          value={email}
-          onChangeText={text => setEmail(text)} 
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor="#000"
-          value={password}
-          onChangeText={text => setPassword(text)}
-          style={styles.input}
-          secureTextEntry
-        />
-      </View>
+  const handleLogin = () => {
+    const firebaseConfig = {
+      apiKey: "AIzaSyAPWJQdZePfzjpRlRtMT_gY3HktQvqizAw",
+      authDomain: "blackboard-41f8a.firebaseapp.com",
+      projectId: "blackboard-41f8a",
+      storageBucket: "blackboard-41f8a.appspot.com",
+      messagingSenderId: "52140658788",
+      appId: "1:52140658788:web:46a71eb9e5a26e86ce0f71",
+      measurementId: "G-W7BR765CXM"
+    };
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('HomeScreen')}
-          style = {styles.button}
-        >
-            <Text style={styles.buttonText }>Login</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
-  );
-}
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      alert("Logged In!")
+      // ...
+    })
+    .catch(error => alert(error.message))
+  }  
 
-function HomeScreen({ navigation }) {
-  // Implement sign-up logic
   return (
     <View style={styles.container}>
-      <Text>Home Screen</Text>
-      {/* Implement your sign-up form here */}
+      {/* Background image from local assets, same as used in the WelcomeScreen */}
+      <Image source={require('./assets/blackboard1.jpeg')} style={styles.backgroundImage} />
+      <Text style={styles.header}>Log In</Text>
+      <View style={styles.inputContainer}>
+        {/* <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+          autoCapitalize="none"
+        /> */}
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={true}  // Ensures the password is hidden
+        />
+        <Button
+          title="Log In"
+          onPress={() => {
+            console.log('Logging in with:', email, password);
+            handleLogin();
+          }}
+        />
+      </View>
     </View>
   );
 }
