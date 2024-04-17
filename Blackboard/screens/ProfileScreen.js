@@ -2,19 +2,14 @@ import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, Tou
 import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Icon2 from 'react-native-vector-icons/FontAwesome5'
-import { useNavigation } from '@react-navigation/native';
 
-const HomeScreen = () => {
-  const navigation = useNavigation();
-  const goToProfileScreen = () => {
-    navigation.navigate('Profile');
-  };
+const ProfileScreen = () => {
   return (
 
 
   
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.content} color = "whites">
+      <View style={styles.content}>
         <Text>Home Screen</Text>
       </View>
       <View style={styles.navbar}>
@@ -24,7 +19,7 @@ const HomeScreen = () => {
         <TouchableOpacity style={styles.navItem}>
         <Icon2 name="book" size={30} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={goToProfileScreen}>
+        <TouchableOpacity style={styles.navItem}>
         <Icon name="person-circle" size={30} color="white" />
         </TouchableOpacity>
         {/* Add more items as needed */}
@@ -33,7 +28,7 @@ const HomeScreen = () => {
   )
 }
 
-export default HomeScreen
+export default ProfileScreen
 
 const styles = StyleSheet.create({
   container: {
