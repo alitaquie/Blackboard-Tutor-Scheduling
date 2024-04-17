@@ -1,35 +1,48 @@
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
 import { auth } from '../firebase'
+import { useNavigation } from '@react-navigation/native';
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-const image = {uri: ''};
 
 const LoginScreen = () => {
+    const navigation = useNavigation();
     const [email, setEmail] = useState('')
+    const [user, setUser] = useState('')
     const [password, setPassword] = useState('')
-
-    const handleSignUp = () => {
-        auth.createUserWithEmailAndPassword(email, password)
-        .then(userCredentials => {
-            const user = userCredentials.user;
-        })
+    
+    const handleLogIn = async () => {
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            console.log("User signed in successfully!");
+            navigation.navigate("Home");
+        } catch (error) {
+            console.log('Login Error: ', error.message);
+            return (<Text>Failed to Log In</Text>);
+        } 
     }
+
+    const handleRegister = () => {
+        navigation.navigate("Signup");
+    }
+
     return (
         <ImageBackground source={require('../assets/blackboard(1).jpeg')} resizeMode="cover" style={styles.image}>
             <KeyboardAvoidingView style={styles.container} behavior="padding">
-                    <Text style={styles.greetings}>Welcome!</Text>
+                    <Image source={require('../assets/full_logo.jpg')} style={styles.logo}/>
                     <View style={styles.inputContainer}>
                         <TextInput placeholder="Email/Username" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
                         <TextInput placeholder="Password" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
                     </View>
 
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={() => {}} style={styles.button}>
+                        <TouchableOpacity onPress={handleLogIn} style={styles.button}>
                             <Text style={styles.buttonText}>Login</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => {}} style={[styles.button, styles.buttonOutline]}>
-                            <Text style={styles.buttonOutlineText}>Register</Text>
+                        <TouchableOpacity onPress={handleRegister} style={[styles.button, styles.buttonOutline]}>
+                            <Text style={styles.buttonOutlineText}>Don't have an account?</Text>
+                            <Text style={styles.buttonOutlineText}>Register Here!</Text>
                         </TouchableOpacity>
                     </View>
             </KeyboardAvoidingView>
@@ -46,6 +59,12 @@ const styles = StyleSheet.create({
         fontStyle: 'italic',
         fontSize: 40,
         marginBottom: 40
+    },
+    logo: {
+        width: '50%',
+        height: '10%',
+        marginBottom: 10,
+        borderRadius: 40
     },
     image: {
         flex: 1,
@@ -94,6 +113,6 @@ const styles = StyleSheet.create({
     buttonOutlineText: {
         color: 'blue',
         fontWeight: '600',
-        fontSize: 16
+        fontSize: 16,
     }
 })
