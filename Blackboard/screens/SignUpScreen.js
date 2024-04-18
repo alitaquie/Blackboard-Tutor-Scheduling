@@ -2,7 +2,7 @@ import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, Tou
 import React, { useState } from 'react'
 import { auth } from '../firebase'
 import { useNavigation } from '@react-navigation/native';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 
 const LoginScreen = () => {
@@ -11,9 +11,17 @@ const LoginScreen = () => {
     const [user, setUser] = useState('')
     const [password, setPassword] = useState('')
 
-    const handleRegister = () => {
-        createUserWithEmailAndPassword(auth, email, password);
-        navigation.navigate("Home");
+    const handleRegister = async (email, user, password) => {
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            console.log("User registered successfully!");
+            await updateProfile(auth.currentUser, {
+                displayName: user // Set the display name here
+            });
+            navigation.navigate("Home");
+        } catch (error) {
+            console.error("Registration Error: ", error.message);
+        }
     }
 
     return (
@@ -27,7 +35,7 @@ const LoginScreen = () => {
                     </View>
 
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={handleRegister} style={styles.button}>
+                        <TouchableOpacity onPress={() => handleRegister(email, user, password)} style={styles.button}>
                             <Text style={styles.buttonText}>Login</Text>
                         </TouchableOpacity>
                     </View>

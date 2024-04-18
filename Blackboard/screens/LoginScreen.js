@@ -8,7 +8,6 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 const LoginScreen = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState('')
-    const [user, setUser] = useState('')
     const [password, setPassword] = useState('')
     
     const handleLogIn = async () => {
@@ -31,7 +30,7 @@ const LoginScreen = () => {
             <KeyboardAvoidingView style={styles.container} behavior="padding">
                     <Image source={require('../assets/full_logo.jpg')} style={styles.logo}/>
                     <View style={styles.inputContainer}>
-                        <TextInput placeholder="Email/Username" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
+                        <TextInput placeholder="Email" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
                         <TextInput placeholder="Password" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
                     </View>
 
