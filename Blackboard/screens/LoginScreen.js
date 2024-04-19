@@ -16,7 +16,7 @@ const LoginScreen = () => {
             console.log("User signed in successfully!");
             navigation.navigate("Home");
         } catch (error) {
-            console.log('Login Error: ', error.message);
+            console.error('Login Error: ', error.message);
             return (<Text>Failed to Log In</Text>);
         } 
     }
