@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "blackboardproject",
-    "slug": "blackboardproject",
+    "name": "Blackboard",
+    "slug": "Blackboard",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"

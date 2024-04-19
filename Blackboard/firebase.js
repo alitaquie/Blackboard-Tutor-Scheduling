@@ -1,8 +1,7 @@
 // Import the functions you need from the SDKs you need
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import { getAnalytics } from "firebase/analytics";
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -14,17 +13,10 @@ const firebaseConfig = {
   projectId: "blackboard-41f8a",
   storageBucket: "blackboard-41f8a.appspot.com",
   messagingSenderId: "52140658788",
-  appId: "1:52140658788:web:46a71eb9e5a26e86ce0f71",
-  measurementId: "G-W7BR765CXM"
+  appId: "1:52140658788:web:984fc2d26a39c6b8ce0f71",
+  measurementId: "G-Q8L0TWFE8J"
 };
 
 // Initialize Firebase
-let app;
-if (firebase.apps.length == 0) {
-  app = firebase.initializeApp(firebaseConfig);
-} else {
-    app = firebase.app()
-}
-const auth = firebase.auth()
-
-export { app, auth };
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app)
