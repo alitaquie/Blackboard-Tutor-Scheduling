@@ -1,14 +1,16 @@
 import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React from 'react'
-import Navbar from 'Navbar.js'
-
+import Navbar from './Navbar.js'
+        
 const HomeScreen = () => {
+  const navigation = useNavigation();
+  
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View>
         <Text>Home Screen</Text>
-        <Navbar></Navbar>
       </View>
+      <Navbar navigation={navigation} />
     </KeyboardAvoidingView>
   )
 }
