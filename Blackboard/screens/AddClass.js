@@ -5,27 +5,27 @@ import Icon2 from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native';
 import Navbar from './NavBar';
 
-const HomeScreen = () => {
+const ClassScreen = () => {
   const navigation = useNavigation();
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.content}>
-        <Text color = "white">Home Screen</Text>
+        <Text>Class Screen</Text>
       </View>
         <Navbar navigation={navigation} />
     </KeyboardAvoidingView>
   );
 };
 
-export default HomeScreen
+export default ClassScreen
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black'
+    backgroundColor: 'red'
   },
   content: {
     flex: 1,
