@@ -4,8 +4,7 @@ import { auth } from '../firebase'
 import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
-
-const LoginScreen = () => {
+const SignUpScreen = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState('')
     const [user, setUser] = useState('')
@@ -31,20 +30,20 @@ const LoginScreen = () => {
                         <TextInput placeholder="Password" placeholderTextColor="black" alue={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
                         <TextInput placeholder="Student or Teacher" placeholderTextColor="black" value={role} onChangeText={text => setRole(text)} editable={false} style={styles.input} />
                         <View style={styles.roleContainer}>
-                            <TouchableOpacity style={styles.radioButton} onPress={() => setRole('student')}>
+                            <TouchableOpacity style={styles.radioButton} onPress={() => setRole('Student')}>
                                 <Text style={styles.radioButtonText}>Student</Text>
-                                {role === 'student' && <View style={styles.radioButtonSelected} />}
+                                {role === 'Student' && <View style={styles.radioButtonSelected} />}
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.radioButton} onPress={() => setRole('teacher')}>
+                            <TouchableOpacity style={styles.radioButton} onPress={() => setRole('Teacher')}>
                                 <Text style={styles.radioButtonText}>Teacher</Text>
-                                {role === 'teacher' && <View style={styles.radioButtonSelected} />}
+                                {role === 'Teacher' && <View style={styles.radioButtonSelected} />}
                             </TouchableOpacity>
                         </View>
                     </View>
 
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={handleRegister} style={styles.button}>
-                            <Text style={styles.buttonText}>Login</Text>
+                            <Text style={styles.buttonText}>Sign Up</Text>
                         </TouchableOpacity>
                     </View>
             </KeyboardAvoidingView>
@@ -52,7 +51,7 @@ const LoginScreen = () => {
     )
 }
 
-export default LoginScreen
+export default SignUpScreen
 
 const styles = StyleSheet.create({
     greetings: {
