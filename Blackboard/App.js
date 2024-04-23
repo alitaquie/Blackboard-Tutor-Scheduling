@@ -6,6 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import SignUpScreen from './screens/SignUpScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import ClassScreen from './screens/AddClass';
 
 const Stack = createNativeStackNavigator();
 

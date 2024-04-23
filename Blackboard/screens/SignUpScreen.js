@@ -1,9 +1,9 @@
 import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
-import { auth } from '../firebase'
+import { auth, db } from '../firebase'
 import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const LoginScreen = () => {
     const navigation = useNavigation();
@@ -13,11 +13,22 @@ const LoginScreen = () => {
 
     const handleRegister = async (email, user, password) => {
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            console.log("User registered successfully!");
-            await updateProfile(auth.currentUser, {
-                displayName: user // Set the display name here
-            });
+            const docRef = doc(db, "Users", user);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                console.error("Error: Already Registered");
+            } else {
+                await createUserWithEmailAndPassword(auth, email, password);
+                console.log("User registered successfully!");
+                await updateProfile(auth.currentUser, {
+                    displayName: user // Set the display name here
+                });
+                await setDoc(docRef, {
+                    name: user,
+                    email_adr: email,
+                    pass: password
+                });
+            }
             navigation.navigate("Home");
         } catch (error) {
             console.error("Registration Error: ", error.message);
