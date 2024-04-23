@@ -15,8 +15,9 @@ const LoginScreen = () => {
         try {
             const docRef = doc(db, "Users", user);
             const docSnap = await getDoc(docRef);
+
             if (docSnap.exists()) {
-                console.error("Error: Already Registered");
+                console.error("Error: Already Registered...redirecting to home page");
             } else {
                 await createUserWithEmailAndPassword(auth, email, password);
                 console.log("User registered successfully!");
