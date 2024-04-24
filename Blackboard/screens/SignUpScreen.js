@@ -17,7 +17,7 @@ const LoginScreen = () => {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                console.error("Error: Already Registered...redirecting to home page");
+                console.error("Error: User Already Registered. Enter another username.");
             } else {
                 await createUserWithEmailAndPassword(auth, email, password);
                 console.log("User registered successfully!");
@@ -29,8 +29,9 @@ const LoginScreen = () => {
                     email_adr: email,
                     pass: password
                 });
+                navigation.navigate("Home");
             }
-            navigation.navigate("Home");
+            
         } catch (error) {
             console.error("Registration Error: ", error.message);
         }
