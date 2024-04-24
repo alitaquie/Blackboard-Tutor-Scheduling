@@ -8,10 +8,10 @@ const HomeScreen = () => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View>
+      <View style={styles.content}>
         <Text>Home Screen</Text>
       </View>
-      <Navbar navigation={navigation} />
+      <Navbar navigation={navigation}/>
     </KeyboardAvoidingView>
   )
 }
@@ -24,4 +24,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
 },
+content:{
+  flex:1,
+  justifyContent: 'center',
+  alignItems: 'center'
+},
+
 })

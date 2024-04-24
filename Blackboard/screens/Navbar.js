@@ -43,6 +43,8 @@ const styles = {
     width: '100%',
     borderTopWidth: 1,
     borderTopColor: 'white',
+    position: 'fixed',
+    bottom: 0
   },
   navItem: {
     alignItems: 'center',
