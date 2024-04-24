@@ -16,20 +16,30 @@ const LoginScreen = () => {
             const docRef = doc(db, "Users", user);
             const docSnap = await getDoc(docRef);
 
+            const emailDocRef = doc(db, "Emails", email);
+            const emailDocSnap = await getDoc(emailDocRef);
+
             if (docSnap.exists()) {
                 console.error("Error: User Already Registered. Enter another username.");
             } else {
-                await createUserWithEmailAndPassword(auth, email, password);
-                console.log("User registered successfully!");
-                await updateProfile(auth.currentUser, {
-                    displayName: user // Set the display name here
-                });
-                await setDoc(docRef, {
-                    name: user,
-                    email_adr: email,
-                    pass: password
-                });
-                navigation.navigate("Home");
+                if (emailDocSnap.exists()) {
+                    console.error("Error: Email exists please user another email.")
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    console.log("User registered successfully!");
+                    await updateProfile(auth.currentUser, {
+                        displayName: user // Set the display name here
+                    });
+                    await setDoc(docRef, {
+                        name: user,
+                        email_adr: email,
+                        pass: password
+                    });
+                    await setDoc(emailDocRef, {
+                        email_adr: email
+                    });
+                    navigation.navigate("Home");
+                }
             }
             
         } catch (error) {
