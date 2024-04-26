@@ -14,7 +14,7 @@ const SignUpScreen = () => {
     const handleRegister = () => {
         if (!role) {
             alert('Please select a role (Student or Teacher) before signing up.');
-            return; // Prevent further execution of the function
+            return;
         }
         createUserWithEmailAndPassword(auth, email, password);
         navigation.navigate("Home");

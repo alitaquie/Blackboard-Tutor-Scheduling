@@ -9,31 +9,15 @@ import Navbar from './NavBar';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const goToProfileScreen = () => {
-    navigation.navigate('Profile');
-  };
+
   return (
-
-
-  
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.content} color = "whites">
-        <Text>Home Screen</Text>
+      <View style={styles.content}>
+        <Text color = "white">Home Screen</Text>
       </View>
-      <View style={styles.navbar}>
-        <TouchableOpacity style={styles.navItem}>
-        <Icon2 name="home" size={30} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-        <Icon2 name="book" size={30} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={goToProfileScreen}>
-        <Icon name="person-circle" size={30} color="white" />
-        </TouchableOpacity>
-        {/* Add more items as needed */}
-      </View>
+        <Navbar navigation={navigation} />
     </KeyboardAvoidingView>
-  )
+  );
 }
 
 export default HomeScreen

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, KeyboardAvoidingView, TouchableOpacity } from '
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
-import Navbar from './Navbar';
+import Navbar from './NavBar';
 
 const ClassScreen = () => {
   const navigation = useNavigation();

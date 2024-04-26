@@ -1,3 +1,4 @@
+
 import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
 import { auth } from '../firebase'
@@ -31,8 +32,8 @@ const LoginScreen = () => {
             <KeyboardAvoidingView style={styles.container} behavior="padding">
                     <Image source={require('../assets/full_logo.jpg')} style={styles.logo}/>
                     <View style={styles.inputContainer}>
-                        <TextInput placeholder="Email/Username" placeholderTextColor="black" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
-                        <TextInput placeholder="Password" placeholderTextColor="black" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
+                        <TextInput placeholder="Email/Username" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
+                        <TextInput placeholder="Password" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
                     </View>
 
                     <View style={styles.buttonContainer}>
