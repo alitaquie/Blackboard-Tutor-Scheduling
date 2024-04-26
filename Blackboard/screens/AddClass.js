@@ -3,7 +3,8 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Icon2 from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native';
-import Navbar from './NavBar';
+import Navbar from './Navbar';
+
 
 const ClassScreen = () => {
   const navigation = useNavigation();
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'red'
+    backgroundColor: 'cyan'
   },
   content: {
     flex: 1,

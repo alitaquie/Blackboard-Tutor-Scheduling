@@ -3,7 +3,7 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Icon2 from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native';
-import Navbar from './NavBar';
+import Navbar from './Navbar';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
