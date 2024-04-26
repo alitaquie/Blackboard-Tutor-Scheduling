@@ -4,6 +4,8 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import Icon2 from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native';
 import { Role } from './SignUpScreen';
+import Navbar from './NavBar';
+
 
 const HomeScreen = () => {
   const navigation = useNavigation();

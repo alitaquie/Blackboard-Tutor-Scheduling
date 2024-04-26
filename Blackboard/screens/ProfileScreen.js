@@ -1,7 +1,9 @@
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
-import React from 'react'
-import Icon from 'react-native-vector-icons/Ionicons'
-import Icon2 from 'react-native-vector-icons/FontAwesome5'
+import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
+import React from 'react';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Icon2 from 'react-native-vector-icons/FontAwesome5';
+import { useNavigation } from '@react-navigation/native';
+import Navbar from './NavBar';
 
 const ProfileScreen = () => {
   return (
@@ -10,7 +12,7 @@ const ProfileScreen = () => {
   
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.content}>
-        <Text>Home Screen</Text>
+        <Text>Profile Screen</Text>
       </View>
       <View style={styles.navbar}>
         <TouchableOpacity style={styles.navItem}>
@@ -35,7 +37,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black'
+    backgroundColor: 'white'
   },
   content: {
     flex: 1,
