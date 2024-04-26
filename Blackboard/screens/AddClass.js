@@ -5,6 +5,7 @@ import Icon2 from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from '@react-navigation/native';
 import Navbar from './Navbar';
 
+
 const ClassScreen = () => {
   const navigation = useNavigation();
 
