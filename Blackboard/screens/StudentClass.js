@@ -6,20 +6,20 @@ import { useNavigation } from '@react-navigation/native';
 import Navbar from './Navbar';
 
 
-const ClassScreen = () => {
+const StudentClassScreen = () => {
   const navigation = useNavigation();
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.content}>
-        <Text>Class Screen</Text>
+        <Text>Student Class Screen</Text>
       </View>
         <Navbar navigation={navigation} />
     </KeyboardAvoidingView>
   );
 };
 
-export default ClassScreen
+export default StudentClassScreen
 
 const styles = StyleSheet.create({
   container: {
