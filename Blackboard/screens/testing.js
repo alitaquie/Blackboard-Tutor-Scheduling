@@ -51,6 +51,25 @@ export default class AgendaScreen extends Component {
           // showOnlySelectedDayItems
           // reservationsKeyExtractor={this.reservationsKeyExtractor}
           showClosingKnob={true}
+          theme={{
+            calendarBackground: 'black',
+            // // textSectionTitleColor: 'white',
+            // selectedDayBackgroundColor: 'white',
+            // selectedDayTextColor: 'white',
+            // todayTextColor: 'white',
+            dayTextColor: 'white',
+            // // textDisabledColor: 'white',
+            // // dotColor: 'black',
+            // // selectedDotColor: 'black',
+            // // arrowColor: 'white',
+            monthTextColor: 'white',
+            // // agendaKnobColor: 'black',
+            agendaDayTextColor: 'black',
+            agendaDayNumColor: 'black',
+            agendaTodayColor: 'black',
+            // agendaTodayFontWeight: 'bold',
+            reservationsBackgroundColor: "darkgray",
+          }}
         />
         <View style={styles.navbar}>
           <TouchableOpacity style={styles.navItem} onPress={this.goToHomeScreen}>
@@ -145,7 +164,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     // alignItems: 'center',
-    backgroundColor: 'black'
+    backgroundColor: 'black',
+    paddingVertical: '10%',
   },
   item: {
     backgroundColor: "white",

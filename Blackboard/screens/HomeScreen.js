@@ -1,54 +1,145 @@
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
-import React from 'react'
-import Icon from 'react-native-vector-icons/Ionicons'
-import Icon2 from 'react-native-vector-icons/FontAwesome5'
-import { useNavigation } from '@react-navigation/native';
+import React, { Component } from "react"
+import { Alert, StyleSheet, Text, View, TouchableOpacity, KeyboardAvoidingView } from "react-native"
+import { Agenda } from "react-native-calendars"
+import Navbar from './Navbar'
+import { useNavigation } from '@react-navigation/native'
 
-const HomeScreen = () => {
+const ClassScreen = () => {
   const navigation = useNavigation();
-  const goToHomeScreen = () => {
-    navigation.navigate('Home');
-  };
-  const goToProfileScreen = () => {
-    navigation.navigate('Profile');
-  };
+
   return (
-
-
-  
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.content} color = "whites">
-      <Text style={{color: 'white'}}>Home Screen</Text>
-      </View>
-      <View style={styles.navbar}>
-        <TouchableOpacity style={styles.navItem} onPress={goToHomeScreen}>
-        <Icon2 name="home" size={30} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-        <Icon2 name="book" size={30} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={goToProfileScreen}>
-        <Icon name="person-circle" size={30} color="white" />
-        </TouchableOpacity>
-        {/* Add more items as needed */}
-      </View>
+      <AgendaScreen/>
+      <Navbar navigation={navigation}/>
     </KeyboardAvoidingView>
   )
 }
 
-export default HomeScreen
+class AgendaScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: {}
+    }
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <Agenda
+          testID = 'agenda'
+          items={this.state.items}
+          loadItemsForMonth={this.loadItems}
+          renderItem={this.renderItem}
+          renderEmptyDate={this.renderEmptyDate}
+          rowHasChanged={this.rowHasChanged}
+          showClosingKnob={true}
+          theme={{
+            calendarBackground: 'black',
+            dayTextColor: 'white',
+            monthTextColor: 'white',
+            agendaDayTextColor: 'black',
+            agendaDayNumColor: 'black',
+            agendaTodayColor: 'black',
+            reservationsBackgroundColor: "darkgray",
+          }}
+        />
+      </View>
+    )
+  }
+
+  loadItems = day => {
+    const items = this.state.items || {}
+
+    setTimeout(() => {
+      for (let i = -15; i < 85; i++) {
+        const time = day.timestamp + i * 24 * 60 * 60 * 1000
+        const strTime = this.timeToString(time)
+
+        if (!items[strTime]) {
+          items[strTime] = []
+
+          const numItems = Math.floor(Math.random() * 3 + 1)
+          for (let j = 0; j < numItems; j++) {
+            items[strTime].push({
+              name: "Item for " + strTime + " #" + j,
+              height: Math.max(50, Math.floor(Math.random() * 150)),
+              day: strTime
+            })
+          }
+        }
+      }
+
+      const newItems = {}
+      Object.keys(items).forEach(key => {
+        newItems[key] = items[key]
+      })
+      this.setState({
+        items: newItems
+      })
+    }, 1000)
+  }
+
+  renderItem = (reservation, isFirst) => {
+    const fontSize = isFirst ? 16 : 14
+    const color = isFirst ? "black" : "#43515c"
+
+    return (
+      <TouchableOpacity
+        testID='item'
+        style={[styles.item, { height: reservation.height }]}
+        onPress={() => Alert.alert(reservation.name)}
+      >
+        <Text style={{ fontSize, color }}>{reservation.name}</Text>
+      </TouchableOpacity>
+    )
+  }
+
+  renderEmptyDate = () => {
+    return (
+      <View style={styles.emptyDate}>
+        <Text>This is empty date!</Text>
+      </View>
+    )
+  }
+
+  rowHasChanged = (r1, r2) => {
+    return r1.name !== r2.name
+  }
+
+  timeToString(time) {
+    const date = new Date(time)
+    return date.toISOString().split("T")[0]
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black'
+    backgroundColor: 'black',
+    paddingVertical: '5%',
   },
-  content: {
+  item: {
+    backgroundColor: "white",
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 10,
+    marginTop: 17
+  },
+  emptyDate: {
+    height: 15,
+    flex: 1,
+    paddingTop: 30
+  },
+  customDay: {
+    margin: 10,
+    fontSize: 24,
+    color: "green"
+  },
+  dayItem: {
+    marginLeft: 34
   },
   navbar: {
     flexDirection: 'row',
@@ -65,3 +156,5 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 })
+
+export default ClassScreen;
