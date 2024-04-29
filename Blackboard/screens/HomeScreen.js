@@ -1,21 +1,18 @@
 import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/Ionicons'
-import Icon2 from 'react-native-vector-icons/FontAwesome5'
+import Navbar from './Navbar'
 import { useNavigation } from '@react-navigation/native';
-import { Role } from './SignUpScreen';
-import Navbar from './NavBar';
-
-
+import Icon from 'react-native-vector-icons/Ionicons';
+import Icon2 from 'react-native-vector-icons/FontAwesome5';
 const HomeScreen = () => {
   const navigation = useNavigation();
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.content}>
-        <Text color = "white">Home Screen</Text>
+        <Text>Home Screen</Text>
       </View>
-        <Navbar navigation={navigation} />
+      <Navbar navigation={navigation}/>
     </KeyboardAvoidingView>
   );
 }
@@ -27,7 +24,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black'
+    backgroundColor: 'white'
   },
   content: {
     flex: 1,
@@ -47,5 +44,10 @@ const styles = StyleSheet.create({
   },
   navItem: {
     alignItems: 'center'
-  }
+  },
+  content:{
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 })

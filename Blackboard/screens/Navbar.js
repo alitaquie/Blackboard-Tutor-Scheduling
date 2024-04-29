@@ -2,8 +2,11 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome5';
+import { auth, db } from '../firebase'
+import { doc } from "firebase/firestore";
 
-const Navbar = ({ navigation }) => {
+
+const Navbar = ({ navigation, db }) => {
   const goToProfileScreen = () => {
     navigation.navigate('Profile');
   };
@@ -13,7 +16,7 @@ const Navbar = ({ navigation }) => {
   };
 
   const goToClass= () =>{
-    navigation.navigate('Class');
+    navigation.navigate('Class')
   };
 
   return (
@@ -43,6 +46,8 @@ const styles = {
     width: '100%',
     borderTopWidth: 1,
     borderTopColor: 'white',
+    position: 'fixed',
+    bottom: 0
   },
   navItem: {
     alignItems: 'center',

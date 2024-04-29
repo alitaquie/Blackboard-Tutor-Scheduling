@@ -1,23 +1,45 @@
 import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
-import { auth } from '../firebase'
+import { auth, db } from '../firebase'
 import { useNavigation } from '@react-navigation/native';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const SignUpScreen = () => {
     const navigation = useNavigation();
-    const [email, setEmail] = useState('')
-    const [user, setUser] = useState('')
-    const [password, setPassword] = useState('')
-    const [role, setRole] = useState(null);
+    const [email, setEmail] = useState('');
+    const [user, setUser] = useState('');
+    const [password, setPassword] = useState('');
+    const [role, setRole] = useState('');
 
-    const handleRegister = () => {
-        if (!role) {
-            alert('Please select a role (Student or Teacher) before signing up.');
-            return;
+    const handleRegister = async (email, full_name, password, user_role) => {
+        try {
+            if (!user_role) {
+                alert('Please select a role (Student or Teacher) before signing up.');
+                return; // Prevent further execution of the function
+            }
+
+            const docRef = doc(db, "Users", email);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                alert('Email already exists. Please choose another.');
+            } else {
+                await createUserWithEmailAndPassword(auth, email, password);
+                console.log("User registered successfully!");
+                await updateProfile(auth.currentUser, {
+                    displayName: full_name // Set the display name here
+                });
+                await setDoc(docRef, {
+                    name: full_name,
+                    pass: password,
+                    role: user_role
+                });
+                navigation.navigate("Home");
+            }
+        } catch (error) {
+            console.error("Registration Error: ", error.message);
         }
-        createUserWithEmailAndPassword(auth, email, password);
-        navigation.navigate("Home");
     }
 
     return (
@@ -25,25 +47,25 @@ const SignUpScreen = () => {
             <KeyboardAvoidingView style={styles.container} behavior="padding">
                     <Image source={require('../assets/full_logo.jpg')} style={styles.logo}/>
                     <View style={styles.inputContainer}>
-                        <TextInput placeholder="Email" placeholderTextColor="black" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
-                        <TextInput placeholder="Username" placeholderTextColor="black" value={user} onChangeText={text => setUser(text)} style={styles.input} />
-                        <TextInput placeholder="Password" placeholderTextColor="black" alue={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
+                        <TextInput placeholder="Email" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
+                        <TextInput placeholder="Full Name" value={user} onChangeText={text => setUser(text)} style={styles.input} />
+                        <TextInput placeholder="Password" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
                         <TextInput placeholder="Student or Teacher" placeholderTextColor="black" value={role} onChangeText={text => setRole(text)} editable={false} style={styles.input} />
                         <View style={styles.roleContainer}>
-                            <TouchableOpacity style={styles.radioButton} onPress={() => setRole('Student')}>
+                            <TouchableOpacity style={styles.radioButton} onPress={() => setRole('student')}>
                                 <Text style={styles.radioButtonText}>Student</Text>
-                                {role === 'Student' && <View style={styles.radioButtonSelected} />}
+                                {role === 'student' && <View style={styles.radioButtonSelected} />}
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.radioButton} onPress={() => setRole('Teacher')}>
+                            <TouchableOpacity style={styles.radioButton} onPress={() => setRole('teacher')}>
                                 <Text style={styles.radioButtonText}>Teacher</Text>
-                                {role === 'Teacher' && <View style={styles.radioButtonSelected} />}
+                                {role === 'teacher' && <View style={styles.radioButtonSelected} />}
                             </TouchableOpacity>
                         </View>
                     </View>
 
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={handleRegister} style={styles.button}>
-                            <Text style={styles.buttonText}>Sign Up</Text>
+                        <TouchableOpacity onPress={() => handleRegister(email, user, password, role)} style={styles.button}>
+                            <Text style={styles.buttonText}>Login</Text>
                         </TouchableOpacity>
                     </View>
             </KeyboardAvoidingView>
@@ -105,6 +127,12 @@ const styles = StyleSheet.create({
         height: 10,
         borderRadius: 5,
         backgroundColor: 'white',
+    },
+    buttonContainer: {
+        width: '60%',
+        justifyContent: 'center',
+        alignContent: 'center',
+        marginTop: 40
     },
     buttonContainer: {
         width: '60%',
