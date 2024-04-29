@@ -2,8 +2,8 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome5';
-import { auth, db } from '../firebase'
-import { doc } from "firebase/firestore";
+import {auth, db} from '../firebase';
+import { doc, getDoc } from "firebase/firestore";
 
 
 const Navbar = ({ navigation, db }) => {
@@ -11,12 +11,20 @@ const Navbar = ({ navigation, db }) => {
     navigation.navigate('Profile');
   };
 
-  const goToHomeScreen= () =>{
+  const goToHomeScreen= () => {
     navigation.navigate('Home');
   };
 
-  const goToClass= () =>{
-    navigation.navigate('Class')
+  const goToClass = async () => {
+    const currentUserUid = auth.currentUser.email;
+    const userDocRef = doc(db, "Users", currentUserUid);
+    const docSnap = await getDoc(userDocRef);
+    if (docSnap.data().role == 'student') {
+      navigation.navigate('StudentClass');
+    }  else {
+      navigation.navigate('TeacherClass');
+    }
+    
   };
 
   return (
