@@ -41,7 +41,7 @@ const LoginScreen = () => {
                 case 'auth/invalid-email':
                     alert(`Email address is invalid.`);
                     break;
-                case 'auth/operation-not-allowed':
+                case 'auth/operation-not-allowed':  
                     alert(`Error during sign up.`);
                     break;
                 case 'auth/weak-password':
