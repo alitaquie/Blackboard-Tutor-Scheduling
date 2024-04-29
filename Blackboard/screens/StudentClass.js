@@ -1,50 +1,119 @@
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import Icon from 'react-native-vector-icons/Ionicons'
-import Icon2 from 'react-native-vector-icons/FontAwesome5'
+import { ImageBackground, Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Button } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Navbar from './Navbar';
 
-
 const StudentClassScreen = () => {
-  const navigation = useNavigation();
+  const [events, setEvents] = useState([]);
+  const [date, setDate] = useState('');
+  const [location, setLocation] = useState('');
+  const [subject, setSubject] = useState('');
+  const [type, setType] = useState('');
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.content}>
-        <Text>Student Class Screen</Text>
-      </View>
-        <Navbar navigation={navigation} />
-    </KeyboardAvoidingView>
+    <ImageBackground source={require('../assets/blackboard(1).jpeg')} resizeMode="cover" style={styles.image}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
+        <Image source={require('../assets/full_logo.jpg')} style={styles.logo} />
+        <View style={styles.inputContainer}>
+          {/* Input fields for filters */}
+          <TextInput
+            placeholder="Date"
+            value={date}
+            onChangeText={text => setDate(text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Location"
+            value={location}
+            onChangeText={text => setLocation(text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Subject"
+            value={subject}
+            onChangeText={text => setSubject(text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Type"
+            value={type}
+            onChangeText={text => setType(text)}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={() => {}} style={styles.button}>
+            <Text style={styles.buttonText}>Find Events</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 };
 
-export default StudentClassScreen
+export default StudentClassScreen;
 
 const styles = StyleSheet.create({
+  logo: {
+      width: '50%',
+      height: '10%',
+      marginBottom: 10,
+      borderRadius: 40
+  },
+  image: {
+      flex: 1,
+      justifyContent: 'center',
+  },
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'cyan'
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center'
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+  inputContainer: {
+      
+      width: '80%'
+  }, 
+  input: {
+      backgroundColor: 'white',
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      borderRadius: 10,
+      marginTop: 5,
+      color: 'black',
   },
-  navbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: 'black',
-    paddingVertical: 35,
-    paddingHorizontal: 20,
-    width: '100%',
-    borderTopWidth: 1,
-    borderTopColor: 'white'
+  buttonContainer: {
+      width: '60%',
+      justifyContent: 'center',
+      alignContent: 'center',
+      marginTop: 40
   },
-  navItem: {
-    alignItems: 'center'
-  }
-})
+  buttonContainer: {
+      width: '60%',
+      justifyContent: 'center',
+      alignContent: 'center',
+      marginTop: 40
+  },
+  button: {
+      backgroundColor: 'blue',
+      width: '100%',
+      padding: 15,
+      borderRadius: 10,
+      alignItems: 'center'
+  },
+  buttonText: {
+      color: 'white',
+      fontWeight: '600',
+      fontSize: 16
+  },
+  buttonOutline: {
+      backgroundColor: 'white',
+      marginTop: 5,
+      borderColor: 'blue',
+      borderWidth: 2
+  },
+  buttonOutlineText: {
+      color: 'blue',
+      fontWeight: '600',
+      fontSize: 16,
+  },
+});
