@@ -49,7 +49,7 @@ const LoginScreen = () => {
                     break;
                 default:
                     alert("Sorry. Something went wrong on our end.");
-                    console.log(error.message);
+                    console.error(error.message);
                     break;
             }
         }
