@@ -15,15 +15,19 @@ const Navbar = ({ navigation }) => {
   };
 
   const goToClass = async () => {
-    const currentUserId = auth.currentUser.email;
+    const currentUserId = auth.currentUser.uid;
     const userDocRef = doc(db, "Users", currentUserId);
     const docSnap = await getDoc(userDocRef);
-    
-    if (docSnap.data().role == 'student') {
-      navigation.navigate('StudentClass');
-    }  else {
-      navigation.navigate('TeacherClass');
+    if (docSnap.exists()) {
+      if (docSnap.data().role == 'student') {
+        navigation.navigate('StudentClass');
+      }  else {
+        navigation.navigate('TeacherClass');
+      }
+    } else {
+      alert("Sorry. Something went wrong on our end.");
     }
+    
     
   };
 
