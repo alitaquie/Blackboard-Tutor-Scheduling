@@ -1,8 +1,10 @@
-import React, { Component } from "react"
+import React, { PureComponent } from "react"
 import { Alert, StyleSheet, Text, View, TouchableOpacity, KeyboardAvoidingView } from "react-native"
 import { Agenda } from "react-native-calendars"
 import Navbar from './Navbar'
 import { useNavigation } from '@react-navigation/native'
+import { collection, getDocs, query, where, onSnapshot } from "firebase/firestore";
+import { auth, db } from '../firebase'
 
 const ClassScreen = () => {
   const navigation = useNavigation();
@@ -15,7 +17,7 @@ const ClassScreen = () => {
   )
 }
 
-class AgendaScreen extends Component {
+class AgendaScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,37 +50,59 @@ class AgendaScreen extends Component {
     )
   }
 
-  loadItems = day => {
-    const items = this.state.items || {}
+  loadItems = async () => {
+    try {
+        const items = {};
+        const eventsRef = collection(db, "Events");
+        const unsubscribe = onSnapshot(eventsRef, (snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                const eventData = change.doc.data();
+                const timestamp = eventData.date.seconds * 1000;
+                const date = new Date(timestamp);
+                const strTime = this.timeToString(date.getTime() - (7 * 60 * 60 * 1000)); // UTC-7
 
-    setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000
-        const strTime = this.timeToString(time)
+                if (!items[strTime]) {
+                    items[strTime] = [];
+                }
 
-        if (!items[strTime]) {
-          items[strTime] = []
+                if (change.type === "added") {
+                    items[strTime].push({
+                        id: change.doc.id,
+                        height: 100 || 0,
+                        name: eventData.subject,
+                        day: strTime,
+                        location: eventData.location,
+                        type: eventData.type,
+                        eventData,
+                    });
+                } else if (change.type === "modified") {
+                    const index = items[strTime].findIndex(item => item.id === change.doc.id);
+                    if (index !== -1) {
+                        items[strTime][index] = {
+                            id: change.doc.id,
+                            height: 100 || 0,
+                            name: eventData.subject,
+                            day: strTime,
+                            location: eventData.location,
+                            type: eventData.type,
+                            eventData,
+                        };
+                    }
+                } else if (change.type === "removed") {
+                    items[strTime] = items[strTime].filter(item => item.id !== change.doc.id);
+                }
+            });
 
-          const numItems = Math.floor(Math.random() * 3 + 1)
-          for (let j = 0; j < numItems; j++) {
-            items[strTime].push({
-              name: "Item for " + strTime + " #" + j,
-              height: Math.max(50, Math.floor(Math.random() * 150)),
-              day: strTime
-            })
-          }
-        }
-      }
+            this.setState({
+                items: items,
+            });
+        });
+        return unsubscribe;
+    } catch (error) {
+        console.error("Error loading items:", error.message);
+    }
+};
 
-      const newItems = {}
-      Object.keys(items).forEach(key => {
-        newItems[key] = items[key]
-      })
-      this.setState({
-        items: newItems
-      })
-    }, 1000)
-  }
 
   renderItem = (reservation, isFirst) => {
     const fontSize = isFirst ? 16 : 14
@@ -91,6 +115,9 @@ class AgendaScreen extends Component {
         onPress={() => Alert.alert(reservation.name)}
       >
         <Text style={{ fontSize, color }}>{reservation.name}</Text>
+        <Text style={{ fontSize, color }}>{reservation.day}</Text>
+        <Text style={{ fontSize, color }}>{reservation.location}</Text>
+        <Text style={{ fontSize, color }}>{reservation.type}</Text>
       </TouchableOpacity>
     )
   }
