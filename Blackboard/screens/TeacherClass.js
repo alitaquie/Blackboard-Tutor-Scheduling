@@ -1,50 +1,158 @@
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import Icon from 'react-native-vector-icons/Ionicons'
-import Icon2 from 'react-native-vector-icons/FontAwesome5'
+import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, View, Image, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native';
+import { addDoc, collection } from "firebase/firestore";
 import Navbar from './Navbar';
 
 
-const TeacherClassScreen = () => {
+const TeacherClassScreen = ({ addDoc, collection }) => {
   const navigation = useNavigation();
+  const [events, setEvents] = useState([]);
+  const [date, setDate] = useState('');
+  const [location, setLocation] = useState('');
+  const [subject, setSubject] = useState('');
+  const [type, setType] = useState('');
+
+
+  // const addClassFunc = async ({ navigation }) => {
+  //   try {
+  //     const currentUserUid = auth.currentUser.email;
+  //     const eventDocRef = doc(db, "Events", currentUserUid);
+  //     const docSnap = await addDoc(eventDocRef, {
+  //       date: date,
+  //       location: location,
+  //       subject: subject,
+  //       type: type
+  //     });
+  //     console.log('Add Class Worked');
+  //     setLoading(false);
+  //     navigation.navigate('Home');
+  //   } catch (error) {
+  //     console.error("User document not found");
+  //   }
+  // };
+
+  const onSubmit = () => {
+    firestore() 
+    .collection('Events') 
+    .doc(auth().currentUser.uid)
+    .set({
+      date: date,
+      location: location,
+      subject: subject,
+      type: type
+    }) 
+    .then(() => {
+      console.log('Add Class Worked');
+      setLoading(false);
+      navigation.navigate('Home');
+    // do something like logging 'user registered' 
+    }) 
+  } 
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.content}>
-        <Text>Teacher Class Screen</Text>
-      </View>
-        <Navbar navigation={navigation} />
-    </KeyboardAvoidingView>
+    <ImageBackground source={require('../assets/blackboard(1).jpeg')} resizeMode="cover" style={styles.image}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
+        <Image source={require('../assets/full_logo.jpg')} style={styles.logo} />
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Date"
+            value={date}
+            onChangeText={text => setDate(text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Location"
+            value={location}
+            onChangeText={text => setLocation(text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Subject"
+            value={subject}
+            onChangeText={text => setSubject(text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Type"
+            value={type}
+            onChangeText={text => setType(text)}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={() => {onSubmit}} style={styles.button}>
+            <Text style={styles.buttonText}>Create Class</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 };
 
 export default TeacherClassScreen
 
 const styles = StyleSheet.create({
-  container: {
+  logo: {
+    width: '50%',
+    height: '10%',
+    marginBottom: 10,
+    borderRadius: 40
+},
+image: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'cyan'
-  },
-  content: {
+},
+container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  navbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: 'black',
-    paddingVertical: 35,
-    paddingHorizontal: 20,
+},
+inputContainer: {
+    
+    width: '80%'
+}, 
+input: {
+    backgroundColor: 'white',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 5,
+    color: 'black',
+},
+buttonContainer: {
+    width: '60%',
+    justifyContent: 'center',
+    alignContent: 'center',
+    marginTop: 40
+},
+buttonContainer: {
+    width: '60%',
+    justifyContent: 'center',
+    alignContent: 'center',
+    marginTop: 40
+},
+button: {
+    backgroundColor: 'blue',
     width: '100%',
-    borderTopWidth: 1,
-    borderTopColor: 'white'
-  },
-  navItem: {
+    padding: 15,
+    borderRadius: 10,
     alignItems: 'center'
-  }
+},
+buttonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16
+},
+buttonOutline: {
+    backgroundColor: 'white',
+    marginTop: 5,
+    borderColor: 'blue',
+    borderWidth: 2
+},
+buttonOutlineText: {
+    color: 'blue',
+    fontWeight: '600',
+    fontSize: 16,
+},
 })
