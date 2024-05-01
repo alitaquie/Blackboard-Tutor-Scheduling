@@ -10,27 +10,6 @@ const StudentClassScreen = () => {
   const [subject, setSubject] = useState('');
   const [type, setType] = useState('');
 
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const currentUserUid = auth.currentUser.email;
-        const eventDocRef = doc(db, "Events", currentUserUid);
-        const docSnap = await getDoc(eventDocRef);
-        if (docSnap.exists) {
-          setEvents(docSnap.data());
-          console.log(events);
-        } else {
-          console.error("User document not found");
-        }
-      } catch (error) {
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserRole();
-  }, []);
-
   return (
     <ImageBackground source={require('../assets/blackboard(1).jpeg')} resizeMode="cover" style={styles.image}>
       <KeyboardAvoidingView style={styles.container} behavior="padding">
