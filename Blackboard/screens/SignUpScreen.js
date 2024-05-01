@@ -18,27 +18,40 @@ const SignUpScreen = () => {
                 alert('Please select a role (Student or Teacher) before signing up.');
                 return; // Prevent further execution of the function
             }
-
-            const docRef = doc(db, "Users", email);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                alert('Email already exists. Please choose another.');
-            } else {
-                await createUserWithEmailAndPassword(auth, email, password);
-                console.log("User registered successfully!");
-                await updateProfile(auth.currentUser, {
-                    displayName: full_name // Set the display name here
-                });
-                await setDoc(docRef, {
-                    name: full_name,
-                    pass: password,
-                    role: user_role
-                });
+            
+            await createUserWithEmailAndPassword(auth, email, password);
+            console.log("User registered successfully!");
+            await updateProfile(auth.currentUser, {
+                displayName: full_name // Set the display name here
+            });
+            const docRef = doc(db, "Users", auth.currentUser.uid);
+            await setDoc(docRef, {
+                name: full_name,
+                email: email,
+                pass: password,
+                role: user_role
+            });
                 navigation.navigate("Home");
-            }
+
         } catch (error) {
-            console.error("Registration Error: ", error.message);
+            switch (error.code) {
+                case 'auth/email-already-in-use':
+                    alert(`Email address already in use.`);
+                    break;
+                case 'auth/invalid-email':
+                    alert(`Email address is invalid.`);
+                    break;
+                case 'auth/operation-not-allowed':  
+                    alert(`Error during sign up.`);
+                    break;
+                case 'auth/weak-password':
+                    alert('Password is not strong enough.');
+                    break;
+                default:
+                    alert("Sorry. Something went wrong on our end.");
+                    console.error(error.message);
+                    break;
+            }
         }
     }
 

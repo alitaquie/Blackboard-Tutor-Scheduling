@@ -37,14 +37,21 @@ const Navbar = ({ navigation }) => {
     navigation.navigate('Home');
   };
 
-  const goToClass = () => {
-    if (userRole === 'student') {
-      navigation.navigate('StudentClass');
-    }  else if (userRole === 'teacher') {
-      navigation.navigate('TeacherClass');
+  const goToClass = async () => {
+    const currentUserId = auth.currentUser.uid;
+    const userDocRef = doc(db, "Users", currentUserId);
+    const docSnap = await getDoc(userDocRef);
+    if (docSnap.exists()) {
+      if (docSnap.data().role == 'student') {
+        navigation.navigate('StudentClass');
+      }  else {
+        navigation.navigate('TeacherClass');
+      }
     } else {
-      navigation.navigate('StudentClass');
+      alert("Sorry. Something went wrong on our end.");
     }
+    
+    
   };
 
   if (loading) {
