@@ -37,7 +37,17 @@ const ClassScreen = () => {
                 <TextInput placeholder="Date" value={theDate} onChangeText={text => setDate(text)} style={styles.input} />
                 <TextInput placeholder="Location" value={theLocation} onChangeText={text => setLocation(text)} style={styles.input}/>
                 <TextInput placeholder="Subject" value={theSubject} onChangeText={text => setSubject(text)} style={styles.input} />
-                <TextInput placeholder="Type" value={theType} onChangeText={text => setType(text)} style={styles.input}/>
+                <TextInput placeholder="Private or Group" placeholderTextColor="black" value={theType} onChangeText={text => setRole(text)} editable={false} style={styles.input} />
+                <View style={styles.typeContainer}>
+                    <TouchableOpacity style={styles.radioButton} onPress={() => setType('private')}>
+                        <Text style={styles.radioButtonText}>Private</Text>
+                        {theType === 'private' && <View style={styles.radioButtonSelected} />}
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.radioButton} onPress={() => setType('group')}>
+                        <Text style={styles.radioButtonText}>Group</Text>
+                        {theType === 'group' && <View style={styles.radioButtonSelected} />}
+                    </TouchableOpacity>
+                </View>
             </View>
             <TouchableOpacity onPress={() => handleAdd(theDate, theLocation, theSubject, theType)} style={styles.button}>
                 <Text style={styles.buttonText}>Add</Text>
@@ -114,5 +124,26 @@ const styles = StyleSheet.create({
         color: 'blue',
         fontWeight: '600',
         fontSize: 16,
-    }
+    },
+    typeContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 10,
+    },
+    radioButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: 20,
+    },
+    radioButtonText: {
+        color: 'black',
+        marginRight: 5,
+        marginBottom: 5,
+    },
+    radioButtonSelected: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: 'white',
+    },
 })
