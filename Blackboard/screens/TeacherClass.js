@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Switch } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Switch, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import Navbar from './Navbar';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import {StatusBar} from 'expo-status-bar';
+import { doc, setDoc, collection } from "firebase/firestore";
+import { db } from '../firebase';
 
 const TeacherClassScreen = () => {
   const navigation = useNavigation();
@@ -11,16 +15,47 @@ const TeacherClassScreen = () => {
   const [className, setClassName] = useState('');
   const [isGroup, setIsGroup] = useState(false);
   const [capacity, setCapacity] = useState('');
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(new Date());
   const [location, setLocation] = useState('');
   const [subject, setSubject] = useState('');
+  const [data, setData] = useState('');
 
-  const createClass = () => {
+  const toggleSwitch = () => setIsGroup(previousState => !previousState);
+
+  const createClass = async () => {
     // Logic to create a new class
     console.log('Creating class:', className, isGroup, capacity, date, location, subject);
+
+    if (isGroup) {
+      setData({
+        name: className,
+        isGroup: isGroup,
+        capacity: capacity,
+        location: location,
+        subject: subject,
+        date: date
+      })
+    } else {
+      setData({
+        name: className,
+        isGroup: isGroup,
+        location: location,
+        subject: subject,
+        date: date
+      })
+    }
+
+    console.log("data: ", data);
+    const newRef = doc(collection(db, "Events"));
+    await setDoc(newRef, data);
+    console.log("success");
     // After creating the class, you can close the modal
     setModalVisible(false);
   };
+
+  const onChange = (e, selectedDate) => {
+    setDate(selectedDate);
+  }
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -44,10 +79,10 @@ const TeacherClassScreen = () => {
             <View style={styles.checkboxContainer}>
               <Text style={styles.checkboxText}>Group</Text>
               <Switch
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={isGroup ? '#f5dd4b' : '#f4f3f4'}
+                trackColor={{ false: '#767577', true: '#d6d9ff' }}
+                thumbColor={isGroup ? '#5059c7' : '#f4f3f4'}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={setIsGroup}
+                onValueChange={toggleSwitch}
                 value={isGroup}
               />
             </View>
@@ -60,12 +95,24 @@ const TeacherClassScreen = () => {
                 onChangeText={text => setCapacity(text)}
               />
             )}
-            <TextInput
-              style={styles.input}
-              placeholder="Date"
-              value={date}
-              onChangeText={text => setDate(text)}
-            />
+            <View style={styles.datestyle}>
+              <DateTimePicker 
+                value={date}
+                mode={'date'}
+                is24Hour={true}
+                onChange={onChange}
+              />
+
+              <View style={styles.filler}></View>
+
+              <DateTimePicker
+                value={date}
+                mode={'time'}
+                is24Hour={true}
+                onChange={onChange}
+              />
+            </View>
+            
             <TextInput
               style={styles.input}
               placeholder="Location (City)"
@@ -96,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'cyan'
+    backgroundColor: '#6d87d6'
   },
   content: {
     flex: 1,
@@ -104,7 +151,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   createButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#1d940a',
     padding: 10,
     borderRadius: 5,
     marginTop: 20
@@ -149,8 +196,15 @@ const styles = StyleSheet.create({
   checkboxText: {
     marginRight: 10
   },
+  datestyle: {
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  filler: {
+    margin: 5
+  },
   cancelButton: {
-    backgroundColor: 'red',
+    backgroundColor: '#1fab96',
     padding: 10,
     borderRadius: 5,
     marginTop: 10
