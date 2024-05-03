@@ -26,6 +26,7 @@ const LoginScreen = () => {
             });
             const docRef = doc(db, "Users", auth.currentUser.uid);
             await setDoc(docRef, {
+                classes: [],
                 name: full_name,
                 email: email,
                 pass: password,
