@@ -6,8 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import Navbar from './Navbar';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {StatusBar} from 'expo-status-bar';
-import { doc, setDoc, collection } from "firebase/firestore";
-import { db } from '../firebase';
+import { doc, setDoc, getDoc, collection, updateDoc } from "firebase/firestore";
+import { db, auth } from '../firebase';
 
 const TeacherClassScreen = () => {
   const navigation = useNavigation();
@@ -35,6 +35,16 @@ const TeacherClassScreen = () => {
       date: date
     });
     console.log("success");
+
+    const userDocRef = doc(db, "Users", auth.currentUser.uid);
+    const docSnap = await getDoc(userDocRef);
+    if (docSnap.exists()) {
+      await updateDoc(doc(db, "Users", auth.currentUser.uid), {
+        classes: docSnap.data().classes.concat([newRef.id])
+      });
+      
+    }
+
     // After creating the class, you can close the modal
     setModalVisible(false);
   };
