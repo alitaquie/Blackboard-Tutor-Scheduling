@@ -17,25 +17,23 @@ const TeacherClassScreen = () => {
   const [date, setDate] = useState(new Date());
   const [location, setLocation] = useState('');
   const [subject, setSubject] = useState('');
-  const [data, setData] = useState('');
+  const [attendance, setAttendance] = useState(0);
 
   const toggleSwitch = () => setIsGroup(previousState => !previousState);
 
   const createClass = async () => {
     // Logic to create a new class
-    console.log('Creating class:', course, isGroup, date, location, subject);
-    setData({
-      attendence: 0,
+    console.log('Creating class:', course, isGroup, date, location, subject, attendance);       
+
+    const newRef = doc(collection(db, "Events"));
+    await setDoc(newRef, {
+      attendence: attendance,
       course: course,
       isGroup: isGroup,
       location: location,
       subject: subject,
       date: date
     });
-
-    console.log("data: ", data);
-    const newRef = doc(collection(db, "Events"));
-    await setDoc(newRef, data);
     console.log("success");
     // After creating the class, you can close the modal
     setModalVisible(false);
