@@ -12,9 +12,8 @@ import { db } from '../firebase';
 const TeacherClassScreen = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
-  const [className, setClassName] = useState('');
+  const [course, setCourse] = useState('');
   const [isGroup, setIsGroup] = useState(false);
-  const [capacity, setCapacity] = useState('');
   const [date, setDate] = useState(new Date());
   const [location, setLocation] = useState('');
   const [subject, setSubject] = useState('');
@@ -24,26 +23,15 @@ const TeacherClassScreen = () => {
 
   const createClass = async () => {
     // Logic to create a new class
-    console.log('Creating class:', className, isGroup, capacity, date, location, subject);
-
-    if (isGroup) {
-      setData({
-        name: className,
-        isGroup: isGroup,
-        capacity: capacity,
-        location: location,
-        subject: subject,
-        date: date
-      })
-    } else {
-      setData({
-        name: className,
-        isGroup: isGroup,
-        location: location,
-        subject: subject,
-        date: date
-      })
-    }
+    console.log('Creating class:', course, isGroup, date, location, subject);
+    setData({
+      attendence: 0,
+      course: course,
+      isGroup: isGroup,
+      location: location,
+      subject: subject,
+      date: date
+    });
 
     console.log("data: ", data);
     const newRef = doc(collection(db, "Events"));
@@ -72,9 +60,9 @@ const TeacherClassScreen = () => {
             <Text style={styles.modalTitle}>Create New Class</Text>
             <TextInput
               style={styles.input}
-              placeholder="Class Name"
-              value={className}
-              onChangeText={text => setClassName(text)}
+              placeholder="Course Name"
+              value={course}
+              onChangeText={text => setCourse(text)}
             />
             <View style={styles.checkboxContainer}>
               <Text style={styles.checkboxText}>Group</Text>
@@ -86,15 +74,6 @@ const TeacherClassScreen = () => {
                 value={isGroup}
               />
             </View>
-            {isGroup && (
-              <TextInput
-                style={styles.input}
-                placeholder="Capacity"
-                keyboardType="numeric"
-                value={capacity}
-                onChangeText={text => setCapacity(text)}
-              />
-            )}
             <View style={styles.datestyle}>
               <DateTimePicker 
                 value={date}
