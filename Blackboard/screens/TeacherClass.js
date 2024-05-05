@@ -90,7 +90,7 @@ const TeacherClassScreen = () => {
           />
         </View>
         <View style={styles.checkboxContainer}>
-          <Text style={styles.checkboxText}>Group</Text>
+          <Text style={styles.checkboxText}>Private</Text>
           <Switch
             trackColor={{ false: '#ffffff', true: '#000000' }}
             thumbColor={isGroup ? '#5eb7ff' : '#f4f3f4'}
@@ -98,6 +98,7 @@ const TeacherClassScreen = () => {
             onValueChange={toggleSwitch}
             value={isGroup}
           />
+          <Text style={styles.checkboxText}>Group</Text>
         </View>
         <TouchableOpacity style={styles.createButton} onPress={createClass}>
           <Text style={styles.ButtonText}>Create</Text>
@@ -131,7 +132,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     top: '-11%',
     width: '80%',
-    margin: 'auto',
     alignSelf: 'center',
   },
   checkboxContainer: {
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     top: '-21%'
   },
   checkboxText: {
-    marginRight: 10,
+    margin: 10,
     fontSize: 25
   },
   filler: {
