@@ -11,7 +11,6 @@ import { db, auth } from '../firebase';
 
 const TeacherClassScreen = () => {
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
   const [course, setCourse] = useState('');
   const [isGroup, setIsGroup] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -42,11 +41,10 @@ const TeacherClassScreen = () => {
       await updateDoc(doc(db, "Users", auth.currentUser.uid), {
         classes: docSnap.data().classes.concat([newRef.id])
       });
-      
+      alert("Success! Class created.");
+    } else {
+      alert("Sorry, something went wrong on our end!");
     }
-
-    // After creating the class, you can close the modal
-    setModalVisible(false);
   };
 
   const onChange = (e, selectedDate) => {
@@ -56,71 +54,58 @@ const TeacherClassScreen = () => {
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.content}>
-        <Text>Teacher Class Screen</Text>
-        <TouchableOpacity style={styles.createButton} onPress={() => setModalVisible(true)}>
-          <Text style={styles.createButtonText}>Create New Class</Text>
+        <Text style={styles.title}>Create New Class</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Course Name"
+          value={course}
+          onChangeText={text => setCourse(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Location (City)"
+          value={location}
+          onChangeText={text => setLocation(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Subject"
+          value={subject}
+          onChangeText={text => setSubject(text)}
+        />
+        <View style={styles.checkboxContainer}>
+          <Text style={styles.checkboxText}>Group</Text>
+          <Switch
+            trackColor={{ false: '#767577', true: '#d6d9ff' }}
+            thumbColor={isGroup ? '#5059c7' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isGroup}
+          />
+        </View>
+        <View style={styles.datestyle}>
+          <DateTimePicker 
+            value={date}
+            mode={'date'}
+            is24Hour={true}
+            onChange={onChange}
+          />
+
+          <View style={styles.filler}></View>
+
+          <DateTimePicker
+            value={date}
+            mode={'time'}
+            is24Hour={true}
+            onChange={onChange}
+          />
+        </View>
+        <TouchableOpacity style={styles.createButton} onPress={createClass}>
+          <Text style={styles.ButtonText}>Create</Text>
         </TouchableOpacity>
       </View>
       <Navbar navigation={navigation} />
-      {modalVisible && (
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Create New Class</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Course Name"
-              value={course}
-              onChangeText={text => setCourse(text)}
-            />
-            <View style={styles.checkboxContainer}>
-              <Text style={styles.checkboxText}>Group</Text>
-              <Switch
-                trackColor={{ false: '#767577', true: '#d6d9ff' }}
-                thumbColor={isGroup ? '#5059c7' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={isGroup}
-              />
-            </View>
-            <View style={styles.datestyle}>
-              <DateTimePicker 
-                value={date}
-                mode={'date'}
-                is24Hour={true}
-                onChange={onChange}
-              />
 
-              <View style={styles.filler}></View>
-
-              <DateTimePicker
-                value={date}
-                mode={'time'}
-                is24Hour={true}
-                onChange={onChange}
-              />
-            </View>
-            
-            <TextInput
-              style={styles.input}
-              placeholder="Location (City)"
-              value={location}
-              onChangeText={text => setLocation(text)}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Subject"
-              value={subject}
-              onChangeText={text => setSubject(text)}
-            />
-            <TouchableOpacity style={styles.createButton} onPress={createClass}>
-              <Text style={styles.createButtonText}>Create</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.createButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
     </KeyboardAvoidingView>
   );
 };
@@ -129,72 +114,57 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#6d87d6'
   },
   content: {
     flex: 1,
+    justifyContent: 'center'
+  },
+  title: {
+    fontSize: 40,
+    top: '-15%',
+    textAlign: 'center'
+  },
+  input: {
+    backgroundColor: 'lightgrey',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    borderRadius: 5,
+    marginBottom: 10,
+    top: '-11%',
+    width: '80%',
+    margin: 'auto',
+    alignSelf: 'center',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center'
+    marginBottom: 10,
+    top: '-10%',
+  },
+  datestyle: {
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  checkboxText: {
+    marginRight: 10
+  },
+  filler: {
+    margin: 5
   },
   createButton: {
     backgroundColor: '#1d940a',
     padding: 10,
     borderRadius: 5,
-    marginTop: 20
+    width: '80%',
+    alignSelf: 'center',
+    bottom: '-10%'
   },
-  createButtonText: {
+  ButtonText: {
     color: 'white',
-    fontSize: 16
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10
-  },
-  input: {
-    backgroundColor: 'lightgrey',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginBottom: 10
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10
-  },
-  checkboxText: {
-    marginRight: 10
-  },
-  datestyle: {
-    alignItems: 'center',
-    marginBottom: 10
-  },
-  filler: {
-    margin: 5
-  },
-  cancelButton: {
-    backgroundColor: '#1fab96',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10
+    fontSize: 16,
+    textAlign: 'center'
   }
 });
 
