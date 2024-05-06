@@ -16,6 +16,7 @@ const StudentClassScreen = () => {
   const [date, setDate] = useState(new Date());
   const [location, setLocation] = useState('');
   const [subject, setSubject] = useState('');
+  const [MatchingDocIDs, setMatchingDocIDs] = useState([]);
 
   const toggleSwitch = () => setIsGroup(previousState => !previousState);
 
@@ -26,24 +27,12 @@ const StudentClassScreen = () => {
     const Ref = collection(db, 'Events');
     const q1 = query(Ref, where("isGroup", "==", isGroup), where("subject", "==", subject));
     const querySnapshot = await getDocs(q1);
-    list_docIDs = []
+    setMatchingDocIDs([]);
     querySnapshot.forEach((doc) => {
-        list_docIDs.append(doc);
+      setMatchingDocIDs(MatchingDocIDs => [...MatchingDocIDs, doc.id]);
     });
-    navigation.navigate("Class_Info", {list_docIDs});
     console.log("success");
-    return;
-
-    const userDocRef = doc(db, "Users", auth.currentUser.uid);
-    const docSnap = await getDoc(userDocRef);
-    if (docSnap.exists()) {
-      await updateDoc(doc(db, "Users", auth.currentUser.uid), {
-        classes: docSnap.data().classes.concat([newRef.id])
-      });
-      alert("Success! Class created.");
-    } else {
-      alert("Sorry, something went wrong on our end!");
-    }
+    navigation.navigate("ClassInfo", {MatchingDocIDs: MatchingDocIDs});
   };
 
   const onChange = (e, selectedDate) => {
