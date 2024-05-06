@@ -15,30 +15,20 @@ const Navbar = ({ navigation }) => {
   };
 
   const goToClass = async () => {
-    // try {
-    //     const currentUserUid = auth.currentUser.email;
-    //     const userDocRef = doc(db, "Users", currentUserUid);
-    //     const docSnap = await getDoc(userDocRef);
-
-    //     if (docSnap.exists()) {
-    //         const userData = docSnap.data();
-
-    //         if (userData.role === 'student') {
-    //             navigation.navigate('StudentClass');
-    //         } else {
-    //             navigation.navigate('TeacherClass');
-    //         }
-    //     } else {
-    //         console.error("User document does not exist!");
-    //         // Handle the case where the user document does not exist in Firestore
-    //     }
-    // } catch (error) {
-    //     console.error("Error fetching user data:", error.message);
-    //     // Handle the error, such as navigating to an error screen or displaying an error message
-    // }
+    const currentUserId = auth.currentUser.uid;
+    const userDocRef = doc(db, "Users", currentUserId);
+    const docSnap = await getDoc(userDocRef);
+    if (docSnap.exists()) {
+      if (docSnap.data().role == 'student') {
+        navigation.navigate('StudentClass');
+      }  else {
+        navigation.navigate('TeacherClass');
+      }
+    } else {
+      alert("Sorry. Something went wrong on our end.");
+    }
     
-    navigation.navigate('TeacherClass');
-
+    
   };
 
   return (
