@@ -73,25 +73,14 @@ const TeacherClassScreen = () => {
           value={subject}
           onChangeText={text => setSubject(text)}
         />
-        <View style={styles.checkboxContainer}>
-          <Text style={styles.checkboxText}>Group</Text>
-          <Switch
-            trackColor={{ false: '#767577', true: '#d6d9ff' }}
-            thumbColor={isGroup ? '#5059c7' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={isGroup}
-          />
-        </View>
         <View style={styles.datestyle}>
+          <Text style={styles.filler}>Date / Time</Text>
           <DateTimePicker 
             value={date}
             mode={'date'}
             is24Hour={true}
             onChange={onChange}
           />
-
-          <View style={styles.filler}></View>
 
           <DateTimePicker
             value={date}
@@ -100,12 +89,22 @@ const TeacherClassScreen = () => {
             onChange={onChange}
           />
         </View>
+        <View style={styles.checkboxContainer}>
+          <Text style={styles.checkboxText}>Private</Text>
+          <Switch
+            trackColor={{ false: '#ffffff', true: '#000000' }}
+            thumbColor={isGroup ? '#5eb7ff' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isGroup}
+          />
+          <Text style={styles.checkboxText}>Group</Text>
+        </View>
         <TouchableOpacity style={styles.createButton} onPress={createClass}>
           <Text style={styles.ButtonText}>Create</Text>
         </TouchableOpacity>
       </View>
       <Navbar navigation={navigation} />
-
     </KeyboardAvoidingView>
   );
 };
@@ -114,7 +113,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#6d87d6'
+    backgroundColor: '#2b44bd'
   },
   content: {
     flex: 1,
@@ -126,14 +125,13 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   input: {
-    backgroundColor: 'lightgrey',
+    backgroundColor: '#c1e2e3',
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderRadius: 5,
     marginBottom: 10,
     top: '-11%',
     width: '80%',
-    margin: 'auto',
     alignSelf: 'center',
   },
   checkboxContainer: {
@@ -141,20 +139,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 10,
-    top: '-10%',
+    top: '-10%'
   },
   datestyle: {
+    flexDirection: 'row',
+    backgroundColor: '#c1e2e3',
+    borderRadius: 5,
+    padding: 7,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
+    width: '80%',
+    alignSelf: 'center',
+    top: '-21%'
   },
   checkboxText: {
-    marginRight: 10
+    margin: 10,
+    fontSize: 25
   },
   filler: {
-    margin: 5
+    color: '#93a7ab'
   },
   createButton: {
-    backgroundColor: '#1d940a',
+    backgroundColor: '#002842',
     padding: 10,
     borderRadius: 5,
     width: '80%',
