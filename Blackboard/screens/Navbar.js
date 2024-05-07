@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, View, Text } from 'react-native';
+import React from 'react';
+import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome5';
 import { auth, db } from '../firebase';
@@ -78,7 +78,7 @@ const Navbar = ({ navigation }) => {
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   navbar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -95,11 +95,6 @@ const styles = {
   navItem: {
     alignItems: 'center',
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-};
+});
 
 export default Navbar;

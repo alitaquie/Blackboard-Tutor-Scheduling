@@ -26,6 +26,7 @@ const SignUpScreen = () => {
             });
             const docRef = doc(db, "Users", auth.currentUser.uid);
             await setDoc(docRef, {
+                classes: [],
                 name: full_name,
                 email: email,
                 pass: password,
@@ -140,12 +141,6 @@ const styles = StyleSheet.create({
         height: 10,
         borderRadius: 5,
         backgroundColor: 'white',
-    },
-    buttonContainer: {
-        width: '60%',
-        justifyContent: 'center',
-        alignContent: 'center',
-        marginTop: 40
     },
     buttonContainer: {
         width: '60%',

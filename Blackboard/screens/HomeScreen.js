@@ -167,20 +167,6 @@ const styles = StyleSheet.create({
   },
   dayItem: {
     marginLeft: 34
-  },
-  navbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: 'black',
-    paddingVertical: 35,
-    paddingHorizontal: 20,
-    width: '100%',
-    borderTopWidth: 1,
-    borderTopColor: 'white'
-  },
-  navItem: {
-    alignItems: 'center'
   }
 })
 
