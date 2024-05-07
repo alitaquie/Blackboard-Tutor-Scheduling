@@ -3,7 +3,7 @@ import { Alert, StyleSheet, Text, View, TouchableOpacity, KeyboardAvoidingView }
 import { Agenda } from "react-native-calendars"
 import Navbar from './Navbar'
 import { useNavigation } from '@react-navigation/native'
-import { collection, getDocs, query, where, onSnapshot } from "firebase/firestore";
+import { onSnapshot, doc, getDoc } from "firebase/firestore";
 import { auth, db } from '../firebase'
 
 const ClassScreen = () => {
@@ -50,59 +50,54 @@ class AgendaScreen extends PureComponent {
     )
   }
 
-  loadItems = async () => {
-    try {
-        const items = {};
-        const eventsRef = collection(db, "Events");
-        const unsubscribe = onSnapshot(eventsRef, (snapshot) => {
-            snapshot.docChanges().forEach((change) => {
-                const eventData = change.doc.data();
-                const timestamp = eventData.date.seconds * 1000;
-                const date = new Date(timestamp);
-                const strTime = this.timeToString(date.getTime() - (7 * 60 * 60 * 1000)); // UTC-7
+loadItems = async () => {
+  try {
+      const items = {};
+      userID = auth.currentUser.uid;
+      const userRef = doc(db, "Users", userID);
+      const unsub = onSnapshot(userRef, async (userSnapshot) => {
+        if (userSnapshot.exists()) {
+            const classes = userSnapshot.data().classes || [];
 
-                if (!items[strTime]) {
-                    items[strTime] = [];
-                }
+            for (const eventId of classes) {
+                const eventRef = doc(db, "Events", eventId);
+                const eventSnapshot = await getDoc(eventRef);
 
-                if (change.type === "added") {
-                    items[strTime].push({
-                        id: change.doc.id,
-                        height: 100 || 0,
+                if (eventSnapshot.exists()) {
+                    const eventData = eventSnapshot.data();
+                    const timestamp = eventData.date.seconds * 1000;
+                    const date = new Date(timestamp);
+                    const strTime = this.timeToString(date.getTime() - (7 * 60 * 60 * 1000)); // UTC-7
+
+                    if (!items[strTime]) {
+                        items[strTime] = [];
+                    }
+
+                    const existsIdx = items[strTime].findIndex(item => item.id === eventSnapshot.id);
+                    if (existsIdx === -1) {
+                      items[strTime].push({
+                        id: eventSnapshot.id,
                         name: eventData.subject,
+                        specific: eventData.course,
                         day: strTime,
                         location: eventData.location,
-                        type: eventData.type,
+                        type: eventData.isGroup,
+                        attendance: eventData.attendance,
                         eventData,
-                    });
-                } else if (change.type === "modified") {
-                    const index = items[strTime].findIndex(item => item.id === change.doc.id);
-                    if (index !== -1) {
-                        items[strTime][index] = {
-                            id: change.doc.id,
-                            height: 100 || 0,
-                            name: eventData.subject,
-                            day: strTime,
-                            location: eventData.location,
-                            type: eventData.type,
-                            eventData,
-                        };
+                      });
                     }
-                } else if (change.type === "removed") {
-                    items[strTime] = items[strTime].filter(item => item.id !== change.doc.id);
                 }
-            });
-
+            }
             this.setState({
-                items: items,
+              items: items,
             });
-        });
-        return unsubscribe;
-    } catch (error) {
-        console.error("Error loading items:", error.message);
-    }
+        }
+      });
+      return unsub;   
+  } catch (error) {
+      console.error("Error:", error.message);
+  }
 };
-
 
   renderItem = (reservation, isFirst) => {
     const fontSize = isFirst ? 16 : 14
@@ -112,12 +107,12 @@ class AgendaScreen extends PureComponent {
       <TouchableOpacity
         testID='item'
         style={[styles.item, { height: reservation.height }]}
-        onPress={() => Alert.alert(reservation.name)}
+        onPress={() => Alert.alert(reservation.specific)}
       >
-        <Text style={{ fontSize, color }}>{reservation.name}</Text>
-        <Text style={{ fontSize, color }}>{reservation.day}</Text>
-        <Text style={{ fontSize, color }}>{reservation.location}</Text>
-        <Text style={{ fontSize, color }}>{reservation.type}</Text>
+        <Text style={{ fontSize, color }}>Course Name: {reservation.specific}</Text>
+        <Text style={{ fontSize, color }}>Subject: {reservation.name}</Text>
+        <Text style={{ fontSize, color }}>Date: {reservation.day}</Text>
+        <Text style={{ fontSize, color }}>Location: {reservation.location}</Text>
       </TouchableOpacity>
     )
   }
