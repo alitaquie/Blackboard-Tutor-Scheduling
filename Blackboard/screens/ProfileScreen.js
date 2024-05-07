@@ -1,65 +1,106 @@
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
-import Icon from 'react-native-vector-icons/Ionicons'
-import Icon2 from 'react-native-vector-icons/FontAwesome5'
-import { useNavigation } from '@react-navigation/native';
-import Navbar from './Navbar';
-import {auth, db} from '../firebase';
+import React, { useState, useEffect } from 'react';
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { doc, getDoc } from "firebase/firestore";
+import Navbar from './Navbar';
+import { db, auth } from '../firebase';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+  const [userClasses, setUserClasses] = useState([]);
+  const [classString, setClassString] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getName = async () => {
-    UserID = auth.currentUser.uid;
-    console.log(UserID);
-    const userDocRef = doc(db, "Users", UserID);
-    const docSnap = await getDoc(userDocRef);
-    if (docSnap.exists()) {
-      return docSnap.data().name;
+  const translateClassString = async (classId) => {
+    try {
+      const classDocRef = doc(db, 'Events', classId);
+      const classDocSnap = await getDoc(classDocRef);
+      if (classDocSnap.exists()) {
+        const className = classDocSnap.data().course;
+        return className;
+      }
+    } catch (error) {
+      console.error('Error fetching class data:', error);
     }
-  }
+  };
+  
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userDocRef = doc(db, 'Users', auth.currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          setUserClasses(userData.classes || []);
+  
+          // translate class id string to course name
+          const translatedClasses = [];
+          for (const classString of userData.classes || []) {
+            const className = await translateClassString(classString);
+            translatedClasses.push(className);
+          }
+          setClassString(translatedClasses);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, []);
+
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.content}>
-        <Text style={styles.title}>Profile Screen</Text>
-        <Text style={styles.notTitle}> Name: {auth.currentUser.displayName}</Text>
-        <Text style={styles.notTitle}> Email: {auth.currentUser.email}</Text>
-      </View>
-      <TouchableOpacity onPress = {() => {navigation.navigate("Login")}} style={styles.logOutButton}>
-          <Text>Logout</Text>
-        </TouchableOpacity>
+      {isLoading ? (
+        <Text>Loading...</Text>
+      ) : (
+        <View style={styles.content}>
+          <Text style={styles.title}>Profile Screen</Text>
+          <Text style={styles.notTitle}> Name: {auth.currentUser.displayName}</Text>
+          <Text style={styles.notTitle}> Email: {auth.currentUser.email}</Text>
+          <Text style={styles.notTitle}> Classes:</Text>
+          {classString.map((className, index) => (
+            <Text key={index} style={styles.notTitle}>{className}</Text>
+          ))}
+        </View>
+      )}
+      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
+        <Text>Logout</Text>
+      </TouchableOpacity>
       <Navbar navigation={navigation} />
     </KeyboardAvoidingView>
   );
 };
 
-export default ProfileScreen
+export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'grey'
+    backgroundColor: 'grey',
   },
   content: {
     flex: 1,
     marginTop: 50,
     alignItems: 'center',
     backgroundColor: 'white',
-    width: "85%",
+    width: '85%',
     borderRadius: 20,
   },
   title: {
     marginTop: 5,
     fontSize: 30,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   notTitle: {
     fontSize: 20,
-    margin: 10
+    margin: 10,
   },
   logOutButton: {
     backgroundColor: 'lightblue',
@@ -67,6 +108,6 @@ const styles = StyleSheet.create({
     width: '30%',
     borderRadius: 5,
     alignItems: 'center',
-    top: '-20%'
-  }
-})
+    top: '-20%',
+  },
+});
