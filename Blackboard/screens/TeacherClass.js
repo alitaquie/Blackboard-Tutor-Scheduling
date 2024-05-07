@@ -143,12 +143,12 @@ const TeacherClassScreen = () => {
   ];
 
   const placeholder = {
-    label: 'Select an option...',
+    label: 'Select a subject...',
     value: null,
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={0}>
       <View style={styles.content}>
         <Text style={styles.title}>Create New Class</Text>
         <TextInput
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#2b44bd'
+    backgroundColor: '#445edb'
   },
   content: {
     flex: 1,

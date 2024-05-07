@@ -126,8 +126,8 @@ const StudentClassScreen = () => {
   ];
 
   const placeholder = {
-    label: 'Select an option...',
-    value: null,
+    label: 'Select a subject...',
+    value: null
   };
 
   return (
@@ -140,6 +140,7 @@ const StudentClassScreen = () => {
             items={options}
             onValueChange={text => setSubject(text)}
             value={subject}
+            style={styles.RNstyle}
           />
         </View>
         <View style={styles.checkboxContainer}>
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#2b44bd'
+    backgroundColor: '#445edb'
   },
   content: {
     flex: 1,
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   input: {
-    backgroundColor: '#c1e2e3',
+    backgroundColor: '#0f75ff',
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderRadius: 5,
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     textAlign: 'center'
-  }, 
+  }
 });
 
 export default StudentClassScreen;
