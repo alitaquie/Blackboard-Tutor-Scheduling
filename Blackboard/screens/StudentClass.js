@@ -27,6 +27,7 @@ const StudentClassScreen = () => {
     const q1 = query(Ref, where("isGroup", "==", isGroup), where("subject", "==", subject));
     const querySnapshot = await getDocs(q1);
 
+    setMatchingDocIDs([]);
     querySnapshot.forEach((doc) => {
       setMatchingDocIDs(MatchingDocIDs => [...MatchingDocIDs, doc.id]);
     });
@@ -141,12 +142,6 @@ const StudentClassScreen = () => {
             value={subject}
           />
         </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Location (City)"
-          value={location}
-          onChangeText={text => setLocation(text)}
-        />
         <View style={styles.checkboxContainer}>
           <Text style={styles.checkboxText}>Private</Text>
           <Switch
