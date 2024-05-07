@@ -27,7 +27,7 @@ const ProfileScreen = () => {
         <Text style={styles.notTitle}> Name: {auth.currentUser.displayName}</Text>
         <Text style={styles.notTitle}> Email: {auth.currentUser.email}</Text>
       </View>
-        <Navbar navigation={navigation} />
+      <Navbar navigation={navigation} />
     </KeyboardAvoidingView>
   );
 };
@@ -57,19 +57,5 @@ const styles = StyleSheet.create({
   notTitle: {
     fontSize: 20,
     margin: 10
-  },
-  navbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: 'black',
-    paddingVertical: 35,
-    paddingHorizontal: 20,
-    width: '100%',
-    borderTopWidth: 1,
-    borderTopColor: 'white'
-  },
-  navItem: {
-    alignItems: 'center'
   }
 })
