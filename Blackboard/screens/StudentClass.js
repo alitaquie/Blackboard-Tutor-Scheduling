@@ -13,7 +13,6 @@ import RNPickerSelect from 'react-native-picker-select';
 const StudentClassScreen = () => {
   const navigation = useNavigation();
   const [isGroup, setIsGroup] = useState(false);
-  const [date, setDate] = useState(new Date());
   const [location, setLocation] = useState('');
   const [subject, setSubject] = useState('');
   const [MatchingDocIDs, setMatchingDocIDs] = useState([]);
@@ -27,17 +26,13 @@ const StudentClassScreen = () => {
     const Ref = collection(db, 'Events');
     const q1 = query(Ref, where("isGroup", "==", isGroup), where("subject", "==", subject));
     const querySnapshot = await getDocs(q1);
-    setMatchingDocIDs([]);
+
     querySnapshot.forEach((doc) => {
       setMatchingDocIDs(MatchingDocIDs => [...MatchingDocIDs, doc.id]);
     });
     console.log("success");
     navigation.navigate("ClassInfo", {MatchingDocIDs: MatchingDocIDs});
   };
-
-  const onChange = (e, selectedDate) => {
-    setDate(selectedDate);
-  }
 
   const options = [
     { label: 'ACEN - Academic English', value: 'ACEN - Academic English' },

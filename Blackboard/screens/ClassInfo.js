@@ -1,27 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Switch, Button, FlatList } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Icon2 from 'react-native-vector-icons/FontAwesome5';
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import Navbar from './Navbar';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {StatusBar} from 'expo-status-bar';
-import { doc, getDoc, collection, updateDoc, query, where } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db, auth } from '../firebase';
-import RNPickerSelect from 'react-native-picker-select';
 
 const ClassInfoScreen = () => {
     const navigation = useNavigation();
     const backFunct = () => {
         navigation.navigate("StudentClass");
     }
-
-    const finishSignUp = () => {
-        navigation.navigate("Home");
-    }
+    const [savedIndex, setSavedIndex] = useState(-1);
 
     const route = useRoute();
     const MatchingDocIDs = route.params?.MatchingDocIDs;
+
+    const finishSignUp = async () => {
+        try {
+            // Update the user's document with the selected class ID added to the 'classes' array
+            const userDocRef = doc(db, 'Users', auth.currentUser.uid);
+            await updateDoc(userDocRef, { classes: arrayUnion(MatchingDocIDs[savedIndex]) });
+
+            // Navigate to the Home screen after successful sign-up
+            navigation.navigate("Home");
+        } catch (error) {
+            console.error("Error signing up:", error);
+            // Handle error, e.g., show error message to the user
+        }
+    };
 
     const [data, setData] = useState([]);
 
@@ -33,12 +38,7 @@ const ClassInfoScreen = () => {
                 const docSnap = await getDoc(docRef);
                 if(docSnap.exists()) {
                     const { attendance, course, date, isGroup, location, subject} = docSnap.data();
-                    let group_stat = ""
-                    if (isGroup) {
-                        group_stat = 'Group'
-                    } else {
-                        group_stat = 'Private'
-                    }
+                    let group_stat = isGroup ? 'Group' : 'Private';
                     const timestamp = date.seconds * 1000;
                     const new_date = new Date(timestamp);
                     
@@ -61,8 +61,11 @@ const ClassInfoScreen = () => {
     }, [MatchingDocIDs]);
 
     const ExpandableListItem = ({ item, index, isExpanded, toggleExpand }) => {
+        if(isExpanded) {
+            setSavedIndex(index);
+        }
         return (
-            <View style={styles.itemContainer}>
+            <View style={[styles.itemContainer, isExpanded && styles.expandedItem]}>
                 <TouchableOpacity onPress={toggleExpand} style={styles.itemTouchable}>
                     <Text style={styles.itemTitle}>{item.title}</Text>
                 </TouchableOpacity>
@@ -170,6 +173,9 @@ const styles = StyleSheet.create({
         marginTop: 10, 
         fontSize: 14, 
         color: "#666", 
+    },
+    expandedItem: {
+        backgroundColor: 'lightcyan', // Add your desired highlight color here
     }
 })
 
