@@ -8,6 +8,7 @@ import { db, auth } from '../firebase';
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const [userClasses, setUserClasses] = useState([]);
+  const [userRole, setUserRole] = useState([]);
   const [classString, setClassString] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,6 +33,7 @@ const ProfileScreen = () => {
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
           const userData = userDocSnap.data();
+          setUserRole(userData.role);
           setUserClasses(userData.classes || []);
   
           // translate class id string to course name
@@ -62,6 +64,7 @@ const ProfileScreen = () => {
           <Text style={styles.title}>Profile Screen</Text>
           <Text style={styles.notTitle}> Name: {auth.currentUser.displayName}</Text>
           <Text style={styles.notTitle}> Email: {auth.currentUser.email}</Text>
+          <Text style={styles.notTitle}> Role: {userRole}</Text>
           <Text style={styles.notTitle}> Classes:</Text>
           {classString.map((className, index) => (
             <Text key={index} style={styles.notTitle}>{className}</Text>
