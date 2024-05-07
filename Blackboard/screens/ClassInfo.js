@@ -61,9 +61,6 @@ const ClassInfoScreen = () => {
     }, [MatchingDocIDs]);
 
     const ExpandableListItem = ({ item, index, isExpanded, toggleExpand }) => {
-        if(isExpanded) {
-            setSavedIndex(index);
-        }
         return (
             <View style={[styles.itemContainer, isExpanded && styles.expandedItem]}>
                 <TouchableOpacity onPress={toggleExpand} style={styles.itemTouchable}>
@@ -81,6 +78,9 @@ const ClassInfoScreen = () => {
     
         const toggleExpand = (index) => {
             setExpandedIndex(expandedIndex === index ? null : index);
+            if (expandedIndex != null) {
+                setSavedIndex(index);
+            }
         };
     
         const renderItem = ({ item, index }) => (
