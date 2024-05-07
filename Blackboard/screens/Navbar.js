@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderTopWidth: 1,
     borderTopColor: 'white',
-    position: 'fixed',
+    position: 'absolute',
     bottom: 0
   },
   navItem: {
