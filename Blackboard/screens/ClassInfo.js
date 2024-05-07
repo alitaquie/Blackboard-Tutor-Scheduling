@@ -20,6 +20,12 @@ const ClassInfoScreen = () => {
             const userDocRef = doc(db, 'Users', auth.currentUser.uid);
             await updateDoc(userDocRef, { classes: arrayUnion(MatchingDocIDs[savedIndex]) });
 
+            const eventDocRef = doc(db, 'Events', MatchingDocIDs[savedIndex]);
+            const eventDocSnap = await getDoc(eventDocRef);
+            if (eventDocSnap.exists()) {
+              updateDoc(eventDocRef, { attendance: eventDocSnap.data().attendance += 1 });
+            }
+
             // Navigate to the Home screen after successful sign-up
             navigation.navigate("Home");
         } catch (error) {
@@ -46,11 +52,24 @@ const ClassInfoScreen = () => {
                     const time = new_date.getTime() - (7 * 60 * 60 * 1000);
                     const tmp_date = new Date(time);
                     const strDate = tmp_date.toISOString().split("T")[0];
-                    const strTime = tmp_date.toISOString().split("T")[1].split(".")[0]; 
+                    let strTime = tmp_date.toISOString().split("T")[1].split(".")[0]; 
+
+                    const hour = Number(strTime.substring(0,2));
+                    day_stats = "";
+                    if (hour < 12) {
+                        day_stats = "AM";
+                    } else {
+                        if (hour > 12) {
+                            strTime = `${hour-12}${strTime.substring(2)}`;
+                        }
+                        day_stats = "PM";
+                    }
+                    strTime = strTime.substring(0,5);
+
                     newData.push({
-                        id: doc.id,
+                        id: docSnap.id,
                         title: course,
-                        content: `Location: ${location}\nDate: ${strDate}\nTime: ${strTime}\nAttendance: ${attendance}\nType: ${group_stat}`
+                        content: `Location: ${location}\nDate: ${strDate}\nTime: ${strTime} ${day_stats}\nAttendance: ${attendance}\nType: ${group_stat}`
                     });
                 }
             }
@@ -78,7 +97,7 @@ const ClassInfoScreen = () => {
     
         const toggleExpand = (index) => {
             setExpandedIndex(expandedIndex === index ? null : index);
-            if (expandedIndex != null) {
+            if (expandedIndex == null) {
                 setSavedIndex(index);
             }
         };
