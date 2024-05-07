@@ -1,4 +1,4 @@
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
+import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Icon2 from 'react-native-vector-icons/FontAwesome5'
@@ -27,6 +27,9 @@ const ProfileScreen = () => {
         <Text style={styles.notTitle}> Name: {auth.currentUser.displayName}</Text>
         <Text style={styles.notTitle}> Email: {auth.currentUser.email}</Text>
       </View>
+      <TouchableOpacity onPress = {() => {navigation.navigate("Login")}} style={styles.logOutButton}>
+          <Text>Logout</Text>
+        </TouchableOpacity>
       <Navbar navigation={navigation} />
     </KeyboardAvoidingView>
   );
@@ -57,5 +60,13 @@ const styles = StyleSheet.create({
   notTitle: {
     fontSize: 20,
     margin: 10
+  },
+  logOutButton: {
+    backgroundColor: 'lightblue',
+    paddingVertical: 20,
+    width: '30%',
+    borderRadius: 5,
+    alignItems: 'center',
+    top: '-20%'
   }
 })

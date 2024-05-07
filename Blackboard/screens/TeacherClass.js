@@ -27,7 +27,7 @@ const TeacherClassScreen = () => {
 
     const newRef = doc(collection(db, "Events"));
     await setDoc(newRef, {
-      attendence: attendance,
+      attendance: attendance,
       course: course,
       isGroup: isGroup,
       location: location,
