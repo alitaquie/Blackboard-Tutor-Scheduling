@@ -3,7 +3,6 @@ import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
-import { addDoc, collection } from "firebase/firestore";
 import Navbar from './Navbar';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {StatusBar} from 'expo-status-bar';
