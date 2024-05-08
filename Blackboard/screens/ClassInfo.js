@@ -34,6 +34,10 @@ const ClassInfoScreen = () => {
         }
     };
 
+    const getMoreInfo= () => {
+        navigation.navigate('MoreInfo');
+      };
+
     const [data, setData] = useState([]);
 
     useEffect(() => {
@@ -130,9 +134,14 @@ const ClassInfoScreen = () => {
                 <Text style={styles.title}>Matching Classes</Text>
                 <ExpandableList data={data} />
 
+                <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={finishSignUp} style={styles.signUpButton}>
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.moreInfoButton} onPress={getMoreInfo}>
+                    <Text style={styles.buttonText}>More Info</Text>
+                </TouchableOpacity>
+            </View>
             </View>
         </KeyboardAvoidingView>
     )
@@ -169,6 +178,19 @@ const styles = StyleSheet.create({
         width: '30%',
         bottom: -100
     },
+
+    moreInfoButton: {
+        backgroundColor: 'cyan',
+        margin: 15,
+        paddingVertical: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        borderRadius: 10,
+        width: '30%',
+        bottom: -100
+    },
+
     buttonText: {
         fontSize: 25
     },
