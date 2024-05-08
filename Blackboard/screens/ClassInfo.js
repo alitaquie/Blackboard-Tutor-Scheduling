@@ -34,9 +34,12 @@ const ClassInfoScreen = () => {
         }
     };
 
-    const getMoreInfo= () => {
-        navigation.navigate('MoreInfo');
-      };
+    const getMoreInfo = (index) => {
+        const expandedItemData = data[index]; // Get data of the expanded class
+        navigation.navigate('MoreInfo', { expandedItemData }); // Pass data to MoreInfo screen
+    };
+    
+    
 
     const [data, setData] = useState([]);
 
@@ -92,10 +95,16 @@ const ClassInfoScreen = () => {
                 {isExpanded && (
                     <Text style={styles.itemContent}>{item.content}</Text>
                 )}
+                {isExpanded && (
+                    <TouchableOpacity onPress={() => getMoreInfo(index)} style={styles.moreInfoButton}>
+                        <Text style={styles.buttonText}>More Info</Text>
+                    </TouchableOpacity>
+                )}
             </View>
         );
     };
-      
+    
+   
     const ExpandableList = ({ data }) => {
         const [expandedIndex, setExpandedIndex] = useState(null);
     
@@ -130,16 +139,12 @@ const ClassInfoScreen = () => {
                 <TouchableOpacity onPress={backFunct} style={styles.backButton}>
                     <Text style={styles.buttonText}>Go Back</Text>
                 </TouchableOpacity>
-
                 <Text style={styles.title}>Matching Classes</Text>
                 <ExpandableList data={data} />
 
                 <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={finishSignUp} style={styles.signUpButton}>
                     <Text style={styles.buttonText}>Sign Up</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.moreInfoButton} onPress={getMoreInfo}>
-                    <Text style={styles.buttonText}>More Info</Text>
                 </TouchableOpacity>
             </View>
             </View>
@@ -160,7 +165,6 @@ const styles = StyleSheet.create({
     },
     backButton: {
         backgroundColor: 'cyan',
-        top: -160,
         margin: 15,
         paddingVertical: 6,
         alignItems: 'center',
@@ -178,7 +182,6 @@ const styles = StyleSheet.create({
         width: '30%',
         bottom: -100
     },
-
     moreInfoButton: {
         backgroundColor: 'cyan',
         margin: 15,
@@ -188,9 +191,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 10,
         width: '30%',
-        bottom: -100
     },
-
     buttonText: {
         fontSize: 25
     },
@@ -219,5 +220,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'lightcyan', // Add your desired highlight color here
     }
 })
+
 
 export default ClassInfoScreen;
