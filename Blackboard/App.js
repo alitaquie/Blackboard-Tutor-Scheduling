@@ -11,6 +11,8 @@ import StudentClassScreen from './screens/StudentClass';
 import TeacherClassScreen from './screens/TeacherClass';
 import ClassInfoScreen from './screens/ClassInfo';
 import MoreInfoScreen from './screens/MoreInfo';
+import ClassReviewScreen from './screens/ClassReview';
+import 'react-native-reanimated';
 
 
 const Stack = createNativeStackNavigator();
@@ -27,6 +29,7 @@ export default function App() {
         <Stack.Screen options={{headerShown:false}} name = "StudentClass" component = {StudentClassScreen}/>
         <Stack.Screen options={{headerShown:false}} name = "ClassInfo" component = {ClassInfoScreen}/>
         <Stack.Screen options={{headerShown:false}} name = "MoreInfo" component = {MoreInfoScreen}/>
+        <Stack.Screen options={{headerShown:false}} name = "ClassReview" component = {ClassReviewScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

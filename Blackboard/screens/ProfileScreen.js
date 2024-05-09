@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { doc, getDoc } from "firebase/firestore";
 import Navbar from './Navbar';
@@ -10,7 +10,9 @@ const ProfileScreen = () => {
   const [userClasses, setUserClasses] = useState([]);
   const [userRole, setUserRole] = useState([]);
   const [classString, setClassString] = useState([]);
+  const [idString, setIdString] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedIndex, setExpandedIndex] = useState(null);
 
   const translateClassString = async (classId) => {
     try {
@@ -24,7 +26,6 @@ const ProfileScreen = () => {
       console.error('Error fetching class data:', error);
     }
   };
-  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,14 +36,17 @@ const ProfileScreen = () => {
           const userData = userDocSnap.data();
           setUserRole(userData.role);
           setUserClasses(userData.classes || []);
-  
-          // translate class id string to course name
+
+          // Translate class id string to course name
           const translatedClasses = [];
+          const idClasses = [];
           for (const classString of userData.classes || []) {
             const className = await translateClassString(classString);
             translatedClasses.push(className);
+            idClasses.push(classString);
           }
           setClassString(translatedClasses);
+          setIdString(idClasses);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -50,10 +54,47 @@ const ProfileScreen = () => {
         setIsLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
 
+  const toggleExpand = (index) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
+
+  const ExpandableListItem = ({ item, index, idString, toggleExpand }) => {
+    const isExpanded = index === expandedIndex;
+  
+    const goToReview = () => {
+      navigation.navigate('ClassReview', { className: item, classId: idString[index] });
+    };
+
+    return (
+      <TouchableOpacity onPress={() => toggleExpand(index)}>
+        <View style={[styles.itemContainer, isExpanded && styles.expandedItem]}>
+          <Text style={styles.itemTitle}>{item}</Text>
+          {isExpanded && (
+            <TouchableOpacity onPress={goToReview}>
+              <Text style={styles.itemContent}>
+                Click here to add a review!
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderExpandedList = ({ item, index }) => {
+    return (
+      <ExpandableListItem
+        item={item}
+        index={index}
+        idString={idString}
+        toggleExpand={toggleExpand}
+      />
+    );
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -65,10 +106,12 @@ const ProfileScreen = () => {
           <Text style={styles.notTitle}> Name: {auth.currentUser.displayName}</Text>
           <Text style={styles.notTitle}> Email: {auth.currentUser.email}</Text>
           <Text style={styles.notTitle}> Role: {userRole}</Text>
-          <Text style={styles.notTitle}> Classes:</Text>
-          {classString.map((className, index) => (
-            <Text key={index} style={styles.notTitle}>{className}</Text>
-          ))}
+          <Text style={styles.notTitle}> Class History:</Text>
+          <FlatList
+            data={classString}
+            renderItem={renderExpandedList}
+            keyExtractor={(item, index) => index.toString()}
+          />
         </View>
       )}
       <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
@@ -78,8 +121,6 @@ const ProfileScreen = () => {
     </KeyboardAvoidingView>
   );
 };
-
-export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -113,4 +154,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     top: '-20%',
   },
+  itemContainer: {
+    marginBottom: 15,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    elevation: 3,
+  },
+  itemTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+  },
+  itemContent: { 
+    marginTop: 10, 
+    fontSize: 14, 
+    color: "#666", 
+  },
+  expandedItem: {
+    backgroundColor: 'white',
+  },
+  itemTouchable: { 
+    borderRadius: 10, 
+    overflow: "hidden", 
+  }, 
 });
+
+export default ProfileScreen;
