@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Switch, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome5';
@@ -15,7 +15,6 @@ const StudentClassScreen = () => {
   const [isGroup, setIsGroup] = useState(false);
   const [location, setLocation] = useState('');
   const [subject, setSubject] = useState('');
-  const [MatchingDocIDs, setMatchingDocIDs] = useState([]);
 
   const toggleSwitch = () => setIsGroup(previousState => !previousState);
 
@@ -26,14 +25,25 @@ const StudentClassScreen = () => {
     const Ref = collection(db, 'Events');
     const q1 = query(Ref, where("isGroup", "==", isGroup), where("subject", "==", subject));
     const querySnapshot = await getDocs(q1);
+    
 
-    setMatchingDocIDs([]);
-    querySnapshot.forEach((doc) => {
-      setMatchingDocIDs(MatchingDocIDs => [...MatchingDocIDs, doc.id]);
-    });
+    const matchingIDs = [];
+    if (!querySnapshot.empty) {
+      querySnapshot.forEach((doc) => {
+        matchingIDs.push(doc.id);
+      });
+    }
+
     console.log("success");
-    navigation.navigate("ClassInfo", {MatchingDocIDs: MatchingDocIDs});
+    console.log("This is: ", matchingIDs);
+    
+    await navigation.navigate("ClassInfo", {MatchingDocIDs: matchingIDs});
   };
+
+  useEffect(() => {
+    // Fetch subject options here if needed
+    setSubject(''); // Set initial subject
+  }, []);
 
   const options = [
     { label: 'ACEN - Academic English', value: 'ACEN - Academic English' },
