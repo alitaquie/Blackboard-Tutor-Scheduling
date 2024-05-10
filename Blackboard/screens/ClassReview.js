@@ -14,6 +14,7 @@ const ClassReviewScreen = () => {
     const [teacherName, setTeacherName] = useState('');
     const [teacherId, setTeacherId] = useState('');
     const [review, setReview] = useState('');
+    
     const createReview = async () => {
         const newRef = collection(db, "Reviews");
         const reviewDoc = await addDoc(newRef, {
