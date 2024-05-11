@@ -1,14 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion, addDoc} from "firebase/firestore";
 import { db, auth } from '../firebase';
 
 const ClassInfoScreen = () => {
+    const navigation = useNavigation();
+    const backFunct = () => {
+        navigation.navigate("StudentClass");
+    }
+    const [savedIndex, setSavedIndex] = useState(-1);
+
     const route = useRoute();
     const MatchingDocIDs = route.params?.MatchingDocIDs;
 
+    const finishSignUp = async () => {
+        try {
+            // Update the user's document with the selected class ID added to the 'classes' array
+            const userDocRef = doc(db, 'Users', auth.currentUser.uid);
+            await updateDoc(userDocRef, { classes: arrayUnion(MatchingDocIDs[savedIndex]) });
+
+            const eventDocRef = doc(db, 'Events', MatchingDocIDs[savedIndex]);
+            const eventDocSnap = await getDoc(eventDocRef);
+            if (eventDocSnap.exists()) {
+              updateDoc(eventDocRef, { attendance: eventDocSnap.data().attendance += 1 });
+            }
+
+            // Navigate to the Home screen after successful sign-up
+            navigation.navigate("Home");
+        } catch (error) {
+            console.error("Error signing up:", error);
+            // Handle error, e.g., show error message to the user
+        }
+    };
+
+    const getMoreInfo = (index) => {
+        const expandedItemData = data[index]; // Get data of the expanded class
+        navigation.navigate('MoreInfo', { expandedItemData }); // Pass data to MoreInfo screen
+    };
+    
+    
+
     const [data, setData] = useState([]);
+    const [teacherName, setTeacherName] = useState('');
+    const [teacherId, setTeacherId] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,48 +85,40 @@ const ClassInfoScreen = () => {
             setData(newData);
         };
 
+        const fetchTeacher = async () => {
+            try {
+                const usersRef = collection(db, 'Users');
+                const q = query(usersRef, where('role', '==', 'teacher'));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    const userData = doc.data();
+                    if (userData.classes && userData.classes.some(c => MatchingDocIDs.includes(c))) {
+                        setTeacherName(userData.name);
+                        setTeacherId(doc.id);
+                        return;
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching teacher data:', error);
+            }
+        };
+
         fetchData();
+        fetchTeacher();
     }, [MatchingDocIDs]);
 
-    const navigation = useNavigation();
-    const backFunct = () => {
-        navigation.navigate("StudentClass");
-    }
-    
-    const [savedIndex, setSavedIndex] = useState(-1);
-    const finishSignUp = async () => {
-        try {
-            // Update the user's document with the selected class ID added to the 'classes' array
-            const userDocRef = doc(db, 'Users', auth.currentUser.uid);
-            await updateDoc(userDocRef, { classes: arrayUnion(MatchingDocIDs[savedIndex]) });
 
-            const eventDocRef = doc(db, 'Events', MatchingDocIDs[savedIndex]);
-            const eventDocSnap = await getDoc(eventDocRef);
-            if (eventDocSnap.exists()) {
-              updateDoc(eventDocRef, { attendance: eventDocSnap.data().attendance += 1 });
-            }
-
-            // Navigate to the Home screen after successful sign-up
-            navigation.navigate("Home");
-        } catch (error) {
-            console.error("Error signing up:", error);
-            // Handle error, e.g., show error message to the user
-        }
-    };
-
-    const getMoreInfo = (index) => {
-        const expandedItemData = data[index]; // Get data of the expanded class
-        navigation.navigate('MoreInfo', { expandedItemData }); // Pass data to MoreInfo screen
-    };
-
-    const ExpandableListItem = ({ item, index, isExpanded, toggleExpand }) => {
+    const ExpandableListItem = ({ item, index, isExpanded, toggleExpand, teacherName }) => {
         return (
             <View style={[styles.itemContainer, isExpanded && styles.expandedItem]}>
                 <TouchableOpacity onPress={toggleExpand} style={styles.itemTouchable}>
                     <Text style={styles.itemTitle}>{item.title}</Text>
                 </TouchableOpacity>
                 {isExpanded && (
-                    <Text style={styles.itemContent}>{item.content}</Text>
+                    <View>
+                        <Text style={styles.itemContent}>{item.content}</Text>
+                        <Text style={styles.teacherName}>{teacherName}</Text>
+                    </View>
                 )}
                 {isExpanded && (
                     <TouchableOpacity onPress={() => getMoreInfo(index)} style={styles.moreInfoButton}>
@@ -119,6 +146,7 @@ const ClassInfoScreen = () => {
                 index={index}
                 isExpanded={expandedIndex === index}
                 toggleExpand={() => toggleExpand(index)}
+                teacherName={teacherName}
             />
         );
     
