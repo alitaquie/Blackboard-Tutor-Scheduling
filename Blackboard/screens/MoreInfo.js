@@ -1,25 +1,51 @@
-import React from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
-
-// MoreInfo.js
+import React, { useState, useEffect } from 'react';
+import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { collection, query, where, getDoc, doc, getDocs, updateDoc, arrayUnion, addDoc } from "firebase/firestore";
+import { db } from '../firebase';
 
 const MoreInfoScreen = ({ route }) => {
-    const { expandedItemData, expandedIndex } = route.params; // Receive data and index from ClassInfoScreen
+    const { expandedItemData, teacherId, teacherName } = route.params; 
+    const [teacherReviews, setTeacherReviews] = useState([]);
 
-    console.log("expandedItemData:", expandedItemData); // Log the value of expandedItemData
+    useEffect(() => {
+        fetchReviews();
+    }, []); 
 
-    // Check if expandedItemData is defined before accessing its properties
+    const fetchReviews = async () => {
+        try {
+            const reviewsRef = collection(db, "Reviews");
+            const q = query(reviewsRef, where('teacher', '==', teacherId));
+            const querySnapshot = await getDocs(q);
+            const reviews = [];
+            querySnapshot.forEach((doc) => {
+                reviews.push(doc.data());
+            });
+            console.log("Fetched reviews:", reviews); 
+            setTeacherReviews(reviews);
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
+        }
+    };
+
+  
     if (expandedItemData) {
-        // Now you can use the expandedItemData to display information about the expanded class
+
         return (
             <View style={styles.container}>
                 <Text>Title: {expandedItemData.title}</Text>
                 <Text>Content: {expandedItemData.content}</Text>
-                {/* Display other information as needed */}
+                <Text>Teacher Name: {teacherName}</Text> 
+                
+    
+                <Text style={styles.boldText}>Teacher Reviews:</Text>
+                {teacherReviews.map((review, index) => (
+                    <Text key={index} style={styles.fieldText}>{review.review}</Text>
+                ))}
             </View>
         );
     } else {
-        // Handle the case when expandedItemData is undefined
+    
         return (
             <View style={styles.container}>
                 <Text>Error: Unable to load class information.</Text>
@@ -28,15 +54,19 @@ const MoreInfoScreen = ({ route }) => {
     }
 };
 
-
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    boldText: {
+        fontWeight: 'bold',
+    },
+    fieldText: {
+        marginTop: 5,
     },
     // Define other styles here
-  });
-
+});
 
 export default MoreInfoScreen;

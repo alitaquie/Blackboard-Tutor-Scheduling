@@ -35,8 +35,12 @@ const ClassInfoScreen = () => {
     };
 
     const getMoreInfo = (index) => {
-        const expandedItemData = data[index]; // Get data of the expanded class
-        navigation.navigate('MoreInfo', { expandedItemData }); // Pass data to MoreInfo screen
+        const expandedItemData = data[index];
+        navigation.navigate('MoreInfo', { 
+            expandedItemData, 
+            teacherId: teacherId,
+            teacherName: teacherName
+        }); 
     };
     
     
