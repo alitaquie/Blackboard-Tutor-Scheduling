@@ -71,10 +71,14 @@ const ClassReviewScreen = () => {
     <KeyboardAvoidingView style={styles.container}>
         <Text style={styles.boldText}>Teacher Name: {teacherName}</Text>
         <View style={styles.reviewsContainer}>
-            <Text style={styles.fieldText}>Course Name: {className}</Text>
-            <Text style={styles.fieldText}>Subject: {subject}</Text>
-            <Text style={styles.fieldText}>Date: {date}</Text>
-            <Text style={styles.fieldText}>Location: {location}</Text>
+            <Text style={styles.detailLabel}>Course Name:</Text>
+            <Text style={styles.detailText}>{className}</Text>
+            <Text style={styles.detailLabel}>Subject:</Text>
+            <Text style={styles.detailText}>{subject}</Text>
+            <Text style={styles.detailLabel}>Date:</Text>
+            <Text style={styles.detailText}>{date}</Text>
+            <Text style={styles.detailLabel}>Location:</Text>
+            <Text style={styles.detailText}>{location}</Text>
         </View>
         <Text style={styles.boldText}>Leave A Review for your Teacher:</Text>
         <View style={styles.inputContainer}>
@@ -154,6 +158,17 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         backgroundColor: 'black',
         padding: 20,
+    },
+    detailLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        color: 'white',
+    },
+    detailText: {
+        fontSize: 16,
+        marginBottom: 10,
+        color: 'white',
     },
 });
 
