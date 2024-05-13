@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion, addDoc} from "firebase/firestore";
 import { db } from '../firebase';
@@ -68,35 +68,39 @@ const ClassReviewScreen = () => {
   }, [classId]);
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
-        <Text style={styles.boldText}>Teacher Name: {teacherName}</Text>
-        <View style={styles.reviewsContainer}>
-            <Text style={styles.detailLabel}>Course Name:</Text>
-            <Text style={styles.detailText}>{className}</Text>
-            <Text style={styles.detailLabel}>Subject:</Text>
-            <Text style={styles.detailText}>{subject}</Text>
-            <Text style={styles.detailLabel}>Date:</Text>
-            <Text style={styles.detailText}>{date}</Text>
-            <Text style={styles.detailLabel}>Location:</Text>
-            <Text style={styles.detailText}>{location}</Text>
-        </View>
-        <Text style={styles.boldText}>Leave A Review for your Teacher:</Text>
-        <View style={styles.inputContainer}>
-        <TextInput
-            style={styles.input}
-            multiline={true}
-            placeholder="Review"
-            value={review}
-            onChangeText={text => setReview(text)}
-        />
-        </View>
-        <TouchableOpacity style={styles.button} onPress={createReview}>
-            <Text style={styles.buttonText}>Post</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.button}>
-            <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-    </KeyboardAvoidingView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAvoidingView style={styles.container}>
+            <Text style={styles.boldText}>Teacher Name: {teacherName}</Text>
+            <View style={styles.reviewsContainer}>
+                <Text style={styles.detailLabel}>Course Name:</Text>
+                <Text style={styles.detailText}>{className}</Text>
+                <Text style={styles.detailLabel}>Subject:</Text>
+                <Text style={styles.detailText}>{subject}</Text>
+                <Text style={styles.detailLabel}>Date:</Text>
+                <Text style={styles.detailText}>{date}</Text>
+                <Text style={styles.detailLabel}>Location:</Text>
+                <Text style={styles.detailText}>{location}</Text>
+            </View>
+            <View style={styles.filler}></View>
+            <Text style={styles.boldText}>Leave A Review for your Teacher:</Text>
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={styles.input}
+                    multiline={true}
+                    placeholder="Review"
+                    value={review}
+                    onChangeText={text => setReview(text)}
+                />
+            </View>
+
+            <TouchableOpacity style={styles.button} onPress={createReview}>
+                <Text style={styles.buttonText}>Post</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.button}>
+                <Text style={styles.buttonText}>Back</Text>
+            </TouchableOpacity>
+        </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -108,7 +112,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black'
     },
     button: {
-        backgroundColor: 'cyan',
+        backgroundColor: 'white',
         margin: 15,
         paddingVertical: 6,
         alignItems: 'center',
@@ -134,13 +138,12 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     input: {
-        backgroundColor: '#c1e2e3',
+        backgroundColor: 'white',
         paddingHorizontal: 15,
         paddingVertical: 15,
         borderRadius: 5,
-        marginBottom: 10,
+        margin: 10,
         width: '80%',
-        alignSelf: 'center',
     },
     detailsContainer: {
         marginBottom: 20,
@@ -150,7 +153,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: 'white',
         backgroundColor: 'black',
-        padding: 5,
+        padding: 15,
+        margin: 10
     },
     inputContainer: {
         flexDirection: 'row',
@@ -158,6 +162,7 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         backgroundColor: 'black',
         padding: 20,
+        margin: 10
     },
     detailLabel: {
         fontSize: 18,
@@ -170,6 +175,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         color: 'white',
     },
+    filler: {
+        margin: 20
+    }
 });
 
 export default ClassReviewScreen;

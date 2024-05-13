@@ -23,7 +23,13 @@ const StudentClassScreen = () => {
     console.log('finding class:', isGroup, subject); 
     
     const Ref = collection(db, 'Events');
-    const q1 = query(Ref, where("isGroup", "==", isGroup), where("subject", "==", subject));
+    let q1 = null;
+    if (!subject) {
+      q1 = query(Ref, where("isGroup", "==", isGroup));
+    } else {
+      q1 = query(Ref, where("isGroup", "==", isGroup), where("subject", "==", subject));
+    }
+    
     const querySnapshot = await getDocs(q1);
     
 
@@ -35,9 +41,7 @@ const StudentClassScreen = () => {
     }
 
     console.log("success");
-    console.log("This is: ", matchingIDs);
-    
-    await navigation.navigate("ClassInfo", {MatchingDocIDs: matchingIDs});
+    navigation.navigate("ClassInfo", {MatchingDocIDs: matchingIDs});
   };
 
   useEffect(() => {
@@ -187,7 +191,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#445edb'
+    backgroundColor: 'black'
   },
   content: {
     flex: 1,
@@ -196,10 +200,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     top: '-15%',
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'white'
   },
   input: {
-    backgroundColor: '#0f75ff',
+    backgroundColor: '#002842',
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderRadius: 5,
@@ -228,7 +233,8 @@ const styles = StyleSheet.create({
   },
   checkboxText: {
     margin: 10,
-    fontSize: 25
+    fontSize: 25,
+    color: 'white'
   },
   filler: {
     color: '#93a7ab'

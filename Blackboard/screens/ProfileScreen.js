@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { doc, getDoc } from "firebase/firestore";
 import Navbar from './Navbar';
@@ -99,7 +99,11 @@ const ProfileScreen = () => {
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       {isLoading ? (
-        <Text>Loading...</Text>
+        <View>
+          <ActivityIndicator size='large' color="black"/>
+          <Text>Loading</Text>
+        </View>
+        
       ) : (
         <View style={styles.content}>
           <Text style={styles.title}>Profile Screen</Text>
@@ -111,6 +115,7 @@ const ProfileScreen = () => {
             data={classString}
             renderItem={renderExpandedList}
             keyExtractor={(item, index) => index.toString()}
+            style={styles.listStyle}
           />
         </View>
       )}
@@ -127,32 +132,37 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
   },
   content: {
     flex: 1,
     marginTop: 50,
     alignItems: 'center',
-    backgroundColor: 'white',
-    width: '85%',
+    backgroundColor: 'black',
+    width: '95%',
     borderRadius: 20,
+    height: '81%',
+    maxHeight: '81%',
+    top: '-2.5%'
   },
   title: {
     marginTop: 5,
     fontSize: 30,
     fontWeight: 'bold',
+    color: 'white'
   },
   notTitle: {
+    color: 'white',
     fontSize: 20,
     margin: 10,
   },
   logOutButton: {
-    backgroundColor: 'lightblue',
+    backgroundColor: 'white',
     paddingVertical: 20,
     width: '30%',
     borderRadius: 5,
     alignItems: 'center',
-    top: '-20%',
+    top: '-15%',
   },
   itemContainer: {
     marginBottom: 15,
@@ -179,6 +189,10 @@ const styles = StyleSheet.create({
     borderRadius: 10, 
     overflow: "hidden", 
   }, 
+  listStyle: {
+    height: '50%',
+    maxHeight: '50%'
+  }
 });
 
 export default ProfileScreen;
