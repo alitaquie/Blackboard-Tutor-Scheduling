@@ -88,19 +88,24 @@ const TeacherProfileScreen = () => {
             <Text style={styles.detailText}>{location}</Text>
         </View>
         <View style={styles.studentsContainer}>
-                    <Text style={styles.fieldText}>Students</Text>
-                    {students.map((student, index) => (
-                        <View key={index} style={styles.studentItem}>
-                            <Text style={styles.studentName}>{student.name}</Text>
-                        </View>
-                    ))}
-                </View>
+            <Text style={styles.fieldText}>Students</Text>
+            <FlatList
+                data={students}
+                renderItem={({ item }) => (
+                    <View style={styles.studentItem}>
+                        <Text style={styles.studentName}>{item.name}</Text>
+                    </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                style={styles.flatList}
+            />
+        </View>
         <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.button}>
             <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
     </KeyboardAvoidingView>
-  );
-}
+);
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -195,6 +200,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'black',
     },
+    flatList: {
+        paddingTop: 10,
+        maxHeight: 150,
+      },
 });
 
 export default TeacherProfileScreen;
