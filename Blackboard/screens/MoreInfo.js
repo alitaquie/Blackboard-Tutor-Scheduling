@@ -5,29 +5,43 @@ import { collection, query, where, getDoc, doc, getDocs, updateDoc, arrayUnion, 
 import { db } from '../firebase';
 
 const MoreInfoScreen = ({ route }) => {
-    const { expandedItemData, teacherId, teacherName } = route.params; 
+    const { expandedItemData, classTeachers } = route.params; 
     const [teacherReviews, setTeacherReviews] = useState([]);
 
     useEffect(() => {
         fetchReviews();
     }, []); 
 
+    const teacherName = classTeachers.map(teacher => teacher.name); 
+    
+
     const fetchReviews = async () => {
         try {
+            const teacherIds = classTeachers.map(teacher => teacher.id); 
+            console.log("Teacher IDs:", teacherIds); 
+    
             const reviewsRef = collection(db, "Reviews");
-            const q = query(reviewsRef, where('teacher', '==', teacherId));
+            console.log("Reviews reference:", reviewsRef); 
+    
+            const q = query(reviewsRef, where('teacher', 'in', teacherIds));
+            console.log("Query:", q); 
+    
             const querySnapshot = await getDocs(q);
+            console.log("Query snapshot:", querySnapshot); 
+    
             const reviews = [];
             querySnapshot.forEach((doc) => {
                 reviews.push(doc.data());
             });
             console.log("Fetched reviews:", reviews); 
+    
             setTeacherReviews(reviews);
         } catch (error) {
             console.error('Error fetching reviews:', error);
         }
     };
-
+    
+    
   
     if (expandedItemData) {
 
