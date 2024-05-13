@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion, addDoc} from "firebase/firestore";
 import { db } from '../firebase';
@@ -70,11 +70,14 @@ const ClassReviewScreen = () => {
   return (
     <KeyboardAvoidingView style={styles.container}>
         <Text style={styles.boldText}>Teacher Name: {teacherName}</Text>
-        <Text style={styles.fieldText}>Course Name: {className}</Text>
-        <Text style={styles.fieldText}>Subject: {subject}</Text>
-        <Text style={styles.fieldText}>Date: {date}</Text>
-        <Text style={styles.fieldText}>Location: {location}</Text>
+        <View style={styles.reviewsContainer}>
+            <Text style={styles.fieldText}>Course Name: {className}</Text>
+            <Text style={styles.fieldText}>Subject: {subject}</Text>
+            <Text style={styles.fieldText}>Date: {date}</Text>
+            <Text style={styles.fieldText}>Location: {location}</Text>
+        </View>
         <Text style={styles.boldText}>Leave A Review for your Teacher:</Text>
+        <View style={styles.inputContainer}>
         <TextInput
             style={styles.input}
             multiline={true}
@@ -82,6 +85,7 @@ const ClassReviewScreen = () => {
             value={review}
             onChangeText={text => setReview(text)}
         />
+        </View>
         <TouchableOpacity style={styles.button} onPress={createReview}>
             <Text style={styles.buttonText}>Post</Text>
         </TouchableOpacity>
@@ -97,7 +101,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#2b44bd'
+        backgroundColor: 'black'
     },
     button: {
         backgroundColor: 'cyan',
@@ -116,12 +120,14 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginTop: 2,
         marginBottom: 2,
+        color: 'white',
     },
     boldText: {
         fontSize: 20,
         fontWeight: 'bold',
         marginTop: 2,
         marginBottom: 2,
+        color: 'white',
     },
     input: {
         backgroundColor: '#c1e2e3',
@@ -131,6 +137,23 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         width: '80%',
         alignSelf: 'center',
+    },
+    detailsContainer: {
+        marginBottom: 20,
+    },
+    reviewsContainer: {
+        // flex: 1,
+        borderWidth: 2,
+        borderColor: 'white',
+        backgroundColor: 'black',
+        padding: 5,
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        borderWidth: 2,
+        borderColor: 'white',
+        backgroundColor: 'black',
+        padding: 20,
     },
 });
 
