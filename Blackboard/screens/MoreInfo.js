@@ -96,11 +96,13 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: 'white',
         backgroundColor: 'black',
-        padding: 10,
+        paddingHorizontal: 10,
+        maxHeight: 350,
     },
     scrollView: {
         flex: 1,
         marginBottom: 20,
+        maxHeight: 300,
     },
     reviewContainer: {
         borderWidth: 1,

@@ -132,7 +132,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    // alignItems: 'center',
     backgroundColor: 'black',
   },
   title: {
@@ -195,15 +194,8 @@ const styles = StyleSheet.create({
     borderRadius: 10, 
     overflow: "hidden", 
   }, 
-  profile: {
-    marginTop: 50,
-    alignItems: 'center',
-    borderColor: 'white',
-    borderWidth: 1,
-    marginBottom: 65,
-    backgroundColor: 'white',
-  },
   flatList: {
+    paddingTop: 10,
     maxHeight: 300,
   },
 });
