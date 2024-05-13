@@ -65,8 +65,21 @@ const ProfileScreen = () => {
   const ExpandableListItem = ({ item, index, idString, toggleExpand }) => {
     const isExpanded = index === expandedIndex;
   
-    const goToReview = () => {
-      navigation.navigate('ClassReview', { className: item, classId: idString[index] });
+    const goToReview = async () => {
+      const currentUserId = auth.currentUser.uid;
+      const userDocRef = doc(db, "Users", currentUserId);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        if (docSnap.data().role == 'student') {
+          navigation.navigate('ClassReview', { className: item, classId: idString[index] });
+        }  else {
+          navigation.navigate('TeacherProfile', { className: item, classId: idString[index] });
+        }
+      } else {
+        alert("Sorry. Something went wrong on our end.");
+      }
+  
+      
     };
 
     return (
@@ -76,7 +89,7 @@ const ProfileScreen = () => {
           {isExpanded && (
             <TouchableOpacity onPress={goToReview}>
               <Text style={styles.itemContent}>
-                Click here to add a review!
+                View Information
               </Text>
             </TouchableOpacity>
           )}
