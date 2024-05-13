@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
+import { ScrollView, View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { collection, query, where, getDoc, doc, getDocs, updateDoc, arrayUnion, addDoc } from "firebase/firestore";
 import { db } from '../firebase';
@@ -33,15 +33,25 @@ const MoreInfoScreen = ({ route }) => {
 
         return (
             <View style={styles.container}>
-                <Text>Title: {expandedItemData.title}</Text>
-                <Text>Content: {expandedItemData.content}</Text>
-                <Text>Teacher Name: {teacherName}</Text> 
-                
-    
-                <Text style={styles.boldText}>Teacher Reviews:</Text>
-                {teacherReviews.map((review, index) => (
-                    <Text key={index} style={styles.fieldText}>{review.review}</Text>
-                ))}
+                <Text style={styles.title}>Class Details</Text>
+                <View style={styles.detailsContainer}>
+                    <Text style={styles.detailLabel}>Title:</Text>
+                    <Text style={styles.detailText}>{expandedItemData.title}</Text>
+                    <Text style={styles.detailLabel}>Content:</Text>
+                    <Text style={styles.detailText}>{expandedItemData.content}</Text>
+                    <Text style={styles.detailLabel}>Teacher Name:</Text>
+                    <Text style={styles.detailText}>{teacherName}</Text>
+                </View>
+                <View style={styles.reviewsContainer}>
+                    <Text style={styles.title}>Teacher Reviews</Text>
+                    <ScrollView style={styles.scrollView}>
+                        {teacherReviews.map((review, index) => (
+                            <View key={index} style={styles.reviewContainer}>
+                                <Text style={styles.reviewText}>{review.review}</Text>
+                            </View>
+                        ))}
+                    </ScrollView>
+                </View>
             </View>
         );
     } else {
@@ -57,14 +67,51 @@ const MoreInfoScreen = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: 'black',
+        paddingHorizontal: 20,
+        paddingTop: 50,
     },
-    boldText: {
+    title: {
+        fontSize: 24,
         fontWeight: 'bold',
+        marginBottom: 10,
+        color: 'white',
     },
-    fieldText: {
-        marginTop: 5,
+    detailsContainer: {
+        marginBottom: 20,
+    },
+    detailLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        color: 'white',
+    },
+    detailText: {
+        fontSize: 16,
+        marginBottom: 10,
+        color: 'white',
+    },
+    reviewsContainer: {
+        flex: 1,
+        borderWidth: 2,
+        borderColor: 'white',
+        backgroundColor: 'black',
+        padding: 10,
+    },
+    scrollView: {
+        flex: 1,
+        marginBottom: 20,
+    },
+    reviewContainer: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        padding: 10,
+        marginBottom: 10,
+        borderRadius: 5,
+    },
+    reviewText: {
+        fontSize: 16,
+        color: 'white',
     },
     // Define other styles here
 });
