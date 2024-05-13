@@ -1,13 +1,9 @@
 import React, { useState, useEffect} from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Switch, Button } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Icon2 from 'react-native-vector-icons/FontAwesome5';
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, Switch } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Navbar from './Navbar';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {StatusBar} from 'expo-status-bar';
-import { doc, getDocs, collection, updateDoc, query, where } from "firebase/firestore";
-import { db, auth } from '../firebase';
+import Navbar from '../features/Navbar';
+import { getDocs, collection, query, where } from "firebase/firestore";
+import { db } from '../firebase';
 import RNPickerSelect from 'react-native-picker-select';
 
 const StudentClassScreen = () => {

@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react"
 import { Alert, StyleSheet, Text, View, TouchableOpacity, KeyboardAvoidingView} from "react-native"
 import { Agenda } from "react-native-calendars"
-import Navbar from './Navbar'
+import Navbar from '../features/Navbar';
 import { useNavigation } from '@react-navigation/native'
 import { onSnapshot, doc, getDoc } from "firebase/firestore";
 import { auth, db } from '../firebase'

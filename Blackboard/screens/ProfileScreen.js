@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { doc, getDoc } from "firebase/firestore";
-import Navbar from './Navbar';
+import Navbar from '../features/Navbar'
 import { db, auth } from '../firebase';
 
 const ProfileScreen = () => {

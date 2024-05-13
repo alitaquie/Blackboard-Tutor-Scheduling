@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList, ScrollView, ActivityIndicator } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion, addDoc} from "firebase/firestore";
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 import { db, auth } from '../firebase';
+import backButton from '../features/backButton';
 
 const ClassInfoScreen = () => {
-    const navigation = useNavigation();
-    const backFunct = () => {
-        navigation.navigate("StudentClass");
-    }
     const [savedIndex, setSavedIndex] = useState(-1);
 
     const route = useRoute();
@@ -175,9 +172,7 @@ const ClassInfoScreen = () => {
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
             <View>
-                <TouchableOpacity onPress={backFunct} style={styles.backButton}>
-                    <Text style={styles.buttonText}>Go Back</Text>
-                </TouchableOpacity>
+                <backButton dest={"StudentClass"}/>
                 <Text style={styles.title}>Matching Classes</Text>
                 {isLoading && 
                 (<View style={styles.loadingstyle}>

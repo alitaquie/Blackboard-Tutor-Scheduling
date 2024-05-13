@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { collection, query, where, getDoc, doc, getDocs, updateDoc, arrayUnion, addDoc } from "firebase/firestore";
+import { ScrollView, View, StyleSheet, Text } from 'react-native';
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from '../firebase';
 
 const MoreInfoScreen = ({ route }) => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Switch} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Navbar from './Navbar';
+import Navbar from '../features/Navbar';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { doc, setDoc, getDoc, collection, updateDoc } from "firebase/firestore";
 import { db, auth } from '../firebase';
