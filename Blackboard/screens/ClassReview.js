@@ -69,33 +69,36 @@ const ClassReviewScreen = () => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-        <Text style={styles.boldText}>Teacher Name: {teacherName}</Text>
-        <View style={styles.reviewsContainer}>
-            <Text style={styles.detailLabel}>Course Name:</Text>
-            <Text style={styles.detailText}>{className}</Text>
-            <Text style={styles.detailLabel}>Subject:</Text>
-            <Text style={styles.detailText}>{subject}</Text>
-            <Text style={styles.detailLabel}>Date:</Text>
-            <Text style={styles.detailText}>{date}</Text>
-            <Text style={styles.detailLabel}>Location:</Text>
-            <Text style={styles.detailText}>{location}</Text>
-        </View>
-        <Text style={styles.boldText}>Leave A Review for your Teacher:</Text>
-        <View style={styles.inputContainer}>
-        <TextInput
-            style={styles.input}
-            multiline={true}
-            placeholder="Review"
-            value={review}
-            onChangeText={text => setReview(text)}
-        />
-        </View>
-        <TouchableOpacity style={styles.button} onPress={createReview}>
-            <Text style={styles.buttonText}>Post</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.button}>
-            <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
+        {/* <View style={styles.content}> */}
+            <Text style={styles.boldText}>Review Page {teacherName}</Text>
+            <View style={styles.reviewsContainer}>
+                <Text style={styles.detailLabel}>Teacher Name: {teacherName}</Text>
+                <Text style={styles.detailLabel}>Course Name:</Text>
+                <Text style={styles.detailText}>{className}</Text>
+                <Text style={styles.detailLabel}>Subject:</Text>
+                <Text style={styles.detailText}>{subject}</Text>
+                <Text style={styles.detailLabel}>Date:</Text>
+                <Text style={styles.detailText}>{date}</Text>
+                <Text style={styles.detailLabel}>Location:</Text>
+                <Text style={styles.detailText}>{location}</Text>
+            </View>
+            <Text style={styles.boldText}>Leave A Review for your Teacher:</Text>
+            <View style={styles.inputContainer}>
+            <TextInput
+                style={styles.input}
+                multiline={true}
+                placeholder="Review"
+                value={review}
+                onChangeText={text => setReview(text)}
+            />
+            </View>
+            <TouchableOpacity style={styles.button} onPress={createReview}>
+                <Text style={styles.buttonText}>Post</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.button}>
+                <Text style={styles.buttonText}>Back</Text>
+            </TouchableOpacity>
+        {/* </View> */}
     </KeyboardAvoidingView>
   );
 }
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black'
     },
     button: {
-        backgroundColor: 'cyan',
+        backgroundColor: 'white',
         margin: 15,
         paddingVertical: 6,
         alignItems: 'center',
@@ -119,6 +122,14 @@ const styles = StyleSheet.create({
         fontSize: 25,
         marginTop: 2,
         marginBottom: 2,
+    },
+    content: {
+        flex: 1,
+        marginTop: 50,
+        alignItems: 'center',
+        backgroundColor: 'white',
+        width: '85%',
+        borderRadius: 20,
     },
     fieldText: {
         fontSize: 15,
@@ -146,15 +157,15 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     reviewsContainer: {
-        // flex: 1,
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: 'white',
         backgroundColor: 'black',
         padding: 5,
+        marginBottom: 30,
     },
     inputContainer: {
         flexDirection: 'row',
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: 'white',
         backgroundColor: 'black',
         padding: 20,

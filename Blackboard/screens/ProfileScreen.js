@@ -101,22 +101,28 @@ const ProfileScreen = () => {
       {isLoading ? (
         <Text>Loading...</Text>
       ) : (
-        <View style={styles.content}>
+        <View style={styles.container}>
           <Text style={styles.title}>Profile Screen</Text>
-          <Text style={styles.notTitle}> Name: {auth.currentUser.displayName}</Text>
-          <Text style={styles.notTitle}> Email: {auth.currentUser.email}</Text>
-          <Text style={styles.notTitle}> Role: {userRole}</Text>
-          <Text style={styles.notTitle}> Class History:</Text>
+          <Text style={styles.detailLabel}> Name:</Text>
+          <Text style={styles.detailText}>{auth.currentUser.displayName}</Text>
+          <Text style={styles.detailLabel}> Email: </Text>
+          <Text style={styles.detailText}>{auth.currentUser.email}</Text>
+          <Text style={styles.detailLabel}> Role:</Text>
+          <Text style={styles.detailText}>{userRole}</Text>
+          <Text style={styles.detailLabel}> Class History:</Text>
           <FlatList
             data={classString}
             renderItem={renderExpandedList}
             keyExtractor={(item, index) => index.toString()}
+            style={styles.flatList}
           />
+          <View style={styles.logOutButtonContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
+              <Text>Logout</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
-      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
-        <Text>Logout</Text>
-      </TouchableOpacity>
       <Navbar navigation={navigation} />
     </KeyboardAvoidingView>
   );
@@ -126,28 +132,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'grey',
-  },
-  content: {
-    flex: 1,
-    marginTop: 50,
-    alignItems: 'center',
-    backgroundColor: 'white',
-    width: '85%',
-    borderRadius: 20,
+    // alignItems: 'center',
+    backgroundColor: 'black',
   },
   title: {
-    marginTop: 5,
-    fontSize: 30,
+    marginTop: 70,
+    paddingLeft: 5,
+    paddingBottom: 10,
+    fontSize: 25,
     fontWeight: 'bold',
+    color: 'white',
   },
-  notTitle: {
-    fontSize: 20,
-    margin: 10,
+  detailLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: 'white',
+  },
+  detailText: {
+    fontSize: 16,
+    paddingLeft: 5,
+    marginBottom: 10,
+    color: 'white',
+  },
+  logOutButtonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logOutButton: {
-    backgroundColor: 'lightblue',
+    backgroundColor: 'white',
     paddingVertical: 20,
     width: '30%',
     borderRadius: 5,
@@ -156,9 +170,11 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     marginBottom: 15,
+    marginHorizontal: 20,
     padding: 10,
     backgroundColor: 'white',
     borderRadius: 10,
+    alignItems: 'center',
     elevation: 3,
   },
   itemTitle: {
@@ -170,7 +186,7 @@ const styles = StyleSheet.create({
   itemContent: { 
     marginTop: 10, 
     fontSize: 14, 
-    color: "#666", 
+    color: "#666",
   },
   expandedItem: {
     backgroundColor: 'white',
@@ -179,6 +195,17 @@ const styles = StyleSheet.create({
     borderRadius: 10, 
     overflow: "hidden", 
   }, 
+  profile: {
+    marginTop: 50,
+    alignItems: 'center',
+    borderColor: 'white',
+    borderWidth: 1,
+    marginBottom: 65,
+    backgroundColor: 'white',
+  },
+  flatList: {
+    maxHeight: 300,
+  },
 });
 
 export default ProfileScreen;
