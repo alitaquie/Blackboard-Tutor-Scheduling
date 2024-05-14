@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, Switch } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, Switch, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Navbar from '../features/Navbar';
 import { getDocs, collection, query, where } from "firebase/firestore";
@@ -141,35 +141,37 @@ const StudentClassScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.content}>
-        <Text style={styles.title}>Find Class</Text>
-        <View style={styles.input}>
-          <RNPickerSelect
-            placeholder={placeholder}
-            items={options}
-            onValueChange={text => setSubject(text)}
-            value={subject}
-            style={styles.RNstyle}
-          />
+    <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
+        <View style={styles.content}>
+          <Text style={styles.title}>Find Class</Text>
+          <View style={styles.input}>
+            <RNPickerSelect
+              placeholder={placeholder}
+              items={options}
+              onValueChange={text => setSubject(text)}
+              value={subject}
+              style={styles.RNstyle}
+            />
+          </View>
+          <View style={styles.checkboxContainer}>
+            <Text style={styles.checkboxText}>Private</Text>
+            <Switch
+              trackColor={{ false: '#262626', true: '#000000' }}
+              thumbColor={isGroup ? 'white' : '#f4f3f4'}
+              ios_backgroundColor="#171717"
+              onValueChange={toggleSwitch}
+              value={isGroup}
+            />
+            <Text style={styles.checkboxText}>Group</Text>
+          </View>
+          <TouchableOpacity style={styles.createButton} onPress={findClass}>
+            <Text style={styles.ButtonText}>Search</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.checkboxContainer}>
-          <Text style={styles.checkboxText}>Private</Text>
-          <Switch
-            trackColor={{ false: '#ffffff', true: '#000000' }}
-            thumbColor={isGroup ? '#5eb7ff' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={isGroup}
-          />
-          <Text style={styles.checkboxText}>Group</Text>
-        </View>
-        <TouchableOpacity style={styles.createButton} onPress={findClass}>
-          <Text style={styles.ButtonText}>Search</Text>
-        </TouchableOpacity>
-      </View>
-      <Navbar navigation={navigation} />
-    </KeyboardAvoidingView>
+        <Navbar navigation={navigation} />
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 };
 
@@ -186,8 +188,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'black'
+    justifyContent: 'center'
   },
   content: {
     flex: 1,
@@ -200,7 +201,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   input: {
-    backgroundColor: '#002842',
+    backgroundColor: 'black',
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderRadius: 5,
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
     color: '#93a7ab'
   },
   createButton: {
-    backgroundColor: '#002842',
+    backgroundColor: 'black',
     padding: 10,
     borderRadius: 5,
     width: '80%',
