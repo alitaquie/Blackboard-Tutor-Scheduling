@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Switch, Button } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Icon2 from 'react-native-vector-icons/FontAwesome5';
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Switch, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Navbar from './Navbar';
+import Navbar from '../features/Navbar';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {StatusBar} from 'expo-status-bar';
 import { doc, setDoc, getDoc, collection, updateDoc } from "firebase/firestore";
 import { db, auth } from '../firebase';
 import RNPickerSelect from 'react-native-picker-select';
@@ -23,28 +20,32 @@ const TeacherClassScreen = () => {
 
   const createClass = async () => {
     // Logic to create a new class
-    console.log('Creating class:', course, isGroup, date, location, subject, attendance);       
-
-    const newRef = doc(collection(db, "Events"));
-    await setDoc(newRef, {
-      attendance: attendance,
-      course: course,
-      isGroup: isGroup,
-      location: location,
-      subject: subject,
-      date: date
-    });
-    console.log("success");
-
-    const userDocRef = doc(db, "Users", auth.currentUser.uid);
-    const docSnap = await getDoc(userDocRef);
-    if (docSnap.exists()) {
-      await updateDoc(doc(db, "Users", auth.currentUser.uid), {
-        classes: docSnap.data().classes.concat([newRef.id])
-      });
-      alert("Success! Class created.");
+    console.log('Creating class:', course, isGroup, date, location, subject, attendance);
+    if (!course) {
+      alert("Please provide a course name.");
     } else {
-      alert("Sorry, something went wrong on our end!");
+      const newRef = doc(collection(db, "Events"));
+      await setDoc(newRef, {
+        attendance: attendance,
+        course: course,
+        isGroup: isGroup,
+        location: location,
+        subject: subject,
+        date: date
+      });
+      console.log("success");
+
+      const userDocRef = doc(db, "Users", auth.currentUser.uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        await updateDoc(doc(db, "Users", auth.currentUser.uid), {
+          classes: docSnap.data().classes.concat([newRef.id])
+        });
+        alert("Success! Class created.");
+        navigation.navigate('Home');
+      } else {
+        alert("Sorry, something went wrong on our end!");
+      }
     }
   };
 
@@ -143,133 +144,163 @@ const TeacherClassScreen = () => {
   ];
 
   const placeholder = {
-    label: 'Select a subject...',
-    value: null,
+    label: 'Select Subject',
+    value: null
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={0}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Create New Class</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Course Name"
-          value={course}
-          onChangeText={text => setCourse(text)}
-        />
-        <View style={styles.input}>
-          <RNPickerSelect
-            placeholder={placeholder}
-            items={options}
-            onValueChange={text => setSubject(text)}
-            value={subject}
-          />
-        </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Location (City)"
-          value={location}
-          onChangeText={text => setLocation(text)}
-        />
-        <View style={styles.datestyle}>
-          <Text style={styles.filler}>Date / Time</Text>
-          <DateTimePicker 
-            value={date}
-            mode={'date'}
-            is24Hour={true}
-            onChange={onChange}
-          />
+    <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={0}>
+        <View style={styles.content}>
+          <Text style={styles.title}>Create New Class</Text>
+          <View style={styles.input}>
 
-          <DateTimePicker
-            value={date}
-            mode={'time'}
-            is24Hour={true}
-            onChange={onChange}
-          />
+            <View style={styles.input1}>
+              <RNPickerSelect
+                placeholder={placeholder}
+                items={options}
+                onValueChange={text => setSubject(text)}
+                value={subject}
+              />
+            </View>
+
+            <TextInput
+              style={styles.input2}
+              placeholder="Course Name"
+              placeholderTextColor="#cccccc"
+              value={course}
+              onChangeText={text => setCourse(text)}
+            />
+            
+            <TextInput
+              style={styles.input3}
+              placeholder="Location (City)"
+              placeholderTextColor="#cccccc"
+              value={location}
+              onChangeText={text => setLocation(text)}
+            />
+            <View style={styles.input4}>
+              <View style={styles.datestyle}>
+                <Text style={styles.filler}>Date / Time</Text>
+                <DateTimePicker 
+                  value={date}
+                  mode={'date'}
+                  is24Hour={true}
+                  onChange={onChange}
+                />
+                <DateTimePicker
+                  value={date}
+                  mode={'time'}
+                  is24Hour={true}
+                  onChange={onChange}
+                />
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.checkboxContainer}>
+            <Text style={styles.checkboxText}>Private</Text>
+            <Switch
+              trackColor={{ false: '#ffffff', true: '#000000' }}
+              thumbColor={isGroup ? '#5eb7ff' : '#f4f3f4'}
+              ios_backgroundColor="#cfcfcf"
+              onValueChange={toggleSwitch}
+              value={isGroup}
+            />
+            <Text style={styles.checkboxText}>Group</Text>
+          </View>
+
+          <TouchableOpacity style={styles.createButton} onPress={createClass}>
+            <Text style={styles.ButtonText}>Create</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.checkboxContainer}>
-          <Text style={styles.checkboxText}>Private</Text>
-          <Switch
-            trackColor={{ false: '#ffffff', true: '#000000' }}
-            thumbColor={isGroup ? '#5eb7ff' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={isGroup}
-          />
-          <Text style={styles.checkboxText}>Group</Text>
-        </View>
-        <TouchableOpacity style={styles.createButton} onPress={createClass}>
-          <Text style={styles.ButtonText}>Create</Text>
-        </TouchableOpacity>
-      </View>
-      <Navbar navigation={navigation} />
-    </KeyboardAvoidingView>
+        <Navbar navigation={navigation} />
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 };
+
+const constStyle = {
+  backgroundColor: '#5f9eb8',
+  width: '100%',
+  margin: 20,
+  padding: 15,
+  borderRadius: 5,
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#445edb'
+    justifyContent: 'center'
   },
   content: {
+    position: 'absolute',
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignSelf: 'center'
   },
   title: {
     fontSize: 40,
-    top: '-15%',
-    textAlign: 'center'
+    bottom: '20%',
+    textAlign: 'center',
+    color: 'white'
   },
   input: {
-    backgroundColor: '#c1e2e3',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderRadius: 5,
-    marginBottom: 10,
-    top: '-11%',
-    width: '80%',
-    alignSelf: 'center',
+    alignItems: 'center',
+    width: '100%'
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    alignSelf: 'center',
     marginBottom: 10,
-    top: '-10%'
+    bottom: '30%'
+  },
+  input1: {
+    ...constStyle,
+    bottom: '25%'
+  },
+  input2: {
+    ...constStyle,
+    bottom: '30%',
+  },
+  input3: {
+    ...constStyle,
+    bottom: '35%'
+  },
+  input4: {
+    ...constStyle,
+    bottom: '40%'
   },
   datestyle: {
     flexDirection: 'row',
-    backgroundColor: '#c1e2e3',
-    borderRadius: 5,
-    padding: 7,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '80%',
-    alignSelf: 'center',
-    top: '-21%'
+    alignItems: 'center'
   },
   checkboxText: {
     margin: 10,
-    fontSize: 25
+    fontSize: 25,
+    color: 'white'
   },
   filler: {
-    color: '#93a7ab'
+    color: "#cccccc"
   },
   createButton: {
-    backgroundColor: '#002842',
+    backgroundColor: '#5f9eb8',
     padding: 10,
     borderRadius: 5,
     width: '80%',
     alignSelf: 'center',
-    bottom: '-10%'
+    bottom: '10%'
   },
   ButtonText: {
     color: 'white',
     fontSize: 16,
     textAlign: 'center'
   }, 
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+  }
 });
 
 export default TeacherClassScreen;

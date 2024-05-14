@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { collection, query, where, getDoc, doc, getDocs, updateDoc, arrayUnion, addDoc } from "firebase/firestore";
+import { ScrollView, View, StyleSheet, Text, ImageBackground } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from '../firebase';
+import BackButton from '../features/backButton';
 
-const MoreInfoScreen = ({ route }) => {
-    const { expandedItemData, classTeachers } = route.params; 
+const MoreInfoScreen = () => {
+    const route = useRoute();
+
+    const expandedItemData = route.params?.expandedItemData;
+    const classTeachers = route.params?.classTeachers;
+    const MatchingDocIDs = route.params?.MatchingDocIDs;
+
     const [teacherReviews, setTeacherReviews] = useState([]);
 
     useEffect(() => {
@@ -17,24 +23,18 @@ const MoreInfoScreen = ({ route }) => {
 
     const fetchReviews = async () => {
         try {
-            const teacherIds = classTeachers.map(teacher => teacher.id); 
-            console.log("Teacher IDs:", teacherIds); 
-    
-            const reviewsRef = collection(db, "Reviews");
-            console.log("Reviews reference:", reviewsRef); 
-    
-            const q = query(reviewsRef, where('teacher', 'in', teacherIds));
-            console.log("Query:", q); 
-    
-            const querySnapshot = await getDocs(q);
-            console.log("Query snapshot:", querySnapshot); 
-    
             const reviews = [];
-            querySnapshot.forEach((doc) => {
-                reviews.push(doc.data());
-            });
-            console.log("Fetched reviews:", reviews); 
-    
+            const teacherIds = classTeachers.map(teacher => teacher.id); 
+            const reviewsRef = collection(db, "Reviews");
+            if (teacherIds.length > 0) {
+                const q = query(reviewsRef, where('teacher', 'in', teacherIds));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    //console.log('doc data: ', doc.data());
+                    reviews.push(doc.data());
+                });
+            }
+            //console.log("Reviews: ", reviews);
             setTeacherReviews(reviews);
         } catch (error) {
             console.error('Error fetching reviews:', error);
@@ -42,31 +42,32 @@ const MoreInfoScreen = ({ route }) => {
     };
     
     
-  
     if (expandedItemData) {
-
         return (
-            <View style={styles.container}>
-                <Text style={styles.title}>Class Details</Text>
-                <View style={styles.detailsContainer}>
-                    <Text style={styles.detailLabel}>Title:</Text>
-                    <Text style={styles.detailText}>{expandedItemData.title}</Text>
-                    <Text style={styles.detailLabel}>Content:</Text>
-                    <Text style={styles.detailText}>{expandedItemData.content}</Text>
-                    <Text style={styles.detailLabel}>Teacher Name:</Text>
-                    <Text style={styles.detailText}>{teacherName}</Text>
+            <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+                <View style={styles.container}>
+                    <BackButton dest="ClassInfo" passInfo={{ MatchingDocIDs: MatchingDocIDs }}/>
+                    <Text style={styles.title}>Class Details</Text>
+                    <View style={styles.detailsContainer}>
+                        <Text style={styles.detailLabel}>Title:</Text>
+                        <Text style={styles.detailText}>{expandedItemData.title}</Text>
+                        <Text style={styles.detailLabel}>Content:</Text>
+                        <Text style={styles.detailText}>{expandedItemData.content}</Text>
+                        <Text style={styles.detailLabel}>Teacher Name:</Text>
+                        <Text style={styles.detailText}>{teacherName}</Text>
+                    </View>
+                    <View style={styles.reviewsContainer}>
+                        <Text style={styles.title}>Teacher Reviews</Text>
+                        <ScrollView style={styles.scrollView}>
+                            {teacherReviews.map((review, index) => (
+                                <View key={index} style={styles.reviewContainer}>
+                                    <Text style={styles.reviewText}>{review.review}</Text>
+                                </View>
+                            ))}
+                        </ScrollView>
+                    </View>
                 </View>
-                <View style={styles.reviewsContainer}>
-                    <Text style={styles.title}>Teacher Reviews</Text>
-                    <ScrollView style={styles.scrollView}>
-                        {teacherReviews.map((review, index) => (
-                            <View key={index} style={styles.reviewContainer}>
-                                <Text style={styles.reviewText}>{review.review}</Text>
-                            </View>
-                        ))}
-                    </ScrollView>
-                </View>
-            </View>
+            </ImageBackground>
         );
     } else {
     
@@ -81,7 +82,6 @@ const MoreInfoScreen = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black',
         paddingHorizontal: 20,
         paddingTop: 50,
     },
@@ -129,6 +129,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'white',
     },
+    image: {
+        flex: 1,
+        justifyContent: 'center',
+    }
     // Define other styles here
 });
 

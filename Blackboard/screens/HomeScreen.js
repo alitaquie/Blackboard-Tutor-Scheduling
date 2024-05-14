@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react"
-import { Alert, StyleSheet, Text, View, TouchableOpacity, KeyboardAvoidingView } from "react-native"
+import { Alert, StyleSheet, Text, View, TouchableOpacity, KeyboardAvoidingView} from "react-native"
 import { Agenda } from "react-native-calendars"
-import Navbar from './Navbar'
+import Navbar from '../features/Navbar';
 import { useNavigation } from '@react-navigation/native'
 import { onSnapshot, doc, getDoc } from "firebase/firestore";
 import { auth, db } from '../firebase'
@@ -11,7 +11,9 @@ const ClassScreen = () => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <AgendaScreen/>
+      <View style={styles.calHeight}>
+        <AgendaScreen/>
+      </View>
       <Navbar navigation={navigation}/>
     </KeyboardAvoidingView>
   )
@@ -40,10 +42,10 @@ class AgendaScreen extends PureComponent {
             calendarBackground: 'black',
             dayTextColor: 'white',
             monthTextColor: 'white',
-            agendaDayTextColor: 'black',
-            agendaDayNumColor: 'black',
+            agendaDayTextColor: 'white',
+            agendaDayNumColor: 'white',
             agendaTodayColor: 'black',
-            reservationsBackgroundColor: "darkgray",
+            reservationsBackgroundColor: "#212121",
           }}
         />
       </View>
@@ -162,6 +164,11 @@ const styles = StyleSheet.create({
   },
   dayItem: {
     marginLeft: 34
+  },
+  calHeight: {
+    maxHeight: '90%',
+    height: '90%',
+    top: '-3.5%'
   }
 })
 

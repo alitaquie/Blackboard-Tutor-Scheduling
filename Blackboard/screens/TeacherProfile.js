@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, KeyboardAvoidingView, StyleSheet, Text, FlatList, ImageBackground } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion, addDoc} from "firebase/firestore";
+import { collection, query, where, getDoc, doc , getDocs } from "firebase/firestore";
 import { db } from '../firebase';
+import BackButton from '../features/backButton';
 
 const TeacherProfileScreen = () => {
     const navigation = useNavigation();
@@ -73,46 +74,61 @@ const TeacherProfileScreen = () => {
   }, [classId]);
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
-        <Text style={styles.boldText}>Teacher Class Page</Text>
-        <View style={styles.reviewsContainer}>
-            <Text style={styles.detailLabel}>Teacher Name:</Text>
-            <Text style={styles.detailText}>{teacherName}</Text>
-            <Text style={styles.detailLabel}>Course Name:</Text>
-            <Text style={styles.detailText}>{className}</Text>
-            <Text style={styles.detailLabel}>Subject:</Text>
-            <Text style={styles.detailText}>{subject}</Text>
-            <Text style={styles.detailLabel}>Date:</Text>
-            <Text style={styles.detailText}>{date}</Text>
-            <Text style={styles.detailLabel}>Location:</Text>
-            <Text style={styles.detailText}>{location}</Text>
-        </View>
-        <View style={styles.studentsContainer}>
-            <Text style={styles.fieldText}>Students</Text>
-            <FlatList
-                data={students}
-                renderItem={({ item }) => (
-                    <View style={styles.studentItem}>
-                        <Text style={styles.studentName}>{item.name}</Text>
-                    </View>
-                )}
-                keyExtractor={(item, index) => index.toString()}
-                style={styles.flatList}
-            />
-        </View>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.button}>
-            <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-    </KeyboardAvoidingView>
+    <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+        <KeyboardAvoidingView style={styles.container}>
+            <BackButton dest="Profile" passInfo={{}}/>
+            <Text style={styles.boldText}>Teacher Class Page</Text>
+            <View style={styles.reviewsContainer}>
+                <View style={styles.snap}>
+                    <Text style={styles.detailLabel}>Teacher Name: </Text>
+                    <Text style={styles.detailText}>{teacherName}</Text>
+                </View>
+
+                <View style={styles.snap}>
+                    <Text style={styles.detailLabel}>Course Name: </Text>
+                    <Text style={styles.detailText}>{className}</Text>
+                </View>
+
+                <View style={styles.snap}>
+                    <Text style={styles.detailLabel}>Subject: </Text>
+                    <Text style={styles.detailText}>{subject}</Text>
+                </View>
+
+                <View style={styles.snap}>
+                    <Text style={styles.detailLabel}>Date: </Text>
+                    <Text style={styles.detailText}>{date}</Text>
+                </View>
+
+                <View style={styles.snap}>
+                    <Text style={styles.detailLabel}>Location: </Text>
+                    <Text style={styles.detailText}>{location}</Text>
+                </View>
+                
+            </View>
+            <View style={styles.studentsContainer}>
+                <Text style={styles.fieldText}>Students</Text>
+                <FlatList
+                    data={students}
+                    renderItem={({ item }) => (
+                        <View style={styles.studentItem}>
+                            <Text style={styles.studentName}>{item.name}</Text>
+                        </View>
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                    style={styles.flatList}
+                />
+            </View>
+        </KeyboardAvoidingView>
+    </ImageBackground>
 );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        alignSelf: 'center',
         justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'black'
+        width: '100%'
     },
     button: {
         backgroundColor: 'white',
@@ -136,17 +152,21 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     fieldText: {
-        fontSize: 15,
-        marginTop: 2,
-        marginBottom: 2,
+        fontSize: 20,
+        marginTop: 10,
         color: 'white',
+        textAlign: 'center'
     },
     boldText: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginTop: 2,
-        marginBottom: 2,
+        margin: 10,
         color: 'white',
+        textAlign: 'center'
+    },
+    snap: {
+        flexDirection: 'row',
+        margin: 10
     },
     input: {
         backgroundColor: '#c1e2e3',
@@ -166,6 +186,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         padding: 5,
         marginBottom: 30,
+        borderRadius: 5
     },
     inputContainer: {
         flexDirection: 'row',
@@ -177,16 +198,14 @@ const styles = StyleSheet.create({
     detailLabel: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 5,
         color: 'white',
     },
     detailText: {
-        fontSize: 16,
-        marginBottom: 10,
+        fontSize: 17,
         color: 'white',
     },
     studentsContainer: {
-        marginBottom: 20,
+        height: '40%'
     },
     studentItem: {
         backgroundColor: 'white',
@@ -199,11 +218,19 @@ const styles = StyleSheet.create({
     studentName: {
         fontSize: 16,
         color: 'black',
+        textAlign: 'center'
     },
     flatList: {
         paddingTop: 10,
-        maxHeight: 150,
-      },
+        maxHeight: '100%',
+        width: '80%',
+        alignSelf: 'center'
+    },
+    image: {
+        flex: 1,
+        justifyContent: 'center',
+    }
+      
 });
 
 export default TeacherProfileScreen;

@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion, addDoc} from "firebase/firestore";
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator, ImageBackground } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 import { db, auth } from '../firebase';
+import BackButton from '../features/backButton';
 
 const ClassInfoScreen = () => {
-    const navigation = useNavigation();
-    const backFunct = () => {
-        navigation.navigate("StudentClass");
-    }
-    const [savedIndex, setSavedIndex] = useState(-1);
-
     const route = useRoute();
+    const navigation = useNavigation();
     const MatchingDocIDs = route.params?.MatchingDocIDs;
+    
+
+    const [savedIndex, setSavedIndex] = useState(null);
 
     const finishSignUp = async () => {
         try {
@@ -38,8 +37,9 @@ const ClassInfoScreen = () => {
         const expandedItemData = data[index];
         const classTeachers = teachers[expandedItemData.id] || []; // Get teachers for the selected class
         navigation.navigate('MoreInfo', { 
-            expandedItemData, 
-            classTeachers // Pass teachers data to MoreInfo screen
+            expandedItemData: expandedItemData, 
+            classTeachers: classTeachers,
+            MatchingDocIDs: MatchingDocIDs // Pass teachers data to MoreInfo screen
         }); 
     };
     
@@ -47,11 +47,12 @@ const ClassInfoScreen = () => {
 
     const [data, setData] = useState([]);
     const [teacherName, setTeacherName] = useState('');
-    const [teachers, setTeachers] = useState({}); // Store teachers for each class
-    const [teacherId, setTeacherId] = useState('');
+    const [teachers, setTeachers] = useState([]); // Store teachers for each class
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true);
             const newData = [];
             for (const docId of MatchingDocIDs) {
                 const docRef = doc(db, 'Events', docId);
@@ -71,6 +72,9 @@ const ClassInfoScreen = () => {
                     const hour = Number(strTime.substring(0,2));
                     day_stats = "";
                     if (hour < 12) {
+                        if (hour == 0) {
+                            strTime = `${hour+12}${strTime.substring(2)}`;
+                        }
                         day_stats = "AM";
                     } else {
                         if (hour > 12) {
@@ -79,6 +83,9 @@ const ClassInfoScreen = () => {
                         day_stats = "PM";
                     }
                     strTime = strTime.substring(0,5);
+                    strHour = strTime.split(":")[0];
+                    strMinutes = strTime.split(":")[1];
+                    strTime = strHour + ":" + strMinutes;
 
                     newData.push({
                         id: docSnap.id,
@@ -88,6 +95,7 @@ const ClassInfoScreen = () => {
                 }
             }
             setData(newData);
+            setIsLoading(false);
         };
 
       
@@ -96,23 +104,19 @@ const ClassInfoScreen = () => {
 
         const fetchTeacher = async () => {
             try {
-                const teacherData = {};
+                const teacherData = [];
                 for (const docId of MatchingDocIDs) {
-                    console.log("Fetching data for docId:", docId);
                     const usersRef = collection(db, 'Users');
                     const q = query(usersRef, where('role', '==', 'teacher'), where('classes', 'array-contains', docId));
                     const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        const userData = doc.data();
-                        console.log("User data:", userData);
-                        if (!teacherData[docId]) {
-                            teacherData[docId] = [];
-                        }
-                        teacherData[docId].push({ id: doc.id, name: userData.name });
-                    });
-                    console.log("teacherData after fetching data for docId", docId, ":", teacherData);
+                    if (querySnapshot) {
+                        querySnapshot.forEach((doc) => {
+                            const userData = doc.data();
+                            teacherData[docId] = []
+                            teacherData[docId].push({ id: doc.id, name: userData.name });
+                        });
+                    }
                 }
-                console.log("Final teacherData:", teacherData);
                 setTeachers(teacherData);
             } catch (error) {
                 console.error('Error fetching teacher data:', error);
@@ -158,7 +162,7 @@ const ClassInfoScreen = () => {
     
         const toggleExpand = (index) => {
             setExpandedIndex(expandedIndex === index ? null : index);
-            if (expandedIndex == null) {
+            if (expandedIndex === null) {
                 setSavedIndex(index);
             }
         };
@@ -183,45 +187,55 @@ const ClassInfoScreen = () => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <View>
-                <TouchableOpacity onPress={backFunct} style={styles.backButton}>
-                    <Text style={styles.buttonText}>Go Back</Text>
-                </TouchableOpacity>
-                <Text style={styles.title}>Matching Classes</Text>
-                <ExpandableList data={data} />
+        <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
+                <View>
+                    <BackButton dest="StudentClass" passInfo={{}}/>
+                    <Text style={styles.title}>Matching Classes</Text>
+                    {isLoading && 
+                    (<View style={styles.loadingstyle}>
+                        <ActivityIndicator color="white"/>
+                        <Text style={styles.buttonText}>Loading</Text>
+                    </View>)}
+                    <View style={styles.exliststyle} >
+                        <ExpandableList data={data}/>
+                    </View>
+                    
 
-                <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={finishSignUp} style={styles.signUpButton}>
-                    <Text style={styles.buttonText}>Sign Up</Text>
-                </TouchableOpacity>
-            </View>
-            </View>
-        </KeyboardAvoidingView>
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity onPress={finishSignUp} style={styles.signUpButton}>
+                            <Text style={styles.buttonText}>Sign Up</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </KeyboardAvoidingView>
+        </ImageBackground>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        backgroundColor: '#2b44bd'
+        justifyContent: 'center'
     },
     title: {
         fontSize: 30,
         textAlign: 'center',
-        margin: 20
+        margin: 20,
+        top: '2%',
+        color: 'white'
     },
     backButton: {
-        backgroundColor: 'cyan',
         margin: 15,
         paddingVertical: 6,
         alignItems: 'center',
         borderRadius: 10,
-        width: '25%'
+        width: '25%',
+        top: '-3%',
+        borderColor: 'white',
+        borderWidth: 2
     },
     signUpButton: {
-        backgroundColor: 'cyan',
         margin: 15,
         paddingVertical: 20,
         alignItems: 'center',
@@ -229,10 +243,12 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 10,
         width: '30%',
-        bottom: -100
+        bottom: -100,
+        borderColor: 'white',
+        borderWidth: 2
     },
     moreInfoButton: {
-        backgroundColor: 'cyan',
+        backgroundColor: 'black',
         margin: 15,
         paddingVertical: 20,
         alignItems: 'center',
@@ -240,16 +256,22 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 10,
         width: '30%',
+        borderColor: 'white',
+        borderWidth: 2
     },
     buttonText: {
-        fontSize: 25
+        fontSize: 25,
+        color: 'white',
+        textAlign: 'center'
     },
     itemContainer: { 
         marginBottom: 15, 
         padding: 10, 
-        backgroundColor: "white", 
+        backgroundColor: "black", 
         borderRadius: 10, 
         elevation: 3, 
+        borderColor: 'white',
+        borderWidth: 2
     }, 
     itemTouchable: { 
         borderRadius: 10, 
@@ -258,15 +280,29 @@ const styles = StyleSheet.create({
     itemTitle: { 
         fontSize: 18, 
         fontWeight: "bold", 
-        color: "#333", 
+        color: "white", 
     }, 
     itemContent: { 
         marginTop: 10, 
         fontSize: 14, 
-        color: "#666", 
+        color: "white", 
     },
     expandedItem: {
-        backgroundColor: 'lightcyan', // Add your desired highlight color here
+        backgroundColor: '#1aaedb', // Add your desired highlight color here
+    },
+    exliststyle: {
+        bottom: '-5%',
+        maxHeight: '55%'
+    },
+    teacherName: {
+        color: 'white'
+    },
+    loadingstyle: {
+        margin: 15
+    },
+    image: {
+        flex: 1,
+        justifyContent: 'center',
     }
 })
 
