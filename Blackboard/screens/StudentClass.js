@@ -16,7 +16,8 @@ const StudentClassScreen = () => {
 
   const findClass = async () => {
     // Logic to create a new class
-    console.log('finding class:', isGroup, subject); 
+    console.log('isGroup:', isGroup); 
+    console.log("subject: \'", subject, "\'");
     
     const Ref = collection(db, 'Events');
     let q1 = null;
@@ -35,8 +36,7 @@ const StudentClassScreen = () => {
         matchingIDs.push(doc.id);
       });
     }
-
-    console.log("success");
+    console.log("Matching IDs: ", matchingIDs);
     navigation.navigate("ClassInfo", {MatchingDocIDs: matchingIDs});
   };
 
@@ -151,7 +151,6 @@ const StudentClassScreen = () => {
               items={options}
               onValueChange={text => setSubject(text)}
               value={subject}
-              style={styles.RNstyle}
             />
           </View>
           <View style={styles.checkboxContainer}>
@@ -195,20 +194,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   title: {
-    fontSize: 40,
+    fontSize: 50,
     top: '-15%',
     textAlign: 'center',
-    color: 'white'
+    color: 'white',
   },
   input: {
-    backgroundColor: 'black',
+    backgroundColor: '#878787',
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderRadius: 5,
     marginBottom: 10,
     top: '-11%',
     width: '80%',
-    alignSelf: 'center',
+    alignSelf: 'center'
   },
   checkboxContainer: {
     flexDirection: 'row',

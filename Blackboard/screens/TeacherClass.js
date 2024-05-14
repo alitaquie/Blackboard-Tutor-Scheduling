@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Switch} from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Switch, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Navbar from '../features/Navbar';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -42,6 +42,7 @@ const TeacherClassScreen = () => {
           classes: docSnap.data().classes.concat([newRef.id])
         });
         alert("Success! Class created.");
+        navigation.navigate('Home');
       } else {
         alert("Sorry, something went wrong on our end!");
       }
@@ -148,72 +149,74 @@ const TeacherClassScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={0}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Create New Class</Text>
-        <View style={styles.input}>
+    <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={0}>
+        <View style={styles.content}>
+          <Text style={styles.title}>Create New Class</Text>
+          <View style={styles.input}>
 
-          <View style={styles.input1}>
-            <RNPickerSelect
-              placeholder={placeholder}
-              items={options}
-              onValueChange={text => setSubject(text)}
-              value={subject}
-            />
-          </View>
-
-          <TextInput
-            style={styles.input2}
-            placeholder="Course Name"
-            placeholderTextColor="#cccccc"
-            value={course}
-            onChangeText={text => setCourse(text)}
-          />
-          
-          <TextInput
-            style={styles.input3}
-            placeholder="Location (City)"
-            placeholderTextColor="#cccccc"
-            value={location}
-            onChangeText={text => setLocation(text)}
-          />
-          <View style={styles.input4}>
-            <View style={styles.datestyle}>
-              <Text style={styles.filler}>Date / Time</Text>
-              <DateTimePicker 
-                value={date}
-                mode={'date'}
-                is24Hour={true}
-                onChange={onChange}
-              />
-              <DateTimePicker
-                value={date}
-                mode={'time'}
-                is24Hour={true}
-                onChange={onChange}
+            <View style={styles.input1}>
+              <RNPickerSelect
+                placeholder={placeholder}
+                items={options}
+                onValueChange={text => setSubject(text)}
+                value={subject}
               />
             </View>
+
+            <TextInput
+              style={styles.input2}
+              placeholder="Course Name"
+              placeholderTextColor="#cccccc"
+              value={course}
+              onChangeText={text => setCourse(text)}
+            />
+            
+            <TextInput
+              style={styles.input3}
+              placeholder="Location (City)"
+              placeholderTextColor="#cccccc"
+              value={location}
+              onChangeText={text => setLocation(text)}
+            />
+            <View style={styles.input4}>
+              <View style={styles.datestyle}>
+                <Text style={styles.filler}>Date / Time</Text>
+                <DateTimePicker 
+                  value={date}
+                  mode={'date'}
+                  is24Hour={true}
+                  onChange={onChange}
+                />
+                <DateTimePicker
+                  value={date}
+                  mode={'time'}
+                  is24Hour={true}
+                  onChange={onChange}
+                />
+              </View>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.checkboxContainer}>
-          <Text style={styles.checkboxText}>Private</Text>
-          <Switch
-            trackColor={{ false: '#ffffff', true: '#000000' }}
-            thumbColor={isGroup ? '#5eb7ff' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={isGroup}
-          />
-          <Text style={styles.checkboxText}>Group</Text>
-        </View>
+          <View style={styles.checkboxContainer}>
+            <Text style={styles.checkboxText}>Private</Text>
+            <Switch
+              trackColor={{ false: '#ffffff', true: '#000000' }}
+              thumbColor={isGroup ? '#5eb7ff' : '#f4f3f4'}
+              ios_backgroundColor="#cfcfcf"
+              onValueChange={toggleSwitch}
+              value={isGroup}
+            />
+            <Text style={styles.checkboxText}>Group</Text>
+          </View>
 
-        <TouchableOpacity style={styles.createButton} onPress={createClass}>
-          <Text style={styles.ButtonText}>Create</Text>
-        </TouchableOpacity>
-      </View>
-      <Navbar navigation={navigation} />
-    </KeyboardAvoidingView>
+          <TouchableOpacity style={styles.createButton} onPress={createClass}>
+            <Text style={styles.ButtonText}>Create</Text>
+          </TouchableOpacity>
+        </View>
+        <Navbar navigation={navigation} />
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 };
 
@@ -228,8 +231,7 @@ const constStyle = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'black'
+    justifyContent: 'center'
   },
   content: {
     position: 'absolute',
@@ -295,6 +297,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center'
   }, 
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+  }
 });
 
 export default TeacherClassScreen;

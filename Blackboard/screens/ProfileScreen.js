@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator, ImageBackground } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { doc, getDoc } from "firebase/firestore";
 import Navbar from '../features/Navbar'
 import { db, auth } from '../firebase';
@@ -110,60 +110,73 @@ const ProfileScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      {isLoading ? (
-        <View>
-          <ActivityIndicator size='large' color="black"/>
-          <Text>Loading</Text>
-        </View>
-        
-      ) : (
-        <View style={styles.container}>
-          <Text style={styles.title}>Profile Screen</Text>
-          <Text style={styles.detailLabel}> Name:</Text>
-          <Text style={styles.detailText}>{auth.currentUser.displayName}</Text>
-          <Text style={styles.detailLabel}> Email: </Text>
-          <Text style={styles.detailText}>{auth.currentUser.email}</Text>
-          <Text style={styles.detailLabel}> Role:</Text>
-          <Text style={styles.detailText}>{userRole}</Text>
-          <Text style={styles.detailLabel}> Class History:</Text>
-          <FlatList
-            data={classString}
-            renderItem={renderExpandedList}
-            keyExtractor={(item, index) => index.toString()}
-            style={styles.flatList}
-          />
-          <View style={styles.logOutButtonContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
-              <Text>Logout</Text>
-            </TouchableOpacity>
+    <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
+        {isLoading ? (
+          <View style={styles.center}>
+            <ActivityIndicator size='large' color="white"/>
+            <Text style={styles.center}>Loading</Text>
           </View>
-        </View>
-      )}
-      <Navbar navigation={navigation} />
-    </KeyboardAvoidingView>
+          
+        ) : (
+          <View style={styles.container}>
+            <Text style={styles.title}>Profile Screen</Text>
+            <View style={styles.snap}>
+              <Text style={styles.detailLabel}> Name: </Text>
+              <Text style={styles.detailText}>{auth.currentUser.displayName}</Text>
+            </View>
+
+            <View style={styles.snap}>
+              <Text style={styles.detailLabel}> Email: </Text>
+              <Text style={styles.detailText}>{auth.currentUser.email}</Text>
+            </View>
+
+            <View style={styles.snap}>
+              <Text style={styles.detailLabel}> Role:</Text>
+              <Text style={styles.detailText}>{userRole}</Text>
+            </View>
+
+            <View style={styles.filler}></View>
+
+            <Text style={styles.detailLabel}> Class History:</Text>
+            <FlatList
+              data={classString}
+              renderItem={renderExpandedList}
+              keyExtractor={(item, index) => index.toString()}
+              style={styles.flatList}
+            />
+            <View style={styles.logOutButtonContainer}>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
+                <Text>Logout</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+        <Navbar navigation={navigation} />
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'black',
+    justifyContent: 'center'
   },
   title: {
-    marginTop: 70,
-    paddingLeft: 5,
-    paddingBottom: 10,
+    marginTop: 80,
+    marginBottom: 50,
     fontSize: 25,
     fontWeight: 'bold',
     color: 'white',
+    textAlign: 'center'
   },
   detailLabel: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
     color: 'white',
+    textAlign: 'center'
   },
   detailText: {
     fontSize: 16,
@@ -182,7 +195,7 @@ const styles = StyleSheet.create({
     width: '30%',
     borderRadius: 5,
     alignItems: 'center',
-    top: '-15%',
+    top: '-25%',
   },
   itemContainer: {
     marginBottom: 15,
@@ -213,8 +226,24 @@ const styles = StyleSheet.create({
   }, 
   flatList: {
     paddingTop: 10,
-    maxHeight: 300,
+    maxHeight: '40%',
   },
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  snap: {
+    flexDirection: 'row',
+    margin: 5
+  },
+  filler: {
+    margin: 10
+  },
+  center: {
+    alignContent: 'center',
+    textAlign: 'center',
+    color: 'white'
+  }
 });
 
 export default ProfileScreen;

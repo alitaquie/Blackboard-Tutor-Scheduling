@@ -1,13 +1,13 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 
-const backButton = ({ dest }) => {
+const BackButton = ({ dest, passInfo }) => {
     const navigation = useNavigation();
 
     const backFunct = () => {
-        navigation.navigate(dest);
+        navigation.navigate(dest, passInfo);
       };
 
       return (
@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         width: '25%',
-        top: '-3%',
         borderColor: 'white',
         borderWidth: 2
     },
@@ -35,6 +34,6 @@ const styles = StyleSheet.create({
     }
 });
 
-export default backButton;
+export default BackButton;
 
 

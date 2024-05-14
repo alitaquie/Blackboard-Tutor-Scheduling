@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator, ImageBackground } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 import { db, auth } from '../firebase';
-import backButton from '../features/backButton';
+import BackButton from '../features/backButton';
 
 const ClassInfoScreen = () => {
-    const [savedIndex, setSavedIndex] = useState(-1);
-
     const route = useRoute();
+    const navigation = useNavigation();
     const MatchingDocIDs = route.params?.MatchingDocIDs;
+    
+
+    const [savedIndex, setSavedIndex] = useState(null);
 
     const finishSignUp = async () => {
         try {
@@ -35,8 +37,9 @@ const ClassInfoScreen = () => {
         const expandedItemData = data[index];
         const classTeachers = teachers[expandedItemData.id] || []; // Get teachers for the selected class
         navigation.navigate('MoreInfo', { 
-            expandedItemData, 
-            classTeachers // Pass teachers data to MoreInfo screen
+            expandedItemData: expandedItemData, 
+            classTeachers: classTeachers,
+            MatchingDocIDs: MatchingDocIDs // Pass teachers data to MoreInfo screen
         }); 
     };
     
@@ -44,8 +47,7 @@ const ClassInfoScreen = () => {
 
     const [data, setData] = useState([]);
     const [teacherName, setTeacherName] = useState('');
-    const [teachers, setTeachers] = useState({}); // Store teachers for each class
-    const [teacherId, setTeacherId] = useState('');
+    const [teachers, setTeachers] = useState([]); // Store teachers for each class
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -102,23 +104,19 @@ const ClassInfoScreen = () => {
 
         const fetchTeacher = async () => {
             try {
-                const teacherData = {};
+                const teacherData = [];
                 for (const docId of MatchingDocIDs) {
-                    console.log("Fetching data for docId:", docId);
                     const usersRef = collection(db, 'Users');
                     const q = query(usersRef, where('role', '==', 'teacher'), where('classes', 'array-contains', docId));
                     const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        const userData = doc.data();
-                        console.log("User data:", userData);
-                        if (!teacherData[docId]) {
-                            teacherData[docId] = [];
-                        }
-                        teacherData[docId].push({ id: doc.id, name: userData.name });
-                    });
-                    console.log("teacherData after fetching data for docId", docId, ":", teacherData);
+                    if (querySnapshot) {
+                        querySnapshot.forEach((doc) => {
+                            const userData = doc.data();
+                            teacherData[docId] = []
+                            teacherData[docId].push({ id: doc.id, name: userData.name });
+                        });
+                    }
                 }
-                console.log("Final teacherData:", teacherData);
                 setTeachers(teacherData);
             } catch (error) {
                 console.error('Error fetching teacher data:', error);
@@ -189,35 +187,36 @@ const ClassInfoScreen = () => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <View>
-                <backButton dest={"StudentClass"}/>
-                <Text style={styles.title}>Matching Classes</Text>
-                {isLoading && 
-                (<View style={styles.loadingstyle}>
-                    <ActivityIndicator color="white"/>
-                    <Text style={styles.buttonText}>Loading</Text>
-                </View>)}
-                <View style={styles.exliststyle} >
-                    <ExpandableList data={data}/>
-                </View>
-                
+        <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
+                <View>
+                    <BackButton dest="StudentClass" passInfo={{}}/>
+                    <Text style={styles.title}>Matching Classes</Text>
+                    {isLoading && 
+                    (<View style={styles.loadingstyle}>
+                        <ActivityIndicator color="white"/>
+                        <Text style={styles.buttonText}>Loading</Text>
+                    </View>)}
+                    <View style={styles.exliststyle} >
+                        <ExpandableList data={data}/>
+                    </View>
+                    
 
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity onPress={finishSignUp} style={styles.signUpButton}>
-                        <Text style={styles.buttonText}>Sign Up</Text>
-                    </TouchableOpacity>
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity onPress={finishSignUp} style={styles.signUpButton}>
+                            <Text style={styles.buttonText}>Sign Up</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </ImageBackground>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'black',
+        justifyContent: 'center'
     },
     title: {
         fontSize: 30,
@@ -289,7 +288,7 @@ const styles = StyleSheet.create({
         color: "white", 
     },
     expandedItem: {
-        backgroundColor: '#160085', // Add your desired highlight color here
+        backgroundColor: '#1aaedb', // Add your desired highlight color here
     },
     exliststyle: {
         bottom: '-5%',
@@ -300,6 +299,10 @@ const styles = StyleSheet.create({
     },
     loadingstyle: {
         margin: 15
+    },
+    image: {
+        flex: 1,
+        justifyContent: 'center',
     }
 })
 

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, ImageBackground } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion, addDoc} from "firebase/firestore";
 import { db } from '../firebase';
+import BackButton from '../features/backButton';
 
 const ClassReviewScreen = () => {
     const navigation = useNavigation();
@@ -68,61 +69,63 @@ const ClassReviewScreen = () => {
   }, [classId]);
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
-        {/* <View style={styles.content}> */}
-            <Text style={styles.boldText}>Review Page</Text>
-            <View style={styles.reviewsContainer}>
-                <Text style={styles.detailLabel}>Teacher Name:</Text>
-                <Text style={styles.detailText}>{teacherName}</Text>
-                <Text style={styles.detailLabel}>Course Name:</Text>
-                <Text style={styles.detailText}>{className}</Text>
-                <Text style={styles.detailLabel}>Subject:</Text>
-                <Text style={styles.detailText}>{subject}</Text>
-                <Text style={styles.detailLabel}>Date:</Text>
-                <Text style={styles.detailText}>{date}</Text>
-                <Text style={styles.detailLabel}>Location:</Text>
-                <Text style={styles.detailText}>{location}</Text>
-            </View>
-            <Text style={styles.boldText}>Leave A Review for your Teacher:</Text>
-            <View style={styles.inputContainer}>
-            <TextInput
-                style={styles.input}
-                multiline={true}
-                placeholder="Review"
-                value={review}
-                onChangeText={text => setReview(text)}
-            />
-            </View>
-            <TouchableOpacity style={styles.button} onPress={createReview}>
-                <Text style={styles.buttonText}>Post</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.button}>
-                <Text style={styles.buttonText}>Back</Text>
-            </TouchableOpacity>
-        {/* </View> */}
-    </KeyboardAvoidingView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+            <KeyboardAvoidingView style={styles.container}>
+                {/* <View style={styles.content}> */}
+                <BackButton dest="Profile" passInfo={{}}/>
+                <Text style={styles.boldText}>Review Page</Text>
+                <View style={styles.reviewsContainer}>
+                    <Text style={styles.detailLabel}>Teacher Name:</Text>
+                    <Text style={styles.detailText}>{teacherName}</Text>
+                    <Text style={styles.detailLabel}>Course Name:</Text>
+                    <Text style={styles.detailText}>{className}</Text>
+                    <Text style={styles.detailLabel}>Subject:</Text>
+                    <Text style={styles.detailText}>{subject}</Text>
+                    <Text style={styles.detailLabel}>Date:</Text>
+                    <Text style={styles.detailText}>{date}</Text>
+                    <Text style={styles.detailLabel}>Location:</Text>
+                    <Text style={styles.detailText}>{location}</Text>
+                </View>
+                <Text style={styles.boldText}>Leave A Review for your Teacher:</Text>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={styles.input}
+                        multiline={true}
+                        placeholder="Review"
+                        value={review}
+                        onChangeText={text => setReview(text)}
+                    />
+                </View>
+                <TouchableOpacity style={styles.button} onPress={createReview}>
+                    <Text style={styles.buttonText}>Post</Text>
+                </TouchableOpacity>
+                {/* </View> */}
+            </KeyboardAvoidingView>
+        </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        alignSelf: 'center',
         justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'black'
+        width: '100%'
     },
     button: {
         backgroundColor: 'white',
         margin: 15,
         paddingVertical: 6,
         alignItems: 'center',
+        alignSelf: 'center',
         borderRadius: 10,
         width: '25%'
     },
     buttonText: {
         fontSize: 25,
-        marginTop: 2,
-        marginBottom: 2,
+        margin: 2
     },
     content: {
         flex: 1,
@@ -141,9 +144,9 @@ const styles = StyleSheet.create({
     boldText: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginTop: 2,
-        marginBottom: 2,
+        margin: 10,
         color: 'white',
+        textAlign: 'center'
     },
     input: {
         backgroundColor: 'white',
@@ -162,6 +165,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         padding: 5,
         marginBottom: 30,
+        borderRadius: 5
     },
     inputContainer: {
         flexDirection: 'row',
@@ -169,7 +173,8 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         backgroundColor: 'black',
         padding: 20,
-        margin: 10
+        justifyContent: 'center',
+        borderRadius: 5
     },
     detailLabel: {
         fontSize: 18,
@@ -184,6 +189,10 @@ const styles = StyleSheet.create({
     },
     filler: {
         margin: 20
+    },
+    image: {
+        flex: 1,
+        justifyContent: 'center',
     }
 });
 
