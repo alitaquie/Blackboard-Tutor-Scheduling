@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, FlatList } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion, addDoc} from "firebase/firestore";
 import { db } from '../firebase';
 
-const ClassReviewScreen = () => {
+const TeacherProfileScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const { className, classId } = route.params;
@@ -12,22 +12,9 @@ const ClassReviewScreen = () => {
     const [date, setDate] = useState('');
     const [location, setLocation] = useState('');
     const [teacherName, setTeacherName] = useState('');
+    const [students, setStudents] = useState([]);
     const [teacherId, setTeacherId] = useState('');
     const [review, setReview] = useState('');
-    
-    const createReview = async () => {
-        const newRef = collection(db, "Reviews");
-        const reviewDoc = await addDoc(newRef, {
-            teacher: teacherId,
-            review: review,
-        });
-        const teacherRef = doc(db, 'Users', teacherId);
-        await updateDoc(teacherRef, {
-            ratings: arrayUnion(reviewDoc.id)
-        });
-        console.log("Review successfully created!");
-        navigation.navigate("Profile");
-    }
 
     useEffect(() => {
         const fetchClass = async () => {
@@ -63,46 +50,62 @@ const ClassReviewScreen = () => {
             console.error('Error fetching teacher data:', error);
             }
         };
+        const fetchStudents = async () => {
+            try {
+                const usersRef = collection(db, 'Users');
+                const q = query(usersRef, where('role', '==', 'student'));
+                const querySnapshot = await getDocs(q);
+                const studentsData = [];
+                querySnapshot.forEach((doc) => {
+                    const userData = doc.data();
+                    if (userData.classes && userData.classes.includes(classId)) {
+                        studentsData.push({ name: userData.name, id: doc.id });
+                    }
+                });
+                setStudents(studentsData);
+            } catch (error) {
+                console.error('Error fetching student data:', error);
+            }
+        };
         fetchClass();
         fetchTeacher();
+        fetchStudents();
   }, [classId]);
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-        {/* <View style={styles.content}> */}
-            <Text style={styles.boldText}>Review Page</Text>
-            <View style={styles.reviewsContainer}>
-                <Text style={styles.detailLabel}>Teacher Name:</Text>
-                <Text style={styles.detailText}>{teacherName}</Text>
-                <Text style={styles.detailLabel}>Course Name:</Text>
-                <Text style={styles.detailText}>{className}</Text>
-                <Text style={styles.detailLabel}>Subject:</Text>
-                <Text style={styles.detailText}>{subject}</Text>
-                <Text style={styles.detailLabel}>Date:</Text>
-                <Text style={styles.detailText}>{date}</Text>
-                <Text style={styles.detailLabel}>Location:</Text>
-                <Text style={styles.detailText}>{location}</Text>
-            </View>
-            <Text style={styles.boldText}>Leave A Review for your Teacher:</Text>
-            <View style={styles.inputContainer}>
-            <TextInput
-                style={styles.input}
-                multiline={true}
-                placeholder="Review"
-                value={review}
-                onChangeText={text => setReview(text)}
+        <Text style={styles.boldText}>Teacher Class Page</Text>
+        <View style={styles.reviewsContainer}>
+            <Text style={styles.detailLabel}>Teacher Name:</Text>
+            <Text style={styles.detailText}>{teacherName}</Text>
+            <Text style={styles.detailLabel}>Course Name:</Text>
+            <Text style={styles.detailText}>{className}</Text>
+            <Text style={styles.detailLabel}>Subject:</Text>
+            <Text style={styles.detailText}>{subject}</Text>
+            <Text style={styles.detailLabel}>Date:</Text>
+            <Text style={styles.detailText}>{date}</Text>
+            <Text style={styles.detailLabel}>Location:</Text>
+            <Text style={styles.detailText}>{location}</Text>
+        </View>
+        <View style={styles.studentsContainer}>
+            <Text style={styles.fieldText}>Students</Text>
+            <FlatList
+                data={students}
+                renderItem={({ item }) => (
+                    <View style={styles.studentItem}>
+                        <Text style={styles.studentName}>{item.name}</Text>
+                    </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                style={styles.flatList}
             />
-            </View>
-            <TouchableOpacity style={styles.button} onPress={createReview}>
-                <Text style={styles.buttonText}>Post</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.button}>
-                <Text style={styles.buttonText}>Back</Text>
-            </TouchableOpacity>
-        {/* </View> */}
+        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.button}>
+            <Text style={styles.buttonText}>Back</Text>
+        </TouchableOpacity>
     </KeyboardAvoidingView>
-  );
-}
+);
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -146,12 +149,13 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     input: {
-        backgroundColor: 'white',
+        backgroundColor: '#c1e2e3',
         paddingHorizontal: 15,
         paddingVertical: 15,
         borderRadius: 5,
-        margin: 10,
+        marginBottom: 10,
         width: '80%',
+        alignSelf: 'center',
     },
     detailsContainer: {
         marginBottom: 20,
@@ -169,7 +173,6 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         backgroundColor: 'black',
         padding: 20,
-        margin: 10
     },
     detailLabel: {
         fontSize: 18,
@@ -182,9 +185,25 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         color: 'white',
     },
-    filler: {
-        margin: 20
-    }
+    studentsContainer: {
+        marginBottom: 20,
+    },
+    studentItem: {
+        backgroundColor: 'white',
+        marginVertical: 5,
+        paddingVertical: 10,
+        paddingHorizontal: 50,
+        borderRadius: 10,
+        color: 'white',
+    },
+    studentName: {
+        fontSize: 16,
+        color: 'black',
+    },
+    flatList: {
+        paddingTop: 10,
+        maxHeight: 150,
+      },
 });
 
-export default ClassReviewScreen;
+export default TeacherProfileScreen;

@@ -65,8 +65,21 @@ const ProfileScreen = () => {
   const ExpandableListItem = ({ item, index, idString, toggleExpand }) => {
     const isExpanded = index === expandedIndex;
   
-    const goToReview = () => {
-      navigation.navigate('ClassReview', { className: item, classId: idString[index] });
+    const goToReview = async () => {
+      const currentUserId = auth.currentUser.uid;
+      const userDocRef = doc(db, "Users", currentUserId);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        if (docSnap.data().role == 'student') {
+          navigation.navigate('ClassReview', { className: item, classId: idString[index] });
+        }  else {
+          navigation.navigate('TeacherProfile', { className: item, classId: idString[index] });
+        }
+      } else {
+        alert("Sorry. Something went wrong on our end.");
+      }
+  
+      
     };
 
     return (
@@ -76,7 +89,7 @@ const ProfileScreen = () => {
           {isExpanded && (
             <TouchableOpacity onPress={goToReview}>
               <Text style={styles.itemContent}>
-                Click here to add a review!
+                View Information
               </Text>
             </TouchableOpacity>
           )}
@@ -105,23 +118,28 @@ const ProfileScreen = () => {
         </View>
         
       ) : (
-        <View style={styles.content}>
+        <View style={styles.container}>
           <Text style={styles.title}>Profile Screen</Text>
-          <Text style={styles.notTitle}> Name: {auth.currentUser.displayName}</Text>
-          <Text style={styles.notTitle}> Email: {auth.currentUser.email}</Text>
-          <Text style={styles.notTitle}> Role: {userRole}</Text>
-          <Text style={styles.notTitle}> Class History:</Text>
+          <Text style={styles.detailLabel}> Name:</Text>
+          <Text style={styles.detailText}>{auth.currentUser.displayName}</Text>
+          <Text style={styles.detailLabel}> Email: </Text>
+          <Text style={styles.detailText}>{auth.currentUser.email}</Text>
+          <Text style={styles.detailLabel}> Role:</Text>
+          <Text style={styles.detailText}>{userRole}</Text>
+          <Text style={styles.detailLabel}> Class History:</Text>
           <FlatList
             data={classString}
             renderItem={renderExpandedList}
             keyExtractor={(item, index) => index.toString()}
-            style={styles.listStyle}
+            style={styles.flatList}
           />
+          <View style={styles.logOutButtonContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
+              <Text>Logout</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
-      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
-        <Text>Logout</Text>
-      </TouchableOpacity>
       <Navbar navigation={navigation} />
     </KeyboardAvoidingView>
   );
@@ -131,30 +149,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
-  content: {
-    flex: 1,
-    marginTop: 50,
-    alignItems: 'center',
     backgroundColor: 'black',
-    width: '95%',
-    borderRadius: 20,
-    height: '81%',
-    maxHeight: '81%',
-    top: '-2.5%'
   },
   title: {
-    marginTop: 5,
-    fontSize: 30,
+    marginTop: 70,
+    paddingLeft: 5,
+    paddingBottom: 10,
+    fontSize: 25,
     fontWeight: 'bold',
-    color: 'white'
-  },
-  notTitle: {
     color: 'white',
-    fontSize: 20,
-    margin: 10,
+  },
+  detailLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: 'white',
+  },
+  detailText: {
+    fontSize: 16,
+    paddingLeft: 5,
+    marginBottom: 10,
+    color: 'white',
+  },
+  logOutButtonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logOutButton: {
     backgroundColor: 'white',
@@ -166,9 +186,11 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     marginBottom: 15,
+    marginHorizontal: 20,
     padding: 10,
     backgroundColor: 'white',
     borderRadius: 10,
+    alignItems: 'center',
     elevation: 3,
   },
   itemTitle: {
@@ -180,7 +202,7 @@ const styles = StyleSheet.create({
   itemContent: { 
     marginTop: 10, 
     fontSize: 14, 
-    color: "#666", 
+    color: "#666",
   },
   expandedItem: {
     backgroundColor: 'white',
@@ -189,10 +211,10 @@ const styles = StyleSheet.create({
     borderRadius: 10, 
     overflow: "hidden", 
   }, 
-  listStyle: {
-    height: '50%',
-    maxHeight: '50%'
-  }
+  flatList: {
+    paddingTop: 10,
+    maxHeight: 300,
+  },
 });
 
 export default ProfileScreen;

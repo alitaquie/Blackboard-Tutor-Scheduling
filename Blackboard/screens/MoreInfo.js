@@ -1,32 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Text } from 'react-native';
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { ScrollView, View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { collection, query, where, getDoc, doc, getDocs, updateDoc, arrayUnion, addDoc } from "firebase/firestore";
 import { db } from '../firebase';
 
 const MoreInfoScreen = ({ route }) => {
-    const { expandedItemData, teacherId, teacherName } = route.params; 
+    const { expandedItemData, classTeachers } = route.params; 
     const [teacherReviews, setTeacherReviews] = useState([]);
 
     useEffect(() => {
         fetchReviews();
     }, []); 
 
+    const teacherName = classTeachers.map(teacher => teacher.name); 
+    
+
     const fetchReviews = async () => {
         try {
+            const teacherIds = classTeachers.map(teacher => teacher.id); 
+            console.log("Teacher IDs:", teacherIds); 
+    
             const reviewsRef = collection(db, "Reviews");
-            const q = query(reviewsRef, where('teacher', '==', teacherId));
+            console.log("Reviews reference:", reviewsRef); 
+    
+            const q = query(reviewsRef, where('teacher', 'in', teacherIds));
+            console.log("Query:", q); 
+    
             const querySnapshot = await getDocs(q);
+            console.log("Query snapshot:", querySnapshot); 
+    
             const reviews = [];
             querySnapshot.forEach((doc) => {
                 reviews.push(doc.data());
             });
             console.log("Fetched reviews:", reviews); 
+    
             setTeacherReviews(reviews);
         } catch (error) {
             console.error('Error fetching reviews:', error);
         }
     };
-
+    
+    
   
     if (expandedItemData) {
 
@@ -95,11 +110,13 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: 'white',
         backgroundColor: 'black',
-        padding: 10,
+        paddingHorizontal: 10,
+        maxHeight: 350,
     },
     scrollView: {
         flex: 1,
         marginBottom: 20,
+        maxHeight: 300,
     },
     reviewContainer: {
         borderWidth: 1,

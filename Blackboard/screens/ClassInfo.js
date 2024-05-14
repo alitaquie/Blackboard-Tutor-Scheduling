@@ -33,10 +33,10 @@ const ClassInfoScreen = () => {
 
     const getMoreInfo = (index) => {
         const expandedItemData = data[index];
+        const classTeachers = teachers[expandedItemData.id] || []; // Get teachers for the selected class
         navigation.navigate('MoreInfo', { 
             expandedItemData, 
-            teacherId: teacherId,
-            teacherName: teacherName
+            classTeachers // Pass teachers data to MoreInfo screen
         }); 
     };
     
@@ -44,6 +44,7 @@ const ClassInfoScreen = () => {
 
     const [data, setData] = useState([]);
     const [teacherName, setTeacherName] = useState('');
+    const [teachers, setTeachers] = useState({}); // Store teachers for each class
     const [teacherId, setTeacherId] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
@@ -95,30 +96,44 @@ const ClassInfoScreen = () => {
             setIsLoading(false);
         };
 
+      
+
+        // const [teachers, setTeachers] = useState({}); // Store teachers for each class
+
         const fetchTeacher = async () => {
             try {
-                const usersRef = collection(db, 'Users');
-                const q = query(usersRef, where('role', '==', 'teacher'));
-                const querySnapshot = await getDocs(q);
-                querySnapshot.forEach((doc) => {
-                    const userData = doc.data();
-                    if (userData.classes && userData.classes.some(c => MatchingDocIDs.includes(c))) {
-                        setTeacherName(userData.name);
-                        setTeacherId(doc.id);
-                        return;
-                    }
-                });
+                const teacherData = {};
+                for (const docId of MatchingDocIDs) {
+                    console.log("Fetching data for docId:", docId);
+                    const usersRef = collection(db, 'Users');
+                    const q = query(usersRef, where('role', '==', 'teacher'), where('classes', 'array-contains', docId));
+                    const querySnapshot = await getDocs(q);
+                    querySnapshot.forEach((doc) => {
+                        const userData = doc.data();
+                        console.log("User data:", userData);
+                        if (!teacherData[docId]) {
+                            teacherData[docId] = [];
+                        }
+                        teacherData[docId].push({ id: doc.id, name: userData.name });
+                    });
+                    console.log("teacherData after fetching data for docId", docId, ":", teacherData);
+                }
+                console.log("Final teacherData:", teacherData);
+                setTeachers(teacherData);
             } catch (error) {
                 console.error('Error fetching teacher data:', error);
             }
         };
+        
+        
+        
 
         fetchData();
         fetchTeacher();
     }, [MatchingDocIDs]);
 
 
-    const ExpandableListItem = ({ item, index, isExpanded, toggleExpand, teacherName }) => {
+    const ExpandableListItem = ({ item, index, isExpanded, toggleExpand }) => {
         return (
             <View style={[styles.itemContainer, isExpanded && styles.expandedItem]}>
                 <TouchableOpacity onPress={toggleExpand} style={styles.itemTouchable}>
@@ -127,7 +142,11 @@ const ClassInfoScreen = () => {
                 {isExpanded && (
                     <View>
                         <Text style={styles.itemContent}>{item.content}</Text>
-                        <Text style={styles.teacherName}>{teacherName}</Text>
+                        <View>
+                            {teachers[item.id] && teachers[item.id].map((teacher, idx) => (
+                                <Text key={idx} style={styles.teacherName}>{teacher.name}</Text>
+                            ))}
+                        </View>
                     </View>
                 )}
                 {isExpanded && (

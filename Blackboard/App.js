@@ -12,6 +12,7 @@ import TeacherClassScreen from './screens/TeacherClass';
 import ClassInfoScreen from './screens/ClassInfo';
 import MoreInfoScreen from './screens/MoreInfo';
 import ClassReviewScreen from './screens/ClassReview';
+import TeacherProfileScreen from './screens/TeacherProfile';
 import 'react-native-reanimated';
 
 
@@ -30,6 +31,7 @@ export default function App() {
         <Stack.Screen options={{headerShown:false}} name = "ClassInfo" component = {ClassInfoScreen}/>
         <Stack.Screen options={{headerShown:false}} name = "MoreInfo" component = {MoreInfoScreen}/>
         <Stack.Screen options={{headerShown:false}} name = "ClassReview" component = {ClassReviewScreen}/>
+        <Stack.Screen options={{headerShown:false}} name = "TeacherProfile" component = {TeacherProfileScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
