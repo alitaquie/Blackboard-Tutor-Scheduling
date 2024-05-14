@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     title: {
-        fontSize: 30,
+        fontSize: 35,
         textAlign: 'center',
         margin: 20,
         top: '2%',
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     moreInfoButton: {
         backgroundColor: 'black',
         margin: 15,
-        paddingVertical: 20,
+        paddingVertical: 10,
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
         borderWidth: 2
     },
     buttonText: {
-        fontSize: 25,
+        fontSize: 20,
         color: 'white',
         textAlign: 'center'
     },
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
         borderRadius: 10, 
         elevation: 3, 
         borderColor: 'white',
-        borderWidth: 2
+        borderWidth: 1.5
     }, 
     itemTouchable: { 
         borderRadius: 10, 
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
         color: "white", 
     },
     expandedItem: {
-        backgroundColor: '#1aaedb', // Add your desired highlight color here
+        backgroundColor: '#011163', // Add your desired highlight color here
     },
     exliststyle: {
         bottom: '-5%',
