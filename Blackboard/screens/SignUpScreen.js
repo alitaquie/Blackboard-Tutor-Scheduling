@@ -57,7 +57,7 @@ const SignUpScreen = () => {
     }
 
     return (
-        <ImageBackground source={require('../assets/blackboard(1).jpeg')} resizeMode="cover" style={styles.image}>
+        <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
             <KeyboardAvoidingView style={styles.container} behavior="padding">
                     <Image source={require('../assets/full_logo.jpg')} style={styles.logo}/>
                     <View style={styles.inputContainer}>
