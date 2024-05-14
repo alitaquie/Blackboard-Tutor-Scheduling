@@ -69,8 +69,9 @@ const ClassReviewScreen = () => {
   }, [classId]);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+    
+    <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <KeyboardAvoidingView style={styles.container}>
                 {/* <View style={styles.content}> */}
                 <BackButton dest="Profile" passInfo={{}}/>
@@ -102,8 +103,8 @@ const ClassReviewScreen = () => {
                 </TouchableOpacity>
                 {/* </View> */}
             </KeyboardAvoidingView>
-        </ImageBackground>
-    </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+    </ImageBackground>
   );
 }
 

@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
         color: 'white',
+        textAlign: 'center'
     },
     detailsContainer: {
         marginBottom: 20,
@@ -112,6 +113,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         paddingHorizontal: 10,
         maxHeight: 350,
+        borderRadius: 5
     },
     scrollView: {
         flex: 1,

@@ -157,6 +157,7 @@ const TeacherClassScreen = () => {
 
             <View style={styles.input1}>
               <RNPickerSelect
+                darkTheme={true}
                 placeholder={placeholder}
                 items={options}
                 onValueChange={text => setSubject(text)}
@@ -183,12 +184,14 @@ const TeacherClassScreen = () => {
               <View style={styles.datestyle}>
                 <Text style={styles.filler}>Date / Time</Text>
                 <DateTimePicker 
+                  accentColor={'white'}
                   value={date}
                   mode={'date'}
                   is24Hour={true}
                   onChange={onChange}
                 />
                 <DateTimePicker
+                  accentColor={'white'}
                   value={date}
                   mode={'time'}
                   is24Hour={true}
@@ -201,8 +204,8 @@ const TeacherClassScreen = () => {
           <View style={styles.checkboxContainer}>
             <Text style={styles.checkboxText}>Private</Text>
             <Switch
-              trackColor={{ false: '#ffffff', true: '#000000' }}
-              thumbColor={isGroup ? '#5eb7ff' : '#f4f3f4'}
+              trackColor={{ false: '#ffffff', true: '#7a7a7a' }}
+              thumbColor={isGroup ? 'black' : '#f4f3f4'}
               ios_backgroundColor="#cfcfcf"
               onValueChange={toggleSwitch}
               value={isGroup}
@@ -221,11 +224,15 @@ const TeacherClassScreen = () => {
 };
 
 const constStyle = {
-  backgroundColor: '#5f9eb8',
+  backgroundColor: '#8f8f8f',
   width: '100%',
   margin: 20,
   padding: 15,
   borderRadius: 5,
+  borderBottomWidth: 1,
+  borderTopWidth: 1,
+  borderRightWidth: 1,
+  borderLeftWidth: 1,
 }
 
 const styles = StyleSheet.create({
@@ -285,9 +292,13 @@ const styles = StyleSheet.create({
     color: "#cccccc"
   },
   createButton: {
-    backgroundColor: '#5f9eb8',
+    backgroundColor: '#8f8f8f',
     padding: 10,
     borderRadius: 5,
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
     width: '80%',
     alignSelf: 'center',
     bottom: '10%'
