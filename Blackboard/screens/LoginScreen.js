@@ -1,5 +1,5 @@
 
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
+import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { auth } from '../firebase'
 import { useNavigation } from '@react-navigation/native';
@@ -27,24 +27,28 @@ const LoginScreen = () => {
 
     return (
         <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
-            <KeyboardAvoidingView style={styles.container} behavior="padding">
-                    <Image source={require('../assets/full_logo.jpg')} style={styles.logo}/>
-                    <View style={styles.inputContainer}>
-                        <TextInput placeholder="Email" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
-                        <TextInput placeholder="Password" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
-                    </View>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                <KeyboardAvoidingView style={styles.container} behavior="padding">
+                    <View style={styles.content}>
+                        <Image source={require('../assets/full_logo.jpg')} style={styles.logo}/>
+                        <View style={styles.inputContainer}>
+                            <TextInput placeholder="Email" value={email} onChangeText={text => setEmail(text)} style={styles.input1} />
+                            <TextInput placeholder="Password" value={password} onChangeText={text => setPassword(text)} style={styles.input2} secureTextEntry/>
+                        </View>
 
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={handleLogIn} style={styles.button}>
-                            <Text style={styles.buttonText}>Login</Text>
-                        </TouchableOpacity>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity onPress={handleLogIn} style={styles.button}>
+                                <Text style={styles.buttonText}>Login</Text>
+                            </TouchableOpacity>
 
-                        <TouchableOpacity onPress={handleRegister} style={[styles.button, styles.buttonOutline]}>
-                            <Text style={styles.buttonOutlineText}>Don't have an account?</Text>
-                            <Text style={styles.buttonOutlineText}>Register Here!</Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity onPress={handleRegister} style={[styles.button, styles.buttonOutline]}>
+                                <Text style={styles.buttonOutlineText}>Don't have an account?</Text>
+                                <Text style={styles.buttonOutlineText}>Register Here!</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-            </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
         </ImageBackground>
     )
 }
@@ -52,19 +56,14 @@ const LoginScreen = () => {
 
 export default LoginScreen
 
+const textConsts = {
+    backgroundColor: 'white',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+}
+
 const styles = StyleSheet.create({
-    greetings: {
-        color: 'white',
-        fontStyle: 'italic',
-        fontSize: 40,
-        marginBottom: 40
-    },
-    logo: {
-        width: '50%',
-        height: '10%',
-        marginBottom: 10,
-        borderRadius: 40
-    },
     image: {
         flex: 1,
         justifyContent: 'center',
@@ -72,28 +71,49 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+    },
+    content: {
+        flex: 1,
+        position: 'absolute',
+        justifyContent: 'center',
+        alignSelf: 'center'
+    },
+    greetings: {
+        color: 'white',
+        fontStyle: 'italic',
+        fontSize: 40,
+        marginBottom: 40
+    },
+    logo: {
+        width: '100%',
+        height: '35%',
+        borderRadius: 40,
+        bottom: '55%',
+        alignSelf: 'center'
     },
     inputContainer: {
+        width: '150%',
+        alignSelf: 'center',
+        bottom: '35%'
         
-        width: '80%'
     }, 
-    input: {
-        backgroundColor: 'white',
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        borderRadius: 10,
-        marginTop: 5
+    input1: {
+        ...textConsts,
+
+    },
+    input2: {
+        ...textConsts,
+        top: '20%'
+        
     },
     buttonContainer: {
-        width: '60%',
-        justifyContent: 'center',
-        alignContent: 'center',
-        marginTop: 40
+        width: '100%',
+        alignSelf: 'center',
+        marginTop: 40,
+        bottom: '20%'
     },
     button: {
         backgroundColor: 'blue',
-        width: '100%',
         padding: 15,
         borderRadius: 10,
         alignItems: 'center'
