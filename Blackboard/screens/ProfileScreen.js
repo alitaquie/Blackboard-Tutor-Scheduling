@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { doc, getDoc } from "firebase/firestore";
 import Navbar from '../features/Navbar'
 import { db, auth } from '../firebase';
+import UploadImage from '../features/ProfilePic';
+
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -121,21 +123,30 @@ const ProfileScreen = () => {
         ) : (
           <View style={styles.container}>
             <Text style={styles.title}>Profile Screen</Text>
-            <View style={styles.snap}>
-              <Text style={styles.detailLabel}> Name: </Text>
-              <Text style={styles.detailText}>{auth.currentUser.displayName}</Text>
-            </View>
 
             <View style={styles.snap}>
-              <Text style={styles.detailLabel}> Email: </Text>
-              <Text style={styles.detailText}>{auth.currentUser.email}</Text>
-            </View>
+              <View>
+                <View style={styles.snap}>
+                  <Text style={styles.detailLabel}> Name: </Text>
+                  <Text style={styles.detailText}>{auth.currentUser.displayName}</Text>
+                </View>
 
-            <View style={styles.snap}>
-              <Text style={styles.detailLabel}> Role:</Text>
-              <Text style={styles.detailText}>{userRole}</Text>
-            </View>
+                <View style={styles.snap}>
+                  <Text style={styles.detailLabel}> Email: </Text>
+                  <Text style={styles.detailText}>{auth.currentUser.email}</Text>
+                </View>
 
+                <View style={styles.snap}>
+                  <Text style={styles.detailLabel}> Role:</Text>
+                  <Text style={styles.detailText}>{userRole}</Text>
+                </View>
+              </View>
+
+              <View style={styles.img}>
+                <UploadImage/>
+              </View>
+            </View>
+            
             <View style={styles.filler}></View>
 
             <Text style={styles.detailLabel}> Class History:</Text>
@@ -243,6 +254,10 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     textAlign: 'center',
     color: 'white'
+  },
+  img: {
+    marginLeft: 40,
+    bottom: '5%'
   }
 });
 
