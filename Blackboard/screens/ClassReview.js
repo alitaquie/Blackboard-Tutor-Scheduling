@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, ImageBackground } from 'react-native';
+import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, ImageBackground, Animated } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion, addDoc} from "firebase/firestore";
 import { db } from '../firebase';
 import BackButton from '../features/backButton';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const ClassReviewScreen = () => {
     const navigation = useNavigation();
@@ -15,12 +16,38 @@ const ClassReviewScreen = () => {
     const [teacherName, setTeacherName] = useState('');
     const [teacherId, setTeacherId] = useState('');
     const [review, setReview] = useState('');
+    const starRatingOptions = [1, 2, 3, 4, 5];
+    const [starRating, setStarRating] = useState(null);
+    const animatedButtonScale = new Animated.Value(1);
+
+    const handlePressIn = () => {
+        Animated.spring(animatedButtonScale, {
+            toValue: 1.5,
+            useNativeDriver: true,
+            speed: 50,
+            bounciness: 4,
+        }).start();
+    };
+
+    const handlePressOut = () => {
+        Animated.spring(animatedButtonScale, {
+            toValue: 1,
+            useNativeDriver: true,
+            speed: 50,
+            bounciness: 4,
+        }).start();
+    };
+
+    const animatedScaleStyle = {
+        transform: [{ scale: animatedButtonScale }],
+    };
     
     const createReview = async () => {
         const newRef = collection(db, "Reviews");
         const reviewDoc = await addDoc(newRef, {
             teacher: teacherId,
             review: review,
+            starRating: starRating,
         });
         const teacherRef = doc(db, 'Users', teacherId);
         await updateDoc(teacherRef, {
@@ -90,6 +117,25 @@ const ClassReviewScreen = () => {
                 </View>
                 <Text style={styles.boldText}>Leave A Review for your Teacher:</Text>
                 <View style={styles.inputContainer}>
+                    <Text style={styles.heading}>{starRating ? `${starRating}*` : 'Tap to rate'}</Text>
+                    <View style={styles.stars}>
+                        {starRatingOptions.map((option) => (
+                            <TouchableWithoutFeedback
+                                onPressIn={() => handlePressIn(option)}
+                                onPressOut={() => handlePressOut(option)}
+                                onPress={() => setStarRating(option)}
+                                key={option}
+                            >
+                                <Animated.View style={animatedScaleStyle}>
+                                    <MaterialIcons
+                                    name={starRating >= option ? 'star' : 'star-border'}
+                                    size={32}
+                                    style={starRating >= option ? styles.starSelected : styles.starUnselected}
+                                    />
+                                </Animated.View>
+                            </TouchableWithoutFeedback>
+                        ))}
+                    </View>
                     <TextInput
                         style={styles.input}
                         multiline={true}
@@ -169,12 +215,13 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     inputContainer: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         borderWidth: 1,
         borderColor: 'white',
         backgroundColor: 'black',
         padding: 20,
         justifyContent: 'center',
+        alignItems: 'center',
         borderRadius: 5
     },
     detailLabel: {
@@ -194,7 +241,23 @@ const styles = StyleSheet.create({
     image: {
         flex: 1,
         justifyContent: 'center',
-    }
+    },
+    heading: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white',
+        marginBottom: 10,
+    },
+    stars: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    starUnselected: {
+        color: '#aaa',
+    },
+    starSelected: {
+        color: '#ffb300',
+    },
 });
 
 export default ClassReviewScreen;
