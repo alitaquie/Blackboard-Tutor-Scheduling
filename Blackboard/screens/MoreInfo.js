@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Text, ImageBackground } from 'react-native';
+import { ScrollView, View, StyleSheet, Text, ImageBackground, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from '../firebase';
 import BackButton from '../features/backButton';
 
@@ -13,13 +13,47 @@ const MoreInfoScreen = () => {
     const MatchingDocIDs = route.params?.MatchingDocIDs;
 
     const [teacherReviews, setTeacherReviews] = useState([]);
-
+    const [teacherRating, setTeacherRating] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         fetchReviews();
-    }, []); 
+        if (classTeachers.length > 0) {
+            calcTeacherRating(classTeachers[0].id);
+        }
+        else{
+            setIsLoading(false); // Prevents the loading screen from repeating if no ratings
+        }
+    }, [classTeachers]); 
 
     const teacherName = classTeachers.map(teacher => teacher.name); 
-    
+
+    const calcTeacherRating = async (teacherId) => {
+        setIsLoading(true);
+        try {
+            const userRef = doc(db, "Users", teacherId);
+            const userDoc = await getDoc(userRef);
+            const ratings = userDoc.data().ratings;
+
+            let totalRating = 0;
+            let ratingCount = 0;
+
+            for (const ratingId of ratings) {
+                const reviewRef = doc(db, "Reviews", ratingId);
+                const reviewDoc = await getDoc(reviewRef);
+                if (reviewDoc.exists() && reviewDoc.data().starRating !== undefined) {
+                    totalRating += reviewDoc.data().starRating;
+                    ratingCount++;
+                }
+            }
+
+            const averageRating = ratingCount > 0 ? totalRating / ratingCount : 0;
+            setTeacherRating(averageRating);
+        } catch (error) {
+            console.error('Error calculating teacher rating:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     const fetchReviews = async () => {
         try {
@@ -45,6 +79,13 @@ const MoreInfoScreen = () => {
     if (expandedItemData) {
         return (
             <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+                {isLoading ? (
+                <View style={styles.center}>
+                    <ActivityIndicator size='large' color="white"/>
+                    <Text style={styles.center}>Loading</Text>
+                </View>
+                
+                ) : (
                 <View style={styles.container}>
                     <BackButton dest="ClassInfo" passInfo={{ MatchingDocIDs: MatchingDocIDs }}/>
                     <Text style={styles.title}>Class Details</Text>
@@ -54,7 +95,9 @@ const MoreInfoScreen = () => {
                         <Text style={styles.detailLabel}>Content:</Text>
                         <Text style={styles.detailText}>{expandedItemData.content}</Text>
                         <Text style={styles.detailLabel}>Teacher Name:</Text>
-                        <Text style={styles.detailText}>{teacherName}</Text>
+                        <Text style={styles.detailText}>
+                            {teacherName} - {teacherRating === 0 ? "No Rating" : `☆${teacherRating.toFixed(2)}`}
+                        </Text>
                     </View>
                     <View style={styles.reviewsContainer}>
                         <Text style={styles.title}>Teacher Reviews</Text>
@@ -67,6 +110,7 @@ const MoreInfoScreen = () => {
                         </ScrollView>
                     </View>
                 </View>
+                )}
             </ImageBackground>
         );
     } else {
@@ -134,8 +178,12 @@ const styles = StyleSheet.create({
     image: {
         flex: 1,
         justifyContent: 'center',
+    },
+    center: {
+        alignContent: 'center',
+        textAlign: 'center',
+        color: 'white'
     }
-    // Define other styles here
 });
 
 export default MoreInfoScreen;

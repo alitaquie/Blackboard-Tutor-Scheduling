@@ -12,6 +12,7 @@ const ClassInfoScreen = () => {
     
 
     const [savedIndex, setSavedIndex] = useState(null);
+    const [isSortMenuVisible, setIsSortMenuVisible] = useState(false);
 
     const finishSignUp = async () => {
         try {
@@ -90,7 +91,8 @@ const ClassInfoScreen = () => {
                     newData.push({
                         id: docSnap.id,
                         title: course,
-                        content: `Location: ${location}\nDate: ${strDate}\nTime: ${strTime} ${day_stats}\nAttendance: ${attendance}\nType: ${group_stat}`
+                        content: `Location: ${location}\nDate: ${strDate}\nTime: ${strTime} ${day_stats}\nAttendance: ${attendance}\nType: ${group_stat}`,
+                        timestamp: timestamp
                     });
                 }
             }
@@ -110,11 +112,14 @@ const ClassInfoScreen = () => {
                     const q = query(usersRef, where('role', '==', 'teacher'), where('classes', 'array-contains', docId));
                     const querySnapshot = await getDocs(q);
                     if (querySnapshot) {
-                        querySnapshot.forEach((doc) => {
+                        const teacherList = [];
+                        for (const doc of querySnapshot.docs) {
                             const userData = doc.data();
-                            teacherData[docId] = []
-                            teacherData[docId].push({ id: doc.id, name: userData.name });
-                        });
+                            const teacherId = doc.id;
+                            const averageRating = await calcTeacherRating(teacherId);
+                            teacherList.push({ id: teacherId, name: userData.name, rating: averageRating });
+                        }
+                        teacherData[docId] = teacherList;
                     }
                 }
                 setTeachers(teacherData);
@@ -130,6 +135,30 @@ const ClassInfoScreen = () => {
         fetchTeacher();
     }, [MatchingDocIDs]);
 
+    const calcTeacherRating = async (teacherId) => {
+        try {
+            const userRef = doc(db, "Users", teacherId);
+            const userDoc = await getDoc(userRef);
+            const ratings = userDoc.data().ratings;
+    
+            let totalRating = 0;
+            let ratingCount = 0;
+    
+            for (const ratingId of ratings) {
+                const reviewRef = doc(db, "Reviews", ratingId);
+                const reviewDoc = await getDoc(reviewRef);
+                if (reviewDoc.exists() && reviewDoc.data().starRating !== undefined) {
+                    totalRating += reviewDoc.data().starRating;
+                    ratingCount++;
+                }
+            }
+    
+            return ratingCount > 0 ? totalRating / ratingCount : 0;
+        } catch (error) {
+            console.error('Error calculating teacher rating:', error);
+            return 0;
+        }
+    };
 
     const ExpandableListItem = ({ item, index, isExpanded, toggleExpand }) => {
         return (
@@ -142,7 +171,7 @@ const ClassInfoScreen = () => {
                         <Text style={styles.itemContent}>{item.content}</Text>
                         <View>
                             {teachers[item.id] && teachers[item.id].map((teacher, idx) => (
-                                <Text key={idx} style={styles.teacherName}>{teacher.name}</Text>
+                                <Text key={idx} style={styles.teacherName}>{teacher.name} - {teacher.rating === 0 ? "No Rating" : `☆${teacher.rating.toFixed(2)}`}</Text>
                             ))}
                         </View>
                     </View>
@@ -156,6 +185,34 @@ const ClassInfoScreen = () => {
         );
     };
     
+    const sortDataByEarliestDate = () => {
+        const sortedData = [...data].sort((a, b) => a.timestamp - b.timestamp);
+        setData(sortedData);
+        setIsSortMenuVisible(false);
+    };
+    const sortDataByLatestDate = () => {
+        const sortedData = [...data].sort((a, b) => b.timestamp - a.timestamp);
+        setData(sortedData);
+        setIsSortMenuVisible(false);
+    };
+    const sortDataByHighestRating = () => {
+        const sortedData = [...data].sort((a, b) => {
+            const aRating = teachers[a.id]?.reduce((acc, teacher) => acc + teacher.rating, 0) / teachers[a.id]?.length || 0;
+            const bRating = teachers[b.id]?.reduce((acc, teacher) => acc + teacher.rating, 0) / teachers[b.id]?.length || 0;
+            return bRating - aRating;
+        });
+        setData(sortedData);
+        setIsSortMenuVisible(false);
+    };
+    const sortDataByLowestRating = () => {
+        const sortedData = [...data].sort((a, b) => {
+            const aRating = teachers[a.id]?.reduce((acc, teacher) => acc + teacher.rating, 0) / teachers[a.id]?.length || 0;
+            const bRating = teachers[b.id]?.reduce((acc, teacher) => acc + teacher.rating, 0) / teachers[b.id]?.length || 0;
+            return aRating - bRating;
+        });
+        setData(sortedData);
+        setIsSortMenuVisible(false);
+    };
    
     const ExpandableList = ({ data }) => {
         const [expandedIndex, setExpandedIndex] = useState(null);
@@ -192,6 +249,25 @@ const ClassInfoScreen = () => {
                 <View>
                     <BackButton dest="StudentClass" passInfo={{}}/>
                     <Text style={styles.title}>Matching Classes</Text>
+                    <TouchableOpacity onPress={() => setIsSortMenuVisible(!isSortMenuVisible)} style={styles.sortButton}>
+                        <Text style={styles.buttonText}>Sort By</Text>
+                    </TouchableOpacity>
+                    {isSortMenuVisible && (
+                        <View style={styles.sortOptionsContainer}>
+                            <TouchableOpacity onPress={sortDataByEarliestDate} style={styles.sortOptionButton}>
+                                <Text style={styles.buttonText}>Earliest Date</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={sortDataByLatestDate} style={styles.sortOptionButton}>
+                                <Text style={styles.buttonText}>Latest Date</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={sortDataByHighestRating} style={styles.sortOptionButton}>
+                                <Text style={styles.buttonText}>Highest Rating</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={sortDataByLowestRating} style={styles.sortOptionButton}>
+                                <Text style={styles.buttonText}>Lowest Rating</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
                     {isLoading && 
                     (<View style={styles.loadingstyle}>
                         <ActivityIndicator color="white"/>
@@ -200,8 +276,6 @@ const ClassInfoScreen = () => {
                     <View style={styles.exliststyle} >
                         <ExpandableList data={data}/>
                     </View>
-                    
-
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={finishSignUp} style={styles.signUpButton}>
                             <Text style={styles.buttonText}>Sign Up</Text>
@@ -303,7 +377,29 @@ const styles = StyleSheet.create({
     image: {
         flex: 1,
         justifyContent: 'center',
-    }
+    },
+    sortButton: {
+        margin: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        borderRadius: 10,
+        width: '30%',
+        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+    },
+    sortOptionsContainer: {
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: 10,
+        position: 'absolute',
+        top: 200,
+        left: '35%',
+        zIndex: 1,
+    },
+    sortOptionButton: {
+        paddingVertical: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 })
 
 
