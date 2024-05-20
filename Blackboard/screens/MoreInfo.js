@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Text, ImageBackground, ActivityIndicator } from 'react-native';
+import { ScrollView, View, StyleSheet, Text, ImageBackground, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from '../firebase';
@@ -15,6 +15,9 @@ const MoreInfoScreen = () => {
     const [teacherReviews, setTeacherReviews] = useState([]);
     const [teacherRating, setTeacherRating] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [showSortOptions, setShowSortOptions] = useState(false);
+    const [selectedSortOption, setSelectedSortOption] = useState(null);
+
     useEffect(() => {
         fetchReviews();
         if (classTeachers.length > 0) {
@@ -64,14 +67,41 @@ const MoreInfoScreen = () => {
                 const q = query(reviewsRef, where('teacher', 'in', teacherIds));
                 const querySnapshot = await getDocs(q);
                 querySnapshot.forEach((doc) => {
-                    //console.log('doc data: ', doc.data());
-                    reviews.push(doc.data());
+                    const reviewData = doc.data();
+                    const reviewWithDateAndRating = {
+                        ...reviewData,
+                    };
+                    reviews.push(reviewWithDateAndRating);
                 });
             }
-            //console.log("Reviews: ", reviews);
             setTeacherReviews(reviews);
         } catch (error) {
             console.error('Error fetching reviews:', error);
+        }
+    };
+    
+    const getStarRating = (rating) => {
+        return '☆'.repeat(rating);
+    };
+
+    const handleSortOptionSelect = (option) => {
+        setSelectedSortOption(option);
+        setShowSortOptions(false);
+        if (option === 'highest rating') {
+            const sortedReviews = [...teacherReviews].sort((a, b) => {
+                const ratingA = a.starRating || 0;
+                const ratingB = b.starRating || 0;
+                return ratingB - ratingA;
+            });
+            setTeacherReviews(sortedReviews);
+        }
+        if (option === 'lowest rating') {
+            const sortedReviews = [...teacherReviews].sort((a, b) => {
+                const ratingA = a.starRating || 0;
+                const ratingB = b.starRating || 0;
+                return ratingA - ratingB;
+            });
+            setTeacherReviews(sortedReviews);
         }
     };
     
@@ -100,10 +130,35 @@ const MoreInfoScreen = () => {
                         </Text>
                     </View>
                     <View style={styles.reviewsContainer}>
+                        <View style={styles.sortByContainer}>
                         <Text style={styles.title}>Teacher Reviews</Text>
+                        <TouchableOpacity onPress={() => setShowSortOptions(!showSortOptions)}>
+                            <Text style={styles.sortByText}>Sort By</Text>
+                        </TouchableOpacity>
+                        {showSortOptions && (
+                            <View style={styles.sortOptions}>
+                                <TouchableOpacity onPress={() => handleSortOptionSelect('earliest date')}>
+                                    <Text style={styles.sortOption}>Earliest Date</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleSortOptionSelect('latest date')}>
+                                    <Text style={styles.sortOption}>Latest Date</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleSortOptionSelect('highest rating')}>
+                                    <Text style={styles.sortOption}>Highest Rating</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleSortOptionSelect('lowest rating')}>
+                                    <Text style={styles.sortOption}>Lowest Rating</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                        </View>
+                        
                         <ScrollView style={styles.scrollView}>
                             {teacherReviews.map((review, index) => (
                                 <View key={index} style={styles.reviewContainer}>
+                                    {review.starRating && (
+                                        <Text style={styles.reviewText}>{getStarRating(review.starRating)}</Text>
+                                    )}
                                     <Text style={styles.reviewText}>{review.review}</Text>
                                 </View>
                             ))}
@@ -134,7 +189,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
         color: 'white',
-        textAlign: 'center'
+        textAlign: 'center',
     },
     detailsContainer: {
         marginBottom: 20,
@@ -183,7 +238,33 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         textAlign: 'center',
         color: 'white'
-    }
+    },
+    sortByContainer: {
+        marginTop: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    sortByText: {
+        fontSize: 16,
+        color: 'white',
+        marginRight: 10,
+    },
+    sortOptions: {
+        position: 'absolute',
+        top: -100,
+        right: 10,
+        backgroundColor: 'black',
+        borderWidth: 1,
+        borderColor: 'white',
+        borderRadius: 5,
+        zIndex: 1,
+    },
+    sortOption: {
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        color: 'white',
+    },
 });
 
 export default MoreInfoScreen;
