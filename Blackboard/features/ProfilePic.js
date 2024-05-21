@@ -30,8 +30,6 @@ export default function UploadImage() {
         </View>
         {image && <Text style={styles.replace} title="Replace Image" onPress={pickImage} >Replace Image</Text>}
     </View>
-   
-    
   );
 }
 const styles = StyleSheet.create({
