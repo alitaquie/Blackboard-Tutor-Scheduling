@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 20,
         color: 'white',
-        textAlign: 'center'
+        textAlign: 'center',
     },
     itemContainer: { 
         marginBottom: 15, 
@@ -383,12 +383,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',
-        borderRadius: 10,
-        width: '30%',
-        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+        borderColor: 'white',
+        borderWidth: 1,
+        borderRadius: 15,
+        width: 100,
+        height: 30,
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
     },
     sortOptionsContainer: {
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: 'black',
+        borderWidth: 1,
+        borderColor: 'white',
         borderRadius: 10,
         position: 'absolute',
         top: 200,
