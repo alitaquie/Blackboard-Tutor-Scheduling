@@ -13,6 +13,7 @@ import ClassInfoScreen from './screens/ClassInfo';
 import MoreInfoScreen from './screens/MoreInfo';
 import ClassReviewScreen from './screens/ClassReview';
 import TeacherProfileScreen from './screens/TeacherProfile';
+import DisplayInfoScreen from './screens/DisplayInfo';
 import 'react-native-reanimated';
 import BackButton from './features/backButton';
 
@@ -34,6 +35,7 @@ export default function App() {
         <Stack.Screen options={{headerShown:false}} name = "ClassReview" component = {ClassReviewScreen}/>
         <Stack.Screen options={{headerShown:false}} name = "TeacherProfile" component = {TeacherProfileScreen}/>
         <Stack.Screen options={{headerShown:false}} name = "BackButton" component = {BackButton}/>
+        <Stack.Screen options={{headerShown:false}} name = "DisplayInfo" component = {DisplayInfoScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
