@@ -5,11 +5,12 @@ import { collection, query, where, getDocs, doc, getDoc } from "firebase/firesto
 import { db } from '../firebase';
 import BackButton from '../features/backButton';
 
-const DisplayInfo = () => {
+const DisplayInfoScreen = () => {
   const route = useRoute();
   const { classDetails } = route.params;
 
   const [teachers, setTeachers] = useState([]);
+  const [teacherReviews, setTeacherReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -31,6 +32,7 @@ const DisplayInfo = () => {
         }
 
         setTeachers(teacherData);
+        fetchReviews(teacherData); // Fetch reviews after fetching teachers
       } catch (error) {
         console.error('Error fetching teacher data:', error);
       } finally {
@@ -63,6 +65,35 @@ const DisplayInfo = () => {
       }
     };
 
+    const fetchReviews = async (classTeachers) => {
+      try {
+        const reviews = [];
+        const teacherIds = classTeachers.map(teacher => teacher.id); 
+        const reviewsRef = collection(db, "Reviews");
+        if (teacherIds.length > 0) {
+          const q = query(reviewsRef, where('teacher', 'in', teacherIds));
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => {
+            const reviewData = doc.data();
+            console.log("Review data:", reviewData);
+            const reviewWithDateAndRating = {
+              id: doc.id,
+              review: reviewData.review, // Correct field name
+              starRating: reviewData.starRating
+            };
+            console.log("Review with date and rating:", reviewWithDateAndRating);
+            reviews.push(reviewWithDateAndRating);
+          });
+        }
+        console.log("Reviews:", reviews);
+        setTeacherReviews(reviews);
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      }
+    };
+    
+    
+
     fetchTeacher();
   }, [classDetails.id]);
 
@@ -87,6 +118,20 @@ const DisplayInfo = () => {
       ) : (
         <Text style={styles.text}>No teachers available</Text>
       )}
+
+      <Text style={styles.teacherHeader}>Teacher Reviews:</Text>
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : teacherReviews.length > 0 ? (
+        teacherReviews.map((review, index) => (
+          <Text key={index} style={styles.text}>
+          {review.review} - Rating: {review.starRating}
+        </Text>
+        
+        ))
+      ) : (
+        <Text style={styles.text}>No reviews available</Text>
+      )}
     </View>
   );
 };
@@ -109,4 +154,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DisplayInfo;
+export default DisplayInfoScreen;
