@@ -23,7 +23,7 @@ class AgendaScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      items: {}
+      items: {},
     }
   }
 
@@ -37,6 +37,7 @@ class AgendaScreen extends PureComponent {
           renderItem={this.renderItem}
           renderEmptyDate={this.renderEmptyDate}
           rowHasChanged={this.rowHasChanged}
+          renderEmptyData={this.renderEmptyData}
           showClosingKnob={true}
           theme={{
             calendarBackground: 'black',
@@ -127,6 +128,14 @@ loadItems = async () => {
     )
   }
 
+  renderEmptyData = () => {
+    return (
+      <View style={styles.emptyDataContainer}>
+        <Text style={styles.emptyDataText}>No classes today</Text>
+      </View>
+    );
+  }
+
   rowHasChanged = (r1, r2) => {
     return r1.name !== r2.name
   }
@@ -169,7 +178,17 @@ const styles = StyleSheet.create({
     maxHeight: '90%',
     height: '90%',
     top: '-3.5%'
-  }
+  },
+  emptyDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyDataText: {
+    fontSize: 24,
+    color: 'white',
+    fontWeight: 'bold'
+  },
 })
 
 export default ClassScreen;
