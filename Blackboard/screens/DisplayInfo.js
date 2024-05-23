@@ -5,6 +5,7 @@ import { collection, query, where, getDocs, doc, getDoc } from "firebase/firesto
 import { db } from '../firebase';
 import BackButton from '../features/backButton';
 
+
 const DisplayInfoScreen = () => {
   const route = useRoute();
   const { classDetails } = route.params;
@@ -12,6 +13,8 @@ const DisplayInfoScreen = () => {
   const [teachers, setTeachers] = useState([]);
   const [teacherReviews, setTeacherReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showSortOptions, setShowSortOptions] = useState(false);
+const [selectedSortOption, setSelectedSortOption] = useState(null);
 
   useEffect(() => {
     const fetchTeacher = async () => {
@@ -97,60 +100,203 @@ const DisplayInfoScreen = () => {
     fetchTeacher();
   }, [classDetails.id]);
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Course Name: {classDetails.specific}</Text>
-      <Text style={styles.text}>Subject: {classDetails.name}</Text>
-      <Text style={styles.text}>Date: {classDetails.day}</Text>
-      <Text style={styles.text}>Location: {classDetails.location}</Text>
-      <Text style={styles.text}>Attendance: {classDetails.attendance}</Text>
-      <Text style={styles.text}>Type: {classDetails.type ? 'Group' : 'Individual'}</Text>
 
-      <Text style={styles.teacherHeader}>Teachers:</Text>
-      {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : teachers.length > 0 ? (
-        teachers.map((teacher, index) => (
-          <Text key={index} style={styles.text}>
-            {teacher.name} - {teacher.rating === 0 ? "No Rating" : `☆${teacher.rating.toFixed(2)}`}
-          </Text>
-        ))
-      ) : (
-        <Text style={styles.text}>No teachers available</Text>
-      )}
-
-      <Text style={styles.teacherHeader}>Teacher Reviews:</Text>
-      {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : teacherReviews.length > 0 ? (
-        teacherReviews.map((review, index) => (
-          <Text key={index} style={styles.text}>
-          {review.review} - Rating: {review.starRating}
-        </Text>
-        
-        ))
-      ) : (
-        <Text style={styles.text}>No reviews available</Text>
-      )}
-    </View>
-  );
+   
+  const getStarRating = (rating) => {
+    return '☆'.repeat(rating);
 };
 
+const handleSortOptionSelect = (option) => {
+    setSelectedSortOption(option);
+    setShowSortOptions(false);
+    if (option === 'highest rating') {
+        const sortedReviews = [...teacherReviews].sort((a, b) => {
+            const ratingA = a.starRating || 0;
+            const ratingB = b.starRating || 0;
+            return ratingB - ratingA;
+        });
+        setTeacherReviews(sortedReviews);
+    }
+    if (option === 'lowest rating') {
+        const sortedReviews = [...teacherReviews].sort((a, b) => {
+            const ratingA = a.starRating || 0;
+            const ratingB = b.starRating || 0;
+            return ratingA - ratingB;
+        });
+        setTeacherReviews(sortedReviews);
+    }
+};
+
+
+  return (
+    <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
+        {isLoading ? (
+            <View style={styles.center}>
+                <ActivityIndicator size='large' color="white"/>
+                <Text style={styles.center}>Loading</Text>
+            </View>
+        ) : (
+            <View style={styles.container}>
+                <Text style={styles.title}>Class Details</Text>
+                <View style={styles.detailsContainer}>
+                    <Text style={styles.detailLabel}>Course Name:</Text>
+                    <Text style={styles.detailText}>{classDetails.specific}</Text>
+                    <Text style={styles.detailLabel}>Subject:</Text>
+                    <Text style={styles.detailText}>{classDetails.name}</Text>
+                    <Text style={styles.detailLabel}>Date:</Text>
+                    <Text style={styles.detailText}>{classDetails.day}</Text>
+                    <Text style={styles.detailLabel}>Location:</Text>
+                    <Text style={styles.detailText}>{classDetails.location}</Text>
+                    <Text style={styles.detailLabel}>Attendance:</Text>
+                    <Text style={styles.detailText}>{classDetails.attendance}</Text>
+                    <Text style={styles.detailLabel}>Type:</Text>
+                    <Text style={styles.detailText}>{classDetails.type ? 'Group' : 'Individual'}</Text>
+                </View>
+                <Text style={styles.title}>Teachers</Text>
+                {teachers.length > 0 ? (
+                    teachers.map((teacher, index) => (
+                        <Text key={index} style={styles.detailText}>
+                            {teacher.name} - {teacher.rating === 0 ? "No Rating" : `☆${teacher.rating.toFixed(2)}`}
+                        </Text>
+                    ))
+                ) : (
+                    <Text style={styles.detailText}>No teachers available</Text>
+                )}
+                <View style={styles.reviewsContainer}>
+                        <View style={styles.sortByContainer}>
+                        <Text style={styles.title}>Teacher Reviews</Text>
+                        <TouchableOpacity onPress={() => setShowSortOptions(!showSortOptions)}>
+                            <Text style={styles.sortByText}>Sort By</Text>
+                        </TouchableOpacity>
+                        {showSortOptions && (
+                            <View style={styles.sortOptions}>
+                                <TouchableOpacity onPress={() => handleSortOptionSelect('earliest date')}>
+                                    <Text style={styles.sortOption}>Earliest Date</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleSortOptionSelect('latest date')}>
+                                    <Text style={styles.sortOption}>Latest Date</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleSortOptionSelect('highest rating')}>
+                                    <Text style={styles.sortOption}>Highest Rating</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleSortOptionSelect('lowest rating')}>
+                                    <Text style={styles.sortOption}>Lowest Rating</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                        </View>
+                        
+                        <ScrollView style={styles.scrollView}>
+                            {teacherReviews.map((review, index) => (
+                                <View key={index} style={styles.reviewContainer}>
+                                    {review.starRating && (
+                                        <Text style={styles.reviewText}>{getStarRating(review.starRating)}</Text>
+                                    )}
+                                    <Text style={styles.reviewText}>{review.review}</Text>
+                                </View>
+                            ))}
+                        </ScrollView>
+                    </View>
+            </View>
+        )}
+    </ImageBackground>
+);
+};
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    container: {
+        flex: 1,
+        paddingHorizontal: 20,
+        paddingTop: 50,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: 'white',
+        textAlign: 'center',
+    },
+    detailsContainer: {
+        marginBottom: 20,
+    },
+    detailLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        color: 'white',
+    },
+    detailText: {
+        fontSize: 16,
+        marginBottom: 10,
+        color: 'white',
+    },
+    reviewsContainer: {
+        flex: 1,
+        borderWidth: 2,
+        borderColor: 'white',
+        backgroundColor: 'black',
+        paddingHorizontal: 10,
+        maxHeight: 350,
+        borderRadius: 5,
+    },
+    scrollView: {
+        flex: 1,
+        marginBottom: 20,
+        maxHeight: 300,
+    },
+    reviewContainer: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        padding: 10,
+        marginBottom: 10,
+        borderRadius: 5,
+    },
+    reviewText: {
+        fontSize: 16,
+        color: 'white',
+    },
+    image: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    center: {
+        alignContent: 'center',
+        textAlign: 'center',
+        color: 'white',
+    },
+    sortByContainer: {
+      marginTop: 10,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
   },
-  text: {
-    fontSize: 18,
-    marginVertical: 5,
+  sortByText: {
+      color: 'white',
+      marginLeft: 20,
+      marginBottom: 10,
+      borderColor: 'white',
+      borderWidth: 1,
+      borderRadius: 15,
+      width: 80,
+      height: 30,
+      textAlign: 'center',
+      lineHeight: 30,
+      backgroundColor: 'rgba(255, 255, 255, 0.6)',
+      overflow: 'hidden',
   },
-  teacherHeader: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginVertical: 10,
+  sortOptions: {
+      position: 'absolute',
+      top: -100,
+      right: 10,
+      backgroundColor: 'black',
+      borderWidth: 1,
+      borderColor: 'white',
+      borderRadius: 5,
+      zIndex: 1,
+  },
+  sortOption: {
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      color: 'white',
   },
 });
 
