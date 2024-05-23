@@ -44,7 +44,7 @@ class AgendaScreen extends PureComponent {
             monthTextColor: 'white',
             agendaDayTextColor: 'white',
             agendaDayNumColor: 'white',
-            agendaTodayColor: 'black',
+            agendaTodayColor: 'white',
             reservationsBackgroundColor: "#212121",
           }}
         />

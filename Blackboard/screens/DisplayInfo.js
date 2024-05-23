@@ -137,6 +137,7 @@ const handleSortOptionSelect = (option) => {
             </View>
         ) : (
             <View style={styles.container}>
+                <BackButton dest="Home"/>
                 <Text style={styles.title}>Class Details</Text>
                 <View style={styles.detailsContainer}>
                     <Text style={styles.detailLabel}>Course Name:</Text>
