@@ -202,8 +202,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
     alignItems: 'center',
-    borderColor: 'red',
-    borderWidth: 1
   },
   itemContainer: {
     marginBottom: 15,

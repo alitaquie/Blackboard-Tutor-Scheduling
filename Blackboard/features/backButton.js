@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 10,
         width: '15%',
-        borderColor: 'red',
+        borderColor: 'white',
         borderWidth: 1
     }
 });
