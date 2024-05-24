@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { doc, getDoc } from "firebase/firestore";
-import Navbar from '../features/Navbar'
+import Navbar from '../features/Navbar';
 import { db, auth } from '../firebase';
 import UploadImage from '../features/ProfilePic';
-
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -66,7 +65,7 @@ const ProfileScreen = () => {
 
   const ExpandableListItem = ({ item, index, idString, toggleExpand }) => {
     const isExpanded = index === expandedIndex;
-  
+
     const goToReview = async () => {
       const currentUserId = auth.currentUser.uid;
       const userDocRef = doc(db, "Users", currentUserId);
@@ -74,14 +73,12 @@ const ProfileScreen = () => {
       if (docSnap.exists()) {
         if (docSnap.data().role == 'student') {
           navigation.navigate('ClassReview', { className: item, classId: idString[index] });
-        }  else {
+        } else {
           navigation.navigate('TeacherProfile', { className: item, classId: idString[index] });
         }
       } else {
         alert("Sorry. Something went wrong on our end.");
       }
-  
-      
     };
 
     return (
@@ -119,10 +116,9 @@ const ProfileScreen = () => {
             <ActivityIndicator size='large' color="white"/>
             <Text style={styles.center}>Loading</Text>
           </View>
-          
         ) : (
           <View style={styles.container}>
-            <Text style={styles.title}>Profile Screen</Text>
+            <Text style={styles.title}>Profile</Text>
 
             <View style={styles.snap}>
               <View>
@@ -146,7 +142,7 @@ const ProfileScreen = () => {
                 <UploadImage/>
               </View>
             </View>
-            
+
             <View style={styles.filler}></View>
 
             <Text style={styles.detailLabel}> Class History:</Text>
@@ -158,7 +154,7 @@ const ProfileScreen = () => {
             />
             <View style={styles.logOutButtonContainer}>
               <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
-                <Text>Logout</Text>
+                <Text>Sign Out</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -172,7 +168,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   title: {
     marginTop: 80,
@@ -180,14 +176,14 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     color: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   detailLabel: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
     color: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   detailText: {
     fontSize: 16,
@@ -196,17 +192,16 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   logOutButtonContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: 'absolute',
+    top: 47, // Adjust as needed
+    left: 10, // Adjust as needed
   },
   logOutButton: {
     backgroundColor: 'white',
-    paddingVertical: 20,
-    width: '30%',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
     borderRadius: 5,
     alignItems: 'center',
-    top: '-25%',
   },
   itemContainer: {
     marginBottom: 15,
@@ -223,18 +218,18 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
   },
-  itemContent: { 
-    marginTop: 10, 
-    fontSize: 14, 
+  itemContent: {
+    marginTop: 10,
+    fontSize: 14,
     color: "#666",
   },
   expandedItem: {
     backgroundColor: 'white',
   },
-  itemTouchable: { 
-    borderRadius: 10, 
-    overflow: "hidden", 
-  }, 
+  itemTouchable: {
+    borderRadius: 10,
+    overflow: "hidden",
+  },
   flatList: {
     paddingTop: 10,
     maxHeight: '40%',
@@ -245,20 +240,20 @@ const styles = StyleSheet.create({
   },
   snap: {
     flexDirection: 'row',
-    margin: 5
+    margin: 5,
   },
   filler: {
-    margin: 10
+    margin: 10,
   },
   center: {
     alignContent: 'center',
     textAlign: 'center',
-    color: 'white'
+    color: 'white',
   },
   img: {
     marginLeft: 40,
-    bottom: '5%'
-  }
+    bottom: '5%',
+  },
 });
 
 export default ProfileScreen;

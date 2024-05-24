@@ -12,13 +12,12 @@ const ClassScreen = () => {
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.calHeight}>
-        <AgendaScreen/>
+        <AgendaScreen navigation={navigation} />
       </View>
-      <Navbar navigation={navigation}/>
+      <Navbar navigation={navigation} />
     </KeyboardAvoidingView>
-  )
-}
-
+  );
+};
 class AgendaScreen extends PureComponent {
   constructor(props) {
     super(props);
@@ -45,7 +44,7 @@ class AgendaScreen extends PureComponent {
             monthTextColor: 'white',
             agendaDayTextColor: 'white',
             agendaDayNumColor: 'white',
-            agendaTodayColor: 'black',
+            agendaTodayColor: 'white',
             reservationsBackgroundColor: "#212121",
           }}
         />
@@ -102,23 +101,24 @@ loadItems = async () => {
   }
 };
 
-  renderItem = (reservation, isFirst) => {
-    const fontSize = isFirst ? 16 : 14
-    const color = isFirst ? "black" : "#43515c"
+renderItem = (reservation, isFirst) => {
+  const fontSize = isFirst ? 16 : 14;
+  const color = isFirst ? "black" : "#43515c";
 
-    return (
-      <TouchableOpacity
-        testID='item'
-        style={[styles.item, { height: reservation.height }]}
-        onPress={() => Alert.alert(reservation.specific)}
-      >
-        <Text style={{ fontSize, color }}>Course Name: {reservation.specific}</Text>
-        <Text style={{ fontSize, color }}>Subject: {reservation.name}</Text>
-        <Text style={{ fontSize, color }}>Date: {reservation.day}</Text>
-        <Text style={{ fontSize, color }}>Location: {reservation.location}</Text>
-      </TouchableOpacity>
-    )
-  }
+  return (
+    <TouchableOpacity
+      testID='item'
+      style={[styles.item, { height: reservation.height }]}
+      onPress={() => this.props.navigation.navigate('DisplayInfo', { classDetails: reservation })}
+    >
+      <Text style={{ fontSize, color }}>Course Name: {reservation.specific}</Text>
+      <Text style={{ fontSize, color }}>Subject: {reservation.name}</Text>
+      <Text style={{ fontSize, color }}>Date: {reservation.day}</Text>
+      <Text style={{ fontSize, color }}>Location: {reservation.location}</Text>
+    </TouchableOpacity>
+  );
+}
+
 
   renderEmptyDate = () => {
     return (
