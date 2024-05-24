@@ -179,7 +179,6 @@ const styles = StyleSheet.create({
     height: '90%',
     top: '-3.5%'
   },
-
   emptyDataContainer: {
     flex: 1,
     justifyContent: 'center',
