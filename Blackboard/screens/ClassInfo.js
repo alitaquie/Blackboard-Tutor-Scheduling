@@ -177,13 +177,19 @@ const ClassInfoScreen = () => {
                     </View>
                 )}
                 {isExpanded && (
-                    <TouchableOpacity onPress={() => getMoreInfo(index)} style={styles.moreInfoButton}>
-                        <Text style={styles.buttonText}>More Info</Text>
-                    </TouchableOpacity>
+                    <View style={styles.buttonRow}>
+                        <TouchableOpacity onPress={() => getMoreInfo(index)} style={styles.moreInfoButton}>
+                            <Text style={styles.buttonText}>More Info</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={finishSignUp} style={styles.signUpButton}>
+                            <Text style={styles.buttonText}>Sign Up</Text>
+                        </TouchableOpacity>
+                    </View>
                 )}
             </View>
         );
     };
+    
     
     const sortDataByEarliestDate = () => {
         const sortedData = [...data].sort((a, b) => a.timestamp - b.timestamp);
@@ -276,11 +282,6 @@ const ClassInfoScreen = () => {
                     <View style={styles.exliststyle} >
                         <ExpandableList data={data}/>
                     </View>
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={finishSignUp} style={styles.signUpButton}>
-                            <Text style={styles.buttonText}>Sign Up</Text>
-                        </TouchableOpacity>
-                    </View>
                 </View>
             </KeyboardAvoidingView>
         </ImageBackground>
@@ -311,25 +312,21 @@ const styles = StyleSheet.create({
     },
     signUpButton: {
         margin: 15,
-        paddingVertical: 20,
+        paddingVertical: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        alignSelf: 'center',
         borderRadius: 10,
-        width: '30%',
-        bottom: -100,
+        width: '45%',
         borderColor: 'white',
         borderWidth: 2
     },
     moreInfoButton: {
-        backgroundColor: 'black',
         margin: 15,
         paddingVertical: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        alignSelf: 'center',
         borderRadius: 10,
-        width: '30%',
+        width: '45%',
         borderColor: 'white',
         borderWidth: 2
     },
@@ -405,7 +402,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-})
+    buttonRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: 10,
+    }
+});
+
 
 
 export default ClassInfoScreen;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, ImageBackground, Animated } from 'react-native';
+import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, ImageBackground, Animated, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion, addDoc} from "firebase/firestore";
 import { db } from '../firebase';
@@ -62,14 +62,22 @@ const ClassReviewScreen = () => {
             try {
             const classDocRef = doc(db, 'Events', classId);
             const classDocSnap = await getDoc(classDocRef);
-            if (classDocSnap.exists()) {
-                const classData = classDocSnap.data();
+            const classData = classDocSnap.data();
                 setSubject(classData.subject || '');
                 const dateObj = classData.date.toDate();
-                strTime = dateObj.toString();
-                setDate(strTime);
+                
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true,
+                };
+                const formattedDate = dateObj.toLocaleDateString('en-US', options);
+                setDate(formattedDate);
                 setLocation(classData.location || '');
-            }
             } catch (error) {
             console.error('Error fetching class info:', error);
             }
@@ -99,7 +107,9 @@ const ClassReviewScreen = () => {
     
     <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <KeyboardAvoidingView style={styles.container}>
+            <KeyboardAvoidingView style={styles.container}
+            behavior={Platform.OS === "ios" ? "padding" : "height"} 
+            keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}>
                 {/* <View style={styles.content}> */}
                 <BackButton dest="Profile" passInfo={{}}/>
                 <Text style={styles.boldText}>Review Page</Text>

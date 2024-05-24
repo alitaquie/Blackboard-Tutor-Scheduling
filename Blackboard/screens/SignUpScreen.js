@@ -61,10 +61,10 @@ const SignUpScreen = () => {
             <KeyboardAvoidingView style={styles.container} behavior="padding">
                     <Image source={require('../assets/full_logo.jpg')} style={styles.logo}/>
                     <View style={styles.inputContainer}>
-                        <TextInput placeholder="Email" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
-                        <TextInput placeholder="Full Name" value={user} onChangeText={text => setUser(text)} style={styles.input} />
-                        <TextInput placeholder="Password" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
-                        <TextInput placeholder="Student or Teacher" placeholderTextColor="black" value={role} onChangeText={text => setRole(text)} editable={false} style={styles.input} />
+                        <TextInput placeholder="Email" placeholderTextColor="gray" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
+                        <TextInput placeholder="Full Name" placeholderTextColor="gray" value={user} onChangeText={text => setUser(text)} style={styles.input} />
+                        <TextInput placeholder="Password" placeholderTextColor="gray" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
+                        <TextInput placeholder="Student or Teacher" placeholderTextColor="gray" value={role} onChangeText={text => setRole(text)} editable={false} style={styles.input} />
                         <View style={styles.roleContainer}>
                             <TouchableOpacity style={styles.radioButton} onPress={() => setRole('student')}>
                                 <Text style={styles.radioButtonText}>Student</Text>
