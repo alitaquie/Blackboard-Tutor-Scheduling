@@ -3,25 +3,12 @@ import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import { useNavigation } from '@react-navigation/native';
 import Navbar from '../features/Navbar';
 import DateTimePicker from '@react-native-community/datetimepicker';
-<<<<<<< HEAD
-import {StatusBar} from 'expo-status-bar';
-<<<<<<< HEAD
-import { doc, setDoc, collection } from "firebase/firestore";
-import { db } from '../firebase';
-
-const TeacherClassScreen = () => {
-  const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
-=======
-=======
->>>>>>> main
 import { doc, setDoc, getDoc, collection, updateDoc } from "firebase/firestore";
 import { db, auth } from '../firebase';
 import RNPickerSelect from 'react-native-picker-select';
 
 const TeacherClassScreen = () => {
   const navigation = useNavigation();
->>>>>>> main
   const [course, setCourse] = useState('');
   const [isGroup, setIsGroup] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -33,36 +20,9 @@ const TeacherClassScreen = () => {
 
   const createClass = async () => {
     // Logic to create a new class
-<<<<<<< HEAD
-    console.log('Creating class:', course, isGroup, date, location, subject, attendance);       
-
-    const newRef = doc(collection(db, "Events"));
-    await setDoc(newRef, {
-      attendence: attendance,
-      course: course,
-      isGroup: isGroup,
-      location: location,
-      subject: subject,
-      date: date
-    });
-    console.log("success");
-<<<<<<< HEAD
-    // After creating the class, you can close the modal
-    setModalVisible(false);
-=======
-
-    const userDocRef = doc(db, "Users", auth.currentUser.uid);
-    const docSnap = await getDoc(userDocRef);
-    if (docSnap.exists()) {
-      await updateDoc(doc(db, "Users", auth.currentUser.uid), {
-        classes: docSnap.data().classes.concat([newRef.id])
-      });
-      alert("Success! Class created.");
-=======
     console.log('Creating class:', course, isGroup, date, location, subject, attendance);
     if (!course) {
       alert("Please provide a course name.");
->>>>>>> main
     } else {
       const newRef = doc(collection(db, "Events"));
       await setDoc(newRef, {
@@ -87,7 +47,6 @@ const TeacherClassScreen = () => {
         alert("Sorry, something went wrong on our end!");
       }
     }
->>>>>>> main
   };
 
   const onChange = (e, selectedDate) => {
@@ -190,110 +149,11 @@ const TeacherClassScreen = () => {
   };
 
   return (
-<<<<<<< HEAD
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.content}>
-<<<<<<< HEAD
-        <Text>Teacher Class Screen</Text>
-        <TouchableOpacity style={styles.createButton} onPress={() => setModalVisible(true)}>
-          <Text style={styles.createButtonText}>Create New Class</Text>
-        </TouchableOpacity>
-      </View>
-      <Navbar navigation={navigation} />
-      {modalVisible && (
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Create New Class</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Course Name"
-              value={course}
-              onChangeText={text => setCourse(text)}
-            />
-            <View style={styles.checkboxContainer}>
-              <Text style={styles.checkboxText}>Group</Text>
-              <Switch
-                trackColor={{ false: '#767577', true: '#d6d9ff' }}
-                thumbColor={isGroup ? '#5059c7' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={isGroup}
-              />
-            </View>
-            <View style={styles.datestyle}>
-              <DateTimePicker 
-                value={date}
-                mode={'date'}
-                is24Hour={true}
-                onChange={onChange}
-              />
-
-              <View style={styles.filler}></View>
-
-              <DateTimePicker
-                value={date}
-                mode={'time'}
-                is24Hour={true}
-                onChange={onChange}
-              />
-            </View>
-            
-            <TextInput
-              style={styles.input}
-              placeholder="Location (City)"
-              value={location}
-              onChangeText={text => setLocation(text)}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Subject"
-              value={subject}
-              onChangeText={text => setSubject(text)}
-            />
-            <TouchableOpacity style={styles.createButton} onPress={createClass}>
-              <Text style={styles.createButtonText}>Create</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.createButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-=======
-        <Text style={styles.title}>Create New Class</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Course Name"
-          value={course}
-          onChangeText={text => setCourse(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Location (City)"
-          value={location}
-          onChangeText={text => setLocation(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Subject"
-          value={subject}
-          onChangeText={text => setSubject(text)}
-        />
-        <View style={styles.datestyle}>
-          <Text style={styles.filler}>Date / Time</Text>
-          <DateTimePicker 
-            value={date}
-            mode={'date'}
-            is24Hour={true}
-            onChange={onChange}
-          />
-=======
     <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
       <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={0}>
         <View style={styles.content}>
           <Text style={styles.title}>Create New Class</Text>
           <View style={styles.input}>
->>>>>>> main
 
             <View style={styles.input1}>
               <RNPickerSelect
@@ -357,19 +217,9 @@ const TeacherClassScreen = () => {
             <Text style={styles.ButtonText}>Create</Text>
           </TouchableOpacity>
         </View>
-<<<<<<< HEAD
-        <TouchableOpacity style={styles.createButton} onPress={createClass}>
-          <Text style={styles.ButtonText}>Create</Text>
-        </TouchableOpacity>
-      </View>
-      <Navbar navigation={navigation} />
->>>>>>> main
-    </KeyboardAvoidingView>
-=======
         <Navbar navigation={navigation} />
       </KeyboardAvoidingView>
     </ImageBackground>
->>>>>>> main
   );
 };
 
@@ -388,59 +238,7 @@ const constStyle = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-<<<<<<< HEAD
-    justifyContent: 'center',
-<<<<<<< HEAD
-    alignItems: 'center',
-    backgroundColor: '#6d87d6'
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  createButton: {
-    backgroundColor: '#1d940a',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20
-  },
-  createButtonText: {
-    color: 'white',
-    fontSize: 16
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10
-  },
-  input: {
-    backgroundColor: 'lightgrey',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginBottom: 10
-=======
-    backgroundColor: '#2b44bd'
-=======
     justifyContent: 'center'
->>>>>>> main
   },
   content: {
     position: 'absolute',
@@ -455,48 +253,13 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   input: {
-<<<<<<< HEAD
-    backgroundColor: '#c1e2e3',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderRadius: 5,
-    marginBottom: 10,
-    top: '-11%',
-    width: '80%',
-    alignSelf: 'center',
->>>>>>> main
-=======
     alignItems: 'center',
     width: '100%'
->>>>>>> main
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-<<<<<<< HEAD
-<<<<<<< HEAD
-    marginBottom: 10
-  },
-  checkboxText: {
-    marginRight: 10
-  },
-  datestyle: {
-    alignItems: 'center',
-    marginBottom: 10
-  },
-  filler: {
-    margin: 5
-  },
-  cancelButton: {
-    backgroundColor: '#1fab96',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10
-=======
-    justifyContent: 'center',
-=======
     alignSelf: 'center',
->>>>>>> main
     marginBottom: 10,
     bottom: '30%'
   },
@@ -544,14 +307,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     textAlign: 'center'
-<<<<<<< HEAD
->>>>>>> main
-=======
   }, 
   image: {
     flex: 1,
     justifyContent: 'center',
->>>>>>> main
   }
 });
 

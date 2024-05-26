@@ -48,12 +48,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-<<<<<<< HEAD
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> main
-=======
-});
->>>>>>> main

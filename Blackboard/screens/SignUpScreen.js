@@ -26,10 +26,7 @@ const SignUpScreen = () => {
             });
             const docRef = doc(db, "Users", auth.currentUser.uid);
             await setDoc(docRef, {
-<<<<<<< HEAD
-=======
                 classes: [],
->>>>>>> main
                 name: full_name,
                 email: email,
                 pass: password,
