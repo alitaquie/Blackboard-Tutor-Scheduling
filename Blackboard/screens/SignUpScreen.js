@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
-const LoginScreen = () => {
+const SignUpScreen = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [user, setUser] = useState('');
@@ -60,14 +60,14 @@ const LoginScreen = () => {
     }
 
     return (
-        <ImageBackground source={require('../assets/blackboard(1).jpeg')} resizeMode="cover" style={styles.image}>
+        <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
             <KeyboardAvoidingView style={styles.container} behavior="padding">
                     <Image source={require('../assets/full_logo.jpg')} style={styles.logo}/>
                     <View style={styles.inputContainer}>
-                        <TextInput placeholder="Email" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
-                        <TextInput placeholder="Full Name" value={user} onChangeText={text => setUser(text)} style={styles.input} />
-                        <TextInput placeholder="Password" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
-                        <TextInput placeholder="Student or Teacher" placeholderTextColor="black" value={role} onChangeText={text => setRole(text)} editable={false} style={styles.input} />
+                        <TextInput placeholder="Email" placeholderTextColor="gray" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
+                        <TextInput placeholder="Full Name" placeholderTextColor="gray" value={user} onChangeText={text => setUser(text)} style={styles.input} />
+                        <TextInput placeholder="Password" placeholderTextColor="gray" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
+                        <TextInput placeholder="Student or Teacher" placeholderTextColor="gray" value={role} onChangeText={text => setRole(text)} editable={false} style={styles.input} />
                         <View style={styles.roleContainer}>
                             <TouchableOpacity style={styles.radioButton} onPress={() => setRole('student')}>
                                 <Text style={styles.radioButtonText}>Student</Text>
@@ -90,7 +90,7 @@ const LoginScreen = () => {
     )
 }
 
-export default LoginScreen
+export default SignUpScreen
 
 const styles = StyleSheet.create({
     greetings: {
@@ -151,12 +151,6 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         marginTop: 40
     },
-    buttonContainer: {
-        width: '60%',
-        justifyContent: 'center',
-        alignContent: 'center',
-        marginTop: 40
-    },
     button: {
         backgroundColor: 'blue',
         width: '100%',
@@ -179,5 +173,5 @@ const styles = StyleSheet.create({
         color: 'blue',
         fontWeight: '600',
         fontSize: 16,
-    }
+    },
 })
