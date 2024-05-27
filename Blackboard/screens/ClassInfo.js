@@ -24,6 +24,10 @@ const ClassInfoScreen = () => {
             const eventDocSnap = await getDoc(eventDocRef);
             if (eventDocSnap.exists()) {
               updateDoc(eventDocRef, { attendance: eventDocSnap.data().attendance += 1 });
+                // For private classes, check if closed field exists, create it if it doesn't and set it to true
+                if (!eventDocSnap.data().isGroup && !eventDocSnap.data().hasOwnProperty('closed')) {
+                    await updateDoc(eventDocRef, { closed: true });
+                }
             }
 
             // Navigate to the Home screen after successful sign-up
@@ -155,7 +159,8 @@ const ClassInfoScreen = () => {
     
             return ratingCount > 0 ? totalRating / ratingCount : 0;
         } catch (error) {
-            console.error('Error calculating teacher rating:', error);
+            // Error previous indicated no starRating detected. Defaults to 0
+            // console.error('Error calculating teacher rating:', error);
             return 0;
         }
     };

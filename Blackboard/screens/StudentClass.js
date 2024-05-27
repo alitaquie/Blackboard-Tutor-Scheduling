@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View, Switch, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Navbar from '../features/Navbar';
-import { getDocs, collection, query, where } from "firebase/firestore";
+import { getDocs, collection, query, where, Timestamp } from "firebase/firestore";
 import { db } from '../firebase';
 import RNPickerSelect from 'react-native-picker-select';
 
@@ -20,24 +20,29 @@ const StudentClassScreen = () => {
     console.log("subject: \'", subject, "\'");
     
     const Ref = collection(db, 'Events');
-    let q1 = null;
-    if (!subject) {
-      q1 = query(Ref, where("isGroup", "==", isGroup));
-    } else {
-      q1 = query(Ref, where("isGroup", "==", isGroup), where("subject", "==", subject));
-    }
-    
-    const querySnapshot = await getDocs(q1);
-    
+    const currentDate = Timestamp.fromDate(new Date());
+    const q1 = query(Ref, where("date", ">", currentDate));
 
-    const matchingIDs = [];
-    if (!querySnapshot.empty) {
+    try {
+      const querySnapshot = await getDocs(q1);
+      const matchingIDs = [];
+
       querySnapshot.forEach((doc) => {
-        matchingIDs.push(doc.id);
+        const data = doc.data();
+        if (
+          data.isGroup === isGroup &&
+          (!subject || data.subject === subject) &&
+          (!data.hasOwnProperty('closed') || data.closed === false)
+        ) {
+          matchingIDs.push(doc.id);
+        }
       });
+
+      console.log("Matching IDs: ", matchingIDs);
+      navigation.navigate("ClassInfo", { MatchingDocIDs: matchingIDs });
+    } catch (error) {
+      console.error("Error with finding class: ", error);
     }
-    console.log("Matching IDs: ", matchingIDs);
-    navigation.navigate("ClassInfo", {MatchingDocIDs: matchingIDs});
   };
 
   useEffect(() => {
