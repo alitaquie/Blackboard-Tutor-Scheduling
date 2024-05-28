@@ -33,7 +33,7 @@ const TeacherProfileScreen = () => {
                     setDate(strTime);
                     setLocation(classData.location || '');
 
-                    const closeState = classData.hasOwnProperty('close') ? classData.close : false;
+                    const closeState = classData.hasOwnProperty('closed') ? classData.closed : false;
                     setIsClosed(closeState);
                     setCurrClose(closeState);
                 }
@@ -85,7 +85,7 @@ const TeacherProfileScreen = () => {
     console.log('Saving state:', isClosed);
     const docRef = doc(db, "Events", classId);
     if (docRef) {
-        await updateDoc(docRef, { close: isClosed });
+        await updateDoc(docRef, { closed: isClosed });
         alert("The class has been updated!");
     }
   };
