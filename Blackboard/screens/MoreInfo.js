@@ -30,6 +30,7 @@ const MoreInfoScreen = () => {
 
     const teacherName = classTeachers.map(teacher => teacher.name); 
 
+    // calculates the average rating score for teacher
     const calcTeacherRating = async (teacherId) => {
         setIsLoading(true);
         try {
@@ -58,6 +59,7 @@ const MoreInfoScreen = () => {
         }
     }
 
+    // Acquire user reviews from 'Reviews' collection to be stored
     const fetchReviews = async () => {
         try {
             const reviews = [];
@@ -84,6 +86,7 @@ const MoreInfoScreen = () => {
         return '☆'.repeat(rating);
     };
 
+    // two options to sort: highest and lowest rating
     const handleSortOptionSelect = (option) => {
         setSelectedSortOption(option);
         setShowSortOptions(false);

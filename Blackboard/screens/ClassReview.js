@@ -42,9 +42,12 @@ const ClassReviewScreen = () => {
         transform: [{ scale: animatedButtonScale }],
     };
     
+    // Add user review to the 'reviews' collection in the database
     const createReview = async () => {
         const newRef = collection(db, "Reviews");
+        // If no star rating is selected, don't add the review
         if (!starRating) {
+            console.log("No star rating");
             Alert.alert("Error", "Please select a star rating before leaving a review.");
             return;
         } else {
@@ -53,6 +56,7 @@ const ClassReviewScreen = () => {
                 review: review,
                 starRating: starRating,
             });
+            // Add the review id to teacher's 'ratings' field
             const teacherRef = doc(db, 'Users', teacherId);
             await updateDoc(teacherRef, {
                 ratings: arrayUnion(reviewDoc.id)
@@ -63,6 +67,7 @@ const ClassReviewScreen = () => {
     }
 
     useEffect(() => {
+        // Acquire Class ID and Information to be stored
         const fetchClass = async () => {
             try {
             const classDocRef = doc(db, 'Events', classId);
@@ -87,6 +92,7 @@ const ClassReviewScreen = () => {
             console.error('Error fetching class info:', error);
             }
         };
+        // Acquire Teacher ID and Information to be stored
         const fetchTeacher = async () => {
             try {
             const usersRef = collection(db, 'Users');
