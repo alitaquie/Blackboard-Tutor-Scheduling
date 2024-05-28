@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, ImageBackground, Animated, Platform } from 'react-native';
+import { View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback, ImageBackground, Animated, Platform, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { collection, query, where, getDoc, doc , getDocs, updateDoc, arrayUnion, addDoc} from "firebase/firestore";
 import { db } from '../firebase';
@@ -44,17 +44,22 @@ const ClassReviewScreen = () => {
     
     const createReview = async () => {
         const newRef = collection(db, "Reviews");
-        const reviewDoc = await addDoc(newRef, {
-            teacher: teacherId,
-            review: review,
-            starRating: starRating,
-        });
-        const teacherRef = doc(db, 'Users', teacherId);
-        await updateDoc(teacherRef, {
-            ratings: arrayUnion(reviewDoc.id)
-        });
-        console.log("Review successfully created!");
-        navigation.navigate("Profile");
+        if (!starRating) {
+            Alert.alert("Error", "Please select a star rating before leaving a review.");
+            return;
+        } else {
+            const reviewDoc = await addDoc(newRef, {
+                teacher: teacherId,
+                review: review,
+                starRating: starRating,
+            });
+            const teacherRef = doc(db, 'Users', teacherId);
+            await updateDoc(teacherRef, {
+                ratings: arrayUnion(reviewDoc.id)
+            });
+            console.log("Review successfully created!");
+            navigation.navigate("Profile");
+        }
     }
 
     useEffect(() => {

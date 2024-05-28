@@ -137,12 +137,6 @@ const MoreInfoScreen = () => {
                         </TouchableOpacity>
                         {showSortOptions && (
                             <View style={styles.sortOptions}>
-                                <TouchableOpacity onPress={() => handleSortOptionSelect('earliest date')}>
-                                    <Text style={styles.sortOption}>Earliest Date</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => handleSortOptionSelect('latest date')}>
-                                    <Text style={styles.sortOption}>Latest Date</Text>
-                                </TouchableOpacity>
                                 <TouchableOpacity onPress={() => handleSortOptionSelect('highest rating')}>
                                     <Text style={styles.sortOption}>Highest Rating</Text>
                                 </TouchableOpacity>
@@ -261,8 +255,8 @@ const styles = StyleSheet.create({
     },
     sortOptions: {
         position: 'absolute',
-        top: -100,
-        right: 10,
+        top: '-150%',
+        right: '1%',
         backgroundColor: 'black',
         borderWidth: 1,
         borderColor: 'white',

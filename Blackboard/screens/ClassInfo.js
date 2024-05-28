@@ -398,8 +398,9 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         borderRadius: 10,
         position: 'absolute',
-        top: 200,
-        left: '35%',
+        top: '-1%',
+        left: '33%',
+        alignItems: 'center',
         zIndex: 1,
     },
     sortOptionButton: {
