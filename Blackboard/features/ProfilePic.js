@@ -34,21 +34,19 @@ export default function UploadImage() {
 }
 const styles = StyleSheet.create({
     container: {
-        alignItems: "center",
+        alignSelf: 'center',
         justifyContent: "center",
         elevation:2,
-        height:140,
-        width:140,
+        height:100,
+        width:100,
         backgroundColor:'#efefef',
         borderRadius:999,
         overflow:'hidden',
     },
     image: {
-        alignItems: "center",
-        justifyContent: "center",
         elevation:2,
-        height:140,
-        width:140,
+        height:100,
+        width:100,
         backgroundColor:'#efefef',
         borderRadius:999,
         overflow:'hidden',
@@ -57,6 +55,6 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
         marginTop: 10,
-        fontSize: 18
+        fontSize: 15
     }
 })
