@@ -161,6 +161,8 @@ const styles = StyleSheet.create({
         height: 10,
         borderRadius: 5,
         backgroundColor: 'white',
+        marginTop: 5,
+        alignSelf: 'center'
     },
     buttonContainer: {
         width: '60%',
