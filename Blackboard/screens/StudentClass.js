@@ -9,7 +9,6 @@ import RNPickerSelect from 'react-native-picker-select';
 const StudentClassScreen = () => {
   const navigation = useNavigation();
   const [isGroup, setIsGroup] = useState(false);
-  const [location, setLocation] = useState('');
   const [subject, setSubject] = useState('');
 
   const toggleSwitch = () => setIsGroup(previousState => !previousState);

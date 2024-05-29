@@ -145,6 +145,10 @@ const ProfileScreen = () => {
 
             <View style={styles.filler}></View>
 
+            <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
+              <Text>Sign Out</Text>
+            </TouchableOpacity>
+
             <Text style={styles.detailLabel}> Class History:</Text>
             <FlatList
               data={classString}
@@ -152,11 +156,6 @@ const ProfileScreen = () => {
               keyExtractor={(item, index) => index.toString()}
               style={styles.flatList}
             />
-            <View style={styles.logOutButtonContainer}>
-              <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
-                <Text>Sign Out</Text>
-              </TouchableOpacity>
-            </View>
           </View>
         )}
         <Navbar navigation={navigation} />
@@ -171,9 +170,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    marginTop: 80,
     marginBottom: 50,
-    fontSize: 25,
+    fontSize: 25,             
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
@@ -191,17 +189,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: 'white',
   },
-  logOutButtonContainer: {
-    position: 'absolute',
-    top: 47, // Adjust as needed
-    left: 10, // Adjust as needed
-  },
   logOutButton: {
     backgroundColor: 'white',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 5,
-    alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: '5%'
   },
   itemContainer: {
     marginBottom: 15,
@@ -251,7 +245,8 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   img: {
-    marginLeft: 40,
+    width: '100%',
+    right: '30%',
     bottom: '5%',
   },
 });
