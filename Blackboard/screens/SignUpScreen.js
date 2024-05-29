@@ -1,9 +1,10 @@
-import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
+import { ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, Keyboard, TouchableWithoutFeedback  } from 'react-native'
 import React, { useState } from 'react'
 import { auth, db } from '../firebase'
 import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import BackButton from '../features/backButton';
 
 const SignUpScreen = () => {
     const navigation = useNavigation();
@@ -58,31 +59,40 @@ const SignUpScreen = () => {
 
     return (
         <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
-            <KeyboardAvoidingView style={styles.container} behavior="padding">
-                    <Image source={require('../assets/full_logo.jpg')} style={styles.logo}/>
-                    <View style={styles.inputContainer}>
-                        <TextInput placeholder="Email" placeholderTextColor="gray" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
-                        <TextInput placeholder="Full Name" placeholderTextColor="gray" value={user} onChangeText={text => setUser(text)} style={styles.input} />
-                        <TextInput placeholder="Password" placeholderTextColor="gray" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
-                        <TextInput placeholder="Student or Teacher" placeholderTextColor="gray" value={role} onChangeText={text => setRole(text)} editable={false} style={styles.input} />
-                        <View style={styles.roleContainer}>
-                            <TouchableOpacity style={styles.radioButton} onPress={() => setRole('student')}>
-                                <Text style={styles.radioButtonText}>Student</Text>
-                                {role === 'student' && <View style={styles.radioButtonSelected} />}
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.radioButton} onPress={() => setRole('teacher')}>
-                                <Text style={styles.radioButtonText}>Teacher</Text>
-                                {role === 'teacher' && <View style={styles.radioButtonSelected} />}
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                <KeyboardAvoidingView style={styles.container} behavior="padding">
+                    <View style={styles.content}>
+                        <View style={styles.backStyle}>  
+                            <BackButton dest="Login" passInfo={{}}/>
+                        </View>
+                        
+                        <Image source={require('../assets/full_logo.jpg')} style={styles.logo}/>
+
+                        <View style={styles.inputContainer}>
+                            <TextInput placeholder="Email" placeholderTextColor="gray" value={email} onChangeText={text => setEmail(text)} style={styles.input} />
+                            <TextInput placeholder="Full Name" placeholderTextColor="gray" value={user} onChangeText={text => setUser(text)} style={styles.input} />
+                            <TextInput placeholder="Password" placeholderTextColor="gray" value={password} onChangeText={text => setPassword(text)} style={styles.input} secureTextEntry/>
+                            <TextInput placeholder="Student or Teacher" placeholderTextColor="gray" value={role} onChangeText={text => setRole(text)} editable={false} style={styles.input} />
+                            <View style={styles.roleContainer}>
+                                <TouchableOpacity style={styles.radioButton} onPress={() => setRole('student')}>
+                                    <Text style={styles.radioButtonText}>Student</Text>
+                                    {role === 'student' && <View style={styles.radioButtonSelected} />}
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.radioButton} onPress={() => setRole('teacher')}>
+                                    <Text style={styles.radioButtonText}>Teacher</Text>
+                                    {role === 'teacher' && <View style={styles.radioButtonSelected} />}
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity onPress={() => handleRegister(email, user, password, role)} style={styles.button}>
+                                <Text style={styles.buttonText}>Login</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
-
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={() => handleRegister(email, user, password, role)} style={styles.button}>
-                            <Text style={styles.buttonText}>Login</Text>
-                        </TouchableOpacity>
-                    </View>
-            </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
         </ImageBackground>
     )
 }
@@ -90,6 +100,24 @@ const SignUpScreen = () => {
 export default SignUpScreen
 
 const styles = StyleSheet.create({
+    image: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    content: {
+        flex: 1,
+        position: 'absolute',
+        alignSelf: 'center',
+        width: '100%'
+    },
+    backStyle: {
+        bottom: '85%',
+        left: '10%'
+    },
     greetings: {
         color: 'white',
         fontStyle: 'italic',
@@ -98,55 +126,49 @@ const styles = StyleSheet.create({
     },
     logo: {
         width: '50%',
-        height: '10%',
-        marginBottom: 10,
-        borderRadius: 40
-    },
-    image: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        height: '30%',
+        borderRadius: 30,
+        alignSelf: 'center',
+        bottom: '75%',
     },
     inputContainer: {
-        
-        width: '80%'
+        width: '80%',
+        alignSelf: 'center'
     }, 
     input: {
         backgroundColor: 'white',
         paddingHorizontal: 15,
         paddingVertical: 10,
         borderRadius: 10,
-        marginTop: 5
+        marginTop: 5,
+        bottom: '90%'
     },
     roleContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 10,
+        bottom: '50%'
     },
     radioButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginRight: 20,
+        marginLeft: 20,
+        marginRight: 20
     },
     radioButtonText: {
         color: 'white',
-        marginRight: 5,
     },
     radioButtonSelected: {
         width: 10,
         height: 10,
         borderRadius: 5,
         backgroundColor: 'white',
+        marginTop: 5,
+        alignSelf: 'center'
     },
     buttonContainer: {
         width: '60%',
         justifyContent: 'center',
-        alignContent: 'center',
-        marginTop: 40
+        alignSelf: 'center',
+        bottom: '45%'
     },
     button: {
         backgroundColor: 'blue',
@@ -170,5 +192,5 @@ const styles = StyleSheet.create({
         color: 'blue',
         fontWeight: '600',
         fontSize: 16,
-    },
+    }
 })

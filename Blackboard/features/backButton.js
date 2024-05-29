@@ -3,10 +3,13 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons'; // Import Ionicons or any other icon set
 
-const BackButton = ({ dest, passInfo }) => {
+const BackButton = ({ dest, passInfo, handleBackPress = null}) => {
     const navigation = useNavigation();
 
-    const backFunct = () => {
+    const backFunct = async () => {
+        if (handleBackPress) {
+            await handleBackPress();
+        }
         navigation.navigate(dest, passInfo);
     };
 

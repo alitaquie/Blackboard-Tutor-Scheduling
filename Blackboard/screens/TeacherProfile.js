@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, KeyboardAvoidingView, StyleSheet, Text, FlatList, ImageBackground } from 'react-native';
+import { View, KeyboardAvoidingView, StyleSheet, Text, FlatList, ImageBackground, Switch, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { collection, query, where, getDoc, doc , getDocs } from "firebase/firestore";
+import { collection, query, where, getDoc, doc , getDocs, updateDoc } from "firebase/firestore";
 import { db } from '../firebase';
 import BackButton from '../features/backButton';
 
@@ -15,40 +15,47 @@ const TeacherProfileScreen = () => {
     const [teacherName, setTeacherName] = useState('');
     const [students, setStudents] = useState([]);
     const [teacherId, setTeacherId] = useState('');
-    const [review, setReview] = useState('');
+    const [isClosed, setIsClosed] = useState(false);
+    const [currClose, setCurrClose] = useState(null);
+
+    const toggleSwitch = () => setIsClosed(previousState => !previousState);
 
     useEffect(() => {
         const fetchClass = async () => {
             try {
-            const classDocRef = doc(db, 'Events', classId);
-            const classDocSnap = await getDoc(classDocRef);
-            if (classDocSnap.exists()) {
-                const classData = classDocSnap.data();
-                setSubject(classData.subject || '');
-                const dateObj = classData.date.toDate();
-                strTime = dateObj.toString();
-                setDate(strTime);
-                setLocation(classData.location || '');
-            }
+                const classDocRef = doc(db, 'Events', classId);
+                const classDocSnap = await getDoc(classDocRef);
+                if (classDocSnap.exists()) {
+                    const classData = classDocSnap.data();
+                    setSubject(classData.subject || '');
+                    const dateObj = classData.date.toDate();
+                    strTime = dateObj.toString();
+                    setDate(strTime);
+                    setLocation(classData.location || '');
+
+                    const closeState = classData.hasOwnProperty('closed') ? classData.closed : false;
+                    setIsClosed(closeState);
+                    setCurrClose(closeState);
+                }
             } catch (error) {
-            console.error('Error fetching class info:', error);
+                console.error('Error fetching class info:', error);
             }
         };
         const fetchTeacher = async () => {
             try {
-            const usersRef = collection(db, 'Users');
-            const q = query(usersRef, where('role', '==', 'teacher'));
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((doc) => {
-                const userData = doc.data();
-                if (userData.classes && userData.classes.includes(classId)) {
-                setTeacherName(userData.name);
-                setTeacherId(doc.id);
-                return;
-                }
-            });
+                const usersRef = collection(db, 'Users');
+                const q = query(usersRef, where('role', '==', 'teacher'));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    const userData = doc.data();
+                    if (userData.classes && userData.classes.includes(classId)) {
+                        setTeacherName(userData.name);
+                        setTeacherId(doc.id);
+                        return;
+                    }
+                });
             } catch (error) {
-            console.error('Error fetching teacher data:', error);
+                console.error('Error fetching teacher info:', error);
             }
         };
         const fetchStudents = async () => {
@@ -68,15 +75,25 @@ const TeacherProfileScreen = () => {
                 console.error('Error fetching student data:', error);
             }
         };
+      
         fetchClass();
         fetchTeacher();
         fetchStudents();
-  }, [classId]);
+  }, [classId, navigation]);
+
+  const handleBackPress = async () => {
+    console.log('Saving state:', isClosed);
+    const docRef = doc(db, "Events", classId);
+    if (docRef) {
+        await updateDoc(docRef, { closed: isClosed });
+        alert("The class has been updated!");
+    }
+  };
 
   return (
     <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
         <KeyboardAvoidingView style={styles.container}>
-            <BackButton dest="Profile" passInfo={{}}/>
+            <BackButton dest="Profile" passInfo={{}} handleBackPress={handleBackPress} />
             <Text style={styles.boldText}>Teacher Class Page</Text>
             <View style={styles.reviewsContainer}>
                 <View style={styles.snap}>
@@ -103,7 +120,24 @@ const TeacherProfileScreen = () => {
                     <Text style={styles.detailLabel}>Location: </Text>
                     <Text style={styles.detailText}>{location}</Text>
                 </View>
-                
+
+                <View style={styles.snap}>
+                    <Text style={styles.detailLabel}>Is Closed: </Text>
+                    <Text style={styles.detailText}>{currClose ? 'Yes' : 'No'}</Text>
+                </View>
+            </View>
+
+            <View style={styles.toggleContainer}>
+                <Text style={styles.toggleText}>Open</Text>
+                <Switch
+                trackColor={{ false: '#262626', true: '#000000' }}
+                thumbColor={isClosed ? 'white' : '#f4f3f4'}
+                ios_backgroundColor="#171717"
+                onValueChange={toggleSwitch}
+                value={isClosed}
+                style={styles.toggle}
+                />
+                <Text style={styles.toggleText}>Closed</Text>
             </View>
             <View style={styles.studentsContainer}>
                 <Text style={styles.fieldText}>Students</Text>
@@ -229,6 +263,18 @@ const styles = StyleSheet.create({
     image: {
         flex: 1,
         justifyContent: 'center',
+    },
+    toggleContainer: {
+        flexDirection: 'row',
+        alignSelf: 'center'
+    },
+    toggleText: {
+        color: 'white',
+        fontSize: 20,
+        margin: 10,
+    },
+    toggle: {
+        alignSelf: 'center'
     }
       
 });

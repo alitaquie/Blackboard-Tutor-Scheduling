@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     logo: {
         width: '100%',
         height: '35%',
-        borderRadius: 40,
+        borderRadius: 30,
         bottom: '55%',
         alignSelf: 'center'
     },
