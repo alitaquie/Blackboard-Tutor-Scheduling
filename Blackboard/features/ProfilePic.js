@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button, Image, View, StyleSheet, Text, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {storage, db, auth} from '../firebase';
-import { setDoc, doc, getDoc} from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { setDoc, doc, getDoc, deleteDoc} from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
 export default function UploadImage() {
 
@@ -47,6 +47,24 @@ export default function UploadImage() {
       const imageUri = result.assets[0].uri;
       const imageRef = ref(storage, `users/${user.uid}/profile.jpg`);
 
+      // Check if an existing image URL is present in Firestore
+      const pfpRef = doc(db, 'Images', user.uid);
+      const docSnap = await getDoc(pfpRef);
+
+
+
+      if (docSnap.exists()) {
+        const { url: existingUrl } = docSnap.data();
+
+        if (existingUrl) {
+          // Delete the existing image from Firebase Storage
+          const existingImageRef = ref(storage, existingUrl);
+          deleteObject(existingImageRef).catch((error) => {
+            console.error('Error deleting existing image from Storage: ', error);
+          });
+        }
+      }
+
       // Fetch the image blob
       const response = await fetch(imageUri);
       const blob = await response.blob();
@@ -62,10 +80,9 @@ export default function UploadImage() {
 
           // Save the download URL to Firestore
           try {
-            const pfpRef = doc(db, 'Images', user.uid);
-            setDoc(pfpRef, {
+            await setDoc(pfpRef, {
               url: downloadURL,
-              timestamp: new Date()
+              timestamp: new Date(),
             });
             console.log('Image URL saved to Firestore');
             setImage(downloadURL);
