@@ -1,10 +1,36 @@
-import { useState } from 'react';
-import { Button, Image, View, StyleSheet, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Button, Image, View, StyleSheet, Text, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import {storage, db, auth} from '../firebase';
+import { setDoc, doc, getDoc} from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function UploadImage() {
 
-    const [image, setImage] = useState(null);
+  const [image, setImage] = useState(null);
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    if (user) {
+      const fetchImage = async () => {
+        try {
+          const pfpRef = doc(db, 'Images', user.uid);
+          const docSnap = await getDoc(pfpRef);
+
+          if (docSnap.exists()) {
+            const { url } = docSnap.data();
+            setImage(url);
+          } else {
+            console.log('No profile image found for this user');
+          }
+        } catch (error) {
+          console.error('Error fetching image URL from Firestore: ', error);
+        }
+      };
+
+      fetchImage();
+    }
+  }, [user]);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -17,8 +43,41 @@ export default function UploadImage() {
 
     console.log(result);
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+    if (!result.canceled && user) {
+      const imageUri = result.assets[0].uri;
+      const imageRef = ref(storage, `users/${user.uid}/profile.jpg`);
+
+      // Fetch the image blob
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+
+      // Upload the image to Firebase Storage
+      uploadBytes(imageRef, blob)
+        .then(async (snapshot) => {
+          console.log('Uploaded a blob or file!', snapshot);
+
+          // Get the download URL
+          const downloadURL = await getDownloadURL(snapshot.ref);
+          console.log('File available at', downloadURL);
+
+          // Save the download URL to Firestore
+          try {
+            const pfpRef = doc(db, 'Images', user.uid);
+            setDoc(pfpRef, {
+              url: downloadURL,
+              timestamp: new Date()
+            });
+            console.log('Image URL saved to Firestore');
+            setImage(downloadURL);
+          } catch (error) {
+            console.error('Error saving image URL to Firestore: ', error);
+          }
+        })
+        .catch((error) => {
+          console.error('Error uploading file: ', error);
+        });
+    } else {
+      Alert.alert('No user signed in');
     }
   };
 
