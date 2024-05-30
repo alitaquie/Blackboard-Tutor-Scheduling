@@ -35,7 +35,7 @@ export default function UploadImage() {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.2,
+      quality: 0.05,
     });
 
     if (!result.canceled && user) {
