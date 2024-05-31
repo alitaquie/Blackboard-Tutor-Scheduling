@@ -118,6 +118,10 @@ const ProfileScreen = () => {
           </View>
         ) : (
           <View style={styles.container}>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
+              <Text>Sign Out</Text>
+            </TouchableOpacity>
+
             <Text style={styles.title}>Profile</Text>
 
             <View style={styles.snap}>
@@ -145,10 +149,6 @@ const ProfileScreen = () => {
 
             <View style={styles.filler}></View>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logOutButton}>
-              <Text>Sign Out</Text>
-            </TouchableOpacity>
-
             <Text style={styles.detailLabel}> Class History:</Text>
             <FlatList
               data={classString}
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    marginBottom: 50,
+    marginBottom: 20,
     fontSize: 25,             
     fontWeight: 'bold',
     color: 'white',
@@ -194,8 +194,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
-    alignSelf: 'center',
-    marginBottom: '5%',
+    right: '5%',
+    alignSelf: 'flex-end',
   },
   itemContainer: {
     marginBottom: 15,
