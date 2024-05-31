@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     alignSelf: 'center',
-    marginBottom: '5%'
+    marginBottom: '5%',
   },
   itemContainer: {
     marginBottom: 15,
@@ -215,14 +215,14 @@ const styles = StyleSheet.create({
   itemContent: {
     marginTop: 10,
     fontSize: 14,
-    color: "#666",
+    color: '#666',
   },
   expandedItem: {
     backgroundColor: 'white',
   },
   itemTouchable: {
     borderRadius: 10,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   flatList: {
     paddingTop: 10,
@@ -245,9 +245,9 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   img: {
-    width: '100%',
-    right: '30%',
-    bottom: '5%',
+    marginRight: '5%',
+    flex: 1,
+    alignItems: 'flex-end',
   },
 });
 
