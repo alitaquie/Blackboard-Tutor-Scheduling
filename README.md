@@ -1,54 +1,53 @@
-# Node.js 
-First download the latest LTS (Long Term Support) version of Node.js at https://nodejs.org/en
+# Node.js
+Download the latest LTS (Long Term Support) version of Node.js from [Node.js Official Website](https://nodejs.org/en).
 
-# React-native 
-Once you have Node.js downloaded, install the react-native library in the terminal.
+# React-native
+With Node.js installed, use your terminal to install the React-native library:
+
+```bash
+npm install -g react-native-cli
+```
 
 # Expo Go App
-You’ll have to now download the Expo Go app on your mobile device. Instructions for installing on Android and iOS are available here: https://expo.dev/go
+Download the Expo Go app on your mobile device for testing. Instructions for Android and iOS installations are available on the [Expo website](https://expo.dev/go).
 
-# Starting the Simulation
+##### 1. Starting the Simulation
+Navigate to the Source Code Directory:
 
-Navigate into the Source code folder
-
-```
+```bash
 cd Blackboard
 ```
 
-Updates/Install any node js dependencies.
+##### 2. Install Node.js Dependencies:
 
-```
+```bash
 npm install
 ```
+##### 3. Start the App:
 
-Start the App
-
-```
+```bash
 npx expo start
 ```
 
-In the terminal, you’ll find a QR code that you can scan on your phone:
+After running the command, a QR code will appear in your terminal. Scan this QR code with the Expo Go app on your mobile device.
 
+The app will take a moment to load and will direct you to the login page, where you can log in with an existing account or create a new one.
 
-Once you scan that QR code, it will open the Expo Go app. You’ll have to wait a little while before the app loads up. 
+# Directory Structure
+### Features Folder
+This folder contains files implementing specific, reusable features across multiple screens such as the navbar, back button, and profile picture, enhancing modularity and code organization.
 
-You’ll be loaded into the login page where you can login with an existing account or make a new account. 
+### Screens Folder
+Organizes the UI components specific to different user roles and functionalities:
 
-# Features Folder
-Includes files that implement specific features that are typically re-used across multiple screens. Examples include the navbar, back button, and profile picture. Good for modularity of file and code organization.
+- Student Specific Screens: ClassReview.js, ClassInfo.js, StudentClass.js
+- Teacher Specific Screens: TeacherClass.js, TeacherProfile.js
+- Common Screens: DisplayInfo.js, HomeScreen.js, LoginScreen.js, ProfileScreen.js, SignUpScreen.js
 
-# Screen Folder
+### App.js
+Manages navigation stacks of all screens.
 
-Student Specific Screens: ClassReview.js, ClassInfo.js, StudentClass.js
+### Firebase.js
+Configures Firebase API by setting up the required features (storage, authentication, database) and providing configuration IDs.
 
-Teacher Specific Screens: TeacherClass.js, TeacherProfile.js
-
-Common Screens: DisplayInfo.js, HomeScreen.js, LoginScreen.js, ProfileScreen.js, SignUpScreen.js 
-
-# App.js
-Stacks of all the screens
-
-# Firebase.js
-Configure the Firebase API by providing the configuration ID’s, then setting up the features we want (storage, auth, db).
-
-# WTF’s/minute: 2 (our code is mostly good)
+##### Current code quality metric: WTF's/minute: 1
