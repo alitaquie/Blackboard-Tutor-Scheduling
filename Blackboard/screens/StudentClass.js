@@ -5,6 +5,8 @@ import Navbar from '../features/Navbar';
 import { getDocs, collection, query, where, Timestamp } from "firebase/firestore";
 import { db } from '../firebase';
 import RNPickerSelect from 'react-native-picker-select';
+import { Alert } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; 
 
 const StudentClassScreen = () => {
   const navigation = useNavigation();
@@ -13,26 +15,32 @@ const StudentClassScreen = () => {
 
   const toggleSwitch = () => setIsGroup(previousState => !previousState);
 
+  // Find and navigate to matching class
   const findClass = async () => {
     // Logic to create a new class
+    // Logs for debugging
     console.log('isGroup:', isGroup); 
     console.log("subject: \'", subject, "\'");
     
     const Ref = collection(db, 'Events');
     const currentDate = Timestamp.fromDate(new Date());
+    // Query finds future events only
     const q1 = query(Ref, where("date", ">", currentDate));
 
     try {
       const querySnapshot = await getDocs(q1);
       const matchingIDs = [];
 
+      // Go through each document that is fetched
       querySnapshot.forEach((doc) => {
         const data = doc.data();
+        // Check if the document matches
         if (
           data.isGroup === isGroup &&
           (!subject || data.subject === subject) &&
           (!data.hasOwnProperty('closed') || data.closed === false)
         ) {
+          // Collect the matching document IDs
           matchingIDs.push(doc.id);
         }
       });
@@ -44,11 +52,20 @@ const StudentClassScreen = () => {
     }
   };
 
+  // Display an alert that explains the group/private option
+  const showAlert = () => {
+    Alert.alert(
+      "Group or Private Settings",
+      "Private: One on one tutoring exclusive to you.\nGroup: Get tutored in a group with fellow students."
+    );
+  };
+
   useEffect(() => {
     // Fetch subject options here if needed
     setSubject(''); // Set initial subject
   }, []);
 
+  // Subject options
   const options = [
     { label: 'ACEN - Academic English', value: 'ACEN - Academic English' },
     { label: 'AM - Applied Mathematics', value: 'AM - Applied Mathematics' },
@@ -167,6 +184,9 @@ const StudentClassScreen = () => {
               value={isGroup}
             />
             <Text style={styles.checkboxText}>Group</Text>
+            <TouchableOpacity onPress={showAlert} style={styles.infoIcon}>
+              <Ionicons name="information-circle-outline" size={24} color="white" />
+            </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.createButton} onPress={findClass}>
             <Text style={styles.ButtonText}>Search</Text>
@@ -184,6 +204,9 @@ const styles = StyleSheet.create({
       height: '10%',
       marginBottom: 10,
       borderRadius: 40
+  },
+  infoIcon: {
+    marginLeft: 10,
   },
   image: {
       flex: 1,

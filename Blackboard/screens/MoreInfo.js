@@ -6,18 +6,22 @@ import { db } from '../firebase';
 import BackButton from '../features/backButton';
 
 const MoreInfoScreen = () => {
+    // Route parameters
     const route = useRoute();
 
+    // Extract parameters
     const expandedItemData = route.params?.expandedItemData;
     const classTeachers = route.params?.classTeachers;
     const MatchingDocIDs = route.params?.MatchingDocIDs;
 
+    // Component states
     const [teacherReviews, setTeacherReviews] = useState([]);
     const [teacherRating, setTeacherRating] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [showSortOptions, setShowSortOptions] = useState(false);
     const [selectedSortOption, setSelectedSortOption] = useState(null);
 
+    // Fetch reviews and calculate teacher ratings
     useEffect(() => {
         fetchReviews();
         if (classTeachers.length > 0) {
@@ -28,8 +32,10 @@ const MoreInfoScreen = () => {
         }
     }, [classTeachers]); 
 
+    // Mapp teacher names
     const teacherName = classTeachers.map(teacher => teacher.name); 
 
+    // Calculate the average rating for that specific teacher
     // calculates the average rating score for teacher
     const calcTeacherRating = async (teacherId) => {
         setIsLoading(true);
@@ -82,11 +88,12 @@ const MoreInfoScreen = () => {
         }
     };
     
+    // Star rating representation
     const getStarRating = (rating) => {
         return '☆'.repeat(rating);
     };
 
-    // two options to sort: highest and lowest rating
+    // Handle the sorting of reviews according to the selected option
     const handleSortOptionSelect = (option) => {
         setSelectedSortOption(option);
         setShowSortOptions(false);
@@ -108,7 +115,7 @@ const MoreInfoScreen = () => {
         }
     };
     
-    
+    // Rendering
     if (expandedItemData) {
         return (
             <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
@@ -166,7 +173,7 @@ const MoreInfoScreen = () => {
             </ImageBackground>
         );
     } else {
-    
+        // Message if no data is available
         return (
             <View style={styles.container}>
                 <Text>Error: Unable to load class information.</Text>
@@ -175,6 +182,7 @@ const MoreInfoScreen = () => {
     }
 };
 
+// Styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,

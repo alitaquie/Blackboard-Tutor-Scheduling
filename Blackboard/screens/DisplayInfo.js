@@ -5,7 +5,7 @@ import { collection, query, where, getDocs, doc, getDoc } from "firebase/firesto
 import { db } from '../firebase';
 import BackButton from '../features/backButton';
 
-
+// Component to display the class details and teacher information
 const DisplayInfoScreen = () => {
   const route = useRoute();
   const { classDetails } = route.params;
@@ -14,9 +14,11 @@ const DisplayInfoScreen = () => {
   const [teacherReviews, setTeacherReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showSortOptions, setShowSortOptions] = useState(false);
-const [selectedSortOption, setSelectedSortOption] = useState(null);
+  const [selectedSortOption, setSelectedSortOption] = useState(null);
 
+  // Fetch the data
   useEffect(() => {
+    // Fetches teacher data and reviews from database
     const fetchTeacher = async () => {
       try {
         setIsLoading(true);
@@ -42,7 +44,8 @@ const [selectedSortOption, setSelectedSortOption] = useState(null);
         setIsLoading(false);
       }
     };
-
+    
+    // Calculates the average rating for a teacher based on their reviews
     const calcTeacherRating = async (teacherId) => {
       try {
         const userRef = doc(db, "Users", teacherId);
@@ -68,6 +71,7 @@ const [selectedSortOption, setSelectedSortOption] = useState(null);
       }
     };
 
+    // Fetches reviews for the given teachers from the database
     const fetchReviews = async (classTeachers) => {
       try {
         const reviews = [];
@@ -94,18 +98,15 @@ const [selectedSortOption, setSelectedSortOption] = useState(null);
         console.error('Error fetching reviews:', error);
       }
     };
-    
-    
-
     fetchTeacher();
   }, [classDetails.id]);
 
-
-   
+  // Returns the rating in a star representation
   const getStarRating = (rating) => {
     return '☆'.repeat(rating);
 };
 
+// Handles the sort options and sorts the reviews based off of selection
 const handleSortOptionSelect = (option) => {
     setSelectedSortOption(option);
     setShowSortOptions(false);
@@ -127,7 +128,7 @@ const handleSortOptionSelect = (option) => {
     }
 };
 
-
+  // User interface
   return (
     <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.image}>
         {isLoading ? (

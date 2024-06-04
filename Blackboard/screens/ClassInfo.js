@@ -6,14 +6,16 @@ import { db, auth } from '../firebase';
 import BackButton from '../features/backButton';
 
 const ClassInfoScreen = () => {
+    // Navigation and route parameters
     const route = useRoute();
     const navigation = useNavigation();
     const MatchingDocIDs = route.params?.MatchingDocIDs;
     
-
+    // Variables for the UI and other data
     const [savedIndex, setSavedIndex] = useState(null);
     const [isSortMenuVisible, setIsSortMenuVisible] = useState(false);
 
+    // Handle class sign ups
     const finishSignUp = async () => {
         try {
             // Update the user's document with the selected class ID added to the 'classes' array
@@ -23,8 +25,9 @@ const ClassInfoScreen = () => {
             const eventDocRef = doc(db, 'Events', MatchingDocIDs[savedIndex]);
             const eventDocSnap = await getDoc(eventDocRef);
             if (eventDocSnap.exists()) {
+              // Update the event's attendance
+              // Close the event if it is private
               updateDoc(eventDocRef, { attendance: eventDocSnap.data().attendance += 1 });
-                // For private classes, check if closed field exists, create it if it doesn't and set it to true
                 if (!eventDocSnap.data().isGroup && !eventDocSnap.data().hasOwnProperty('closed')) {
                     await updateDoc(eventDocRef, { closed: true });
                 }
@@ -38,6 +41,7 @@ const ClassInfoScreen = () => {
         }
     };
 
+    // Navigate to the MoreInfo screen with the class data
     const getMoreInfo = (index) => {
         const expandedItemData = data[index];
         const classTeachers = teachers[expandedItemData.id] || []; // Get teachers for the selected class
@@ -48,13 +52,13 @@ const ClassInfoScreen = () => {
         }); 
     };
     
-    
-
+    // Variables to fetch and display data
     const [data, setData] = useState([]);
     const [teacherName, setTeacherName] = useState('');
     const [teachers, setTeachers] = useState([]); // Store teachers for each class
     const [isLoading, setIsLoading] = useState(true);
 
+    // Fetch class and teacher data
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
@@ -63,12 +67,13 @@ const ClassInfoScreen = () => {
                 const docRef = doc(db, 'Events', docId);
                 const docSnap = await getDoc(docRef);
                 if(docSnap.exists()) {
+                    // Obtain then format data for event
                     const { attendance, course, date, isGroup, location, subject} = docSnap.data();
                     let group_stat = isGroup ? 'Group' : 'Private';
                     const timestamp = date.seconds * 1000;
                     const new_date = new Date(timestamp);
                     
-                    
+                    // Convert time
                     const time = new_date.getTime() - (7 * 60 * 60 * 1000);
                     const tmp_date = new Date(time);
                     const strDate = tmp_date.toISOString().split("T")[0];
@@ -92,6 +97,7 @@ const ClassInfoScreen = () => {
                     strMinutes = strTime.split(":")[1];
                     strTime = strHour + ":" + strMinutes;
 
+                    // Add event data to the list
                     newData.push({
                         id: docSnap.id,
                         title: course,
@@ -103,10 +109,6 @@ const ClassInfoScreen = () => {
             setData(newData);
             setIsLoading(false);
         };
-
-      
-
-        // const [teachers, setTeachers] = useState({}); // Store teachers for each class
 
         const fetchTeacher = async () => {
             try {
@@ -131,14 +133,11 @@ const ClassInfoScreen = () => {
                 console.error('Error fetching teacher data:', error);
             }
         };
-        
-        
-        
-
         fetchData();
         fetchTeacher();
     }, [MatchingDocIDs]);
 
+    // Calculate the average rating of a teacher
     const calcTeacherRating = async (teacherId) => {
         try {
             const userRef = doc(db, "Users", teacherId);
@@ -159,12 +158,11 @@ const ClassInfoScreen = () => {
     
             return ratingCount > 0 ? totalRating / ratingCount : 0;
         } catch (error) {
-            // Error previous indicated no starRating detected. Defaults to 0
-            // console.error('Error calculating teacher rating:', error);
             return 0;
         }
     };
-
+    
+    // Render items in an expandable list
     const ExpandableListItem = ({ item, index, isExpanded, toggleExpand }) => {
         return (
             <View style={[styles.itemContainer, isExpanded && styles.expandedItem]}>
@@ -195,7 +193,7 @@ const ClassInfoScreen = () => {
         );
     };
     
-    
+    // Functions to sort the data
     const sortDataByEarliestDate = () => {
         const sortedData = [...data].sort((a, b) => a.timestamp - b.timestamp);
         setData(sortedData);
