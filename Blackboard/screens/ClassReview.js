@@ -7,10 +7,13 @@ import BackButton from '../features/backButton';
 import moment from 'moment';
 import { MaterialIcons } from '@expo/vector-icons';
 
+// Class Review Screen component
 const ClassReviewScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
     const { className, classId } = route.params;
+
+    // State variables
     const [subject, setSubject] = useState('');
     const [date, setDate] = useState('');
     const [location, setLocation] = useState('');
@@ -18,10 +21,15 @@ const ClassReviewScreen = () => {
     const [teacherId, setTeacherId] = useState('');
     const [review, setReview] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+
+    // Star rating options
     const starRatingOptions = [1, 2, 3, 4, 5];
     const [starRating, setStarRating] = useState(null);
+
+    // Button press effect
     const animatedButtonScale = new Animated.Value(1);
 
+    // Animation button
     const handlePressIn = () => {
         Animated.spring(animatedButtonScale, {
             toValue: 1.5,
@@ -30,7 +38,6 @@ const ClassReviewScreen = () => {
             bounciness: 4,
         }).start();
     };
-
     const handlePressOut = () => {
         Animated.spring(animatedButtonScale, {
             toValue: 1,
@@ -39,11 +46,11 @@ const ClassReviewScreen = () => {
             bounciness: 4,
         }).start();
     };
-
     const animatedScaleStyle = {
         transform: [{ scale: animatedButtonScale }],
     };
     
+    // Create a new review and update the teacher's document with the review ID
     const createReview = async () => {
         const newRef = collection(db, "Reviews");
         const reviewDoc = await addDoc(newRef, {
@@ -60,6 +67,7 @@ const ClassReviewScreen = () => {
         navigation.navigate("Profile");
     } 
 
+    // Check if the class date is in the future
     const isFutureClass = () => {
         const currentDate = new Date();
         const classDate = moment(date, 'dddd, MMMM DD, YYYY [at] hh:mm A').toDate();
@@ -69,6 +77,7 @@ const ClassReviewScreen = () => {
         return currentDate > classDate;
     };
 
+    // Fetch class and teacher data 
     useEffect(() => {
         const fetchClass = async () => {
             try {

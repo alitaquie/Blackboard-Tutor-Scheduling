@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import { onSnapshot, doc, getDoc } from "firebase/firestore";
 import { auth, db } from '../firebase'
 
+// Class Screen class component
 const ClassScreen = () => {
   const navigation = useNavigation();
 
@@ -18,6 +19,8 @@ const ClassScreen = () => {
     </KeyboardAvoidingView>
   );
 };
+
+// Agenda Screen class component
 class AgendaScreen extends PureComponent {
   constructor(props) {
     super(props);
@@ -30,14 +33,23 @@ class AgendaScreen extends PureComponent {
     return (
       <View style={styles.container}>
         <Agenda
+          // Test ID indicating agenda
           testID = 'agenda'
+          // The list of items that have to be displayed in the agenda
           items={this.state.items}
+          // Callback that gets called when items for a certain bonth should be loaded
           loadItemsForMonth={this.loadItems}
+          // Specify how each item should be rendered in agenda
           renderItem={this.renderItem}
+          // Specify how empty date content with no items should be rendered
           renderEmptyDate={this.renderEmptyDate}
+          // Specify the item comparison function for increased performance
           rowHasChanged={this.rowHasChanged}
+          // Specify what should be rendered instead of the ActivityIndicator
           renderEmptyData={this.renderEmptyData}
+          // Knob visibility
           showClosingKnob={true}
+          // Agenda theme
           theme={{
             calendarBackground: 'black',
             dayTextColor: 'white',
@@ -52,12 +64,13 @@ class AgendaScreen extends PureComponent {
     )
   }
 
+// Function to load items for the agenda
 loadItems = async () => {
   try {
       const items = {};
       userID = auth.currentUser.uid;
       const userRef = doc(db, "Users", userID);
-      const unsub = onSnapshot(userRef, async (userSnapshot) => {
+      const unsub = onSnapshot(userRef, async (userSnapshot) => { // Snapshot listener for real-time updates
         if (userSnapshot.exists()) {
             const classes = userSnapshot.data().classes || [];
 
@@ -77,6 +90,7 @@ loadItems = async () => {
 
                     const existsIdx = items[strTime].findIndex(item => item.id === eventSnapshot.id);
                     if (existsIdx === -1) {
+                      // Push the event data to the items object
                       items[strTime].push({
                         id: eventSnapshot.id,
                         name: eventData.subject,
@@ -90,6 +104,7 @@ loadItems = async () => {
                     }
                 }
             }
+            // Update state with the items
             this.setState({
               items: items,
             });
@@ -97,11 +112,14 @@ loadItems = async () => {
       });
       return unsub;   
   } catch (error) {
+      // Log error message, if exists
       console.error("Error:", error.message);
   }
 };
 
+// Function to render each item in the agenda
 renderItem = (reservation, isFirst) => {
+  // Set font size and color depending on whether it is the first
   const fontSize = isFirst ? 16 : 14;
   const color = isFirst ? "black" : "#43515c";
 
@@ -119,7 +137,7 @@ renderItem = (reservation, isFirst) => {
   );
 }
 
-
+  // Function to render when the data is empty
   renderEmptyDate = () => {
     return (
       <View style={styles.emptyDate}>
@@ -128,6 +146,7 @@ renderItem = (reservation, isFirst) => {
     )
   }
 
+  // Function to render when there is no data
   renderEmptyData = () => {
     return (
       <View style={styles.emptyDataContainer}>
@@ -136,16 +155,20 @@ renderItem = (reservation, isFirst) => {
     );
   }
 
+  // Function to check if a row has changed
   rowHasChanged = (r1, r2) => {
+    // Compare row names
     return r1.name !== r2.name
   }
 
+  // Function to convert time to string format
   timeToString(time) {
     const date = new Date(time)
     return date.toISOString().split("T")[0]
   }
 }
 
+// Styles for components
 const styles = StyleSheet.create({
   container: {
     flex: 1,
