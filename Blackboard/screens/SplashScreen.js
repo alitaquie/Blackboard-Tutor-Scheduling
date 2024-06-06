@@ -1,24 +1,38 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { Text, StyleSheet, ImageBackground, Animated, Easing } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-//export default function SplashScreen({ navigation }) {
+
 const SplashScreen = () => {
     const navigation = useNavigation();
+    spinValue = new Animated.Value(0);
     useEffect(() => {
+        // Set up spinning animation (1 rotation)
+        Animated.timing(
+            this.spinValue,
+            {
+                toValue: 1, // rotations
+                duration: 1500, // length
+                easing: Easing.linear, // Easing = import from react-native
+                useNativeDriver: true, // Native driver for performance
+            }
+        ).start();
         // Timeout length for loading screen
         setTimeout(() => {
-        navigation.navigate('Login');
-        }, 3000);
+            navigation.navigate('Login');
+        }, 2000);
+    }, []);
+    // Interpolate beginning and end values
+    const spin = spinValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
     });
 
     return (
-        //<View style={styles.container}>
-            <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.container}>
-                <Image source={require('../assets/full_logo.jpg')} style={styles.logo} />
-                <Text style={styles.text}>Blackboard</Text>
-                <Text style={styles.text}>Tutor Scheduling</Text>
-            </ImageBackground>
-        //</View>
+        <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.container}>
+            <Animated.Image source={require('../assets/full_logo.jpg')} style={[styles.logo, { transform: [{ rotate: spin }] }]} />
+            <Text style={styles.text}>Blackboard</Text>
+            <Text style={styles.text}>Tutor Scheduling</Text>
+        </ImageBackground>
     );
 }
 
