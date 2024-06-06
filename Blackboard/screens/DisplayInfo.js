@@ -145,14 +145,22 @@ const handleSortOptionSelect = (option) => {
                     <Text style={styles.detailText}>{classDetails.specific}</Text>
                     <Text style={styles.detailLabel}>Subject:</Text>
                     <Text style={styles.detailText}>{classDetails.name}</Text>
-                    <Text style={styles.detailLabel}>Date:</Text>
-                    <Text style={styles.detailText}>{classDetails.day}</Text>
-                    <Text style={styles.detailLabel}>Location:</Text>
-                    <Text style={styles.detailText}>{classDetails.location}</Text>
-                    <Text style={styles.detailLabel}>Attendance:</Text>
-                    <Text style={styles.detailText}>{classDetails.attendance}</Text>
-                    <Text style={styles.detailLabel}>Type:</Text>
-                    <Text style={styles.detailText}>{classDetails.type ? 'Group' : 'Individual'}</Text>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Date: </Text>
+                      <Text style={styles.detailText}>{classDetails.day}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Location: </Text>
+                      <Text style={styles.detailText}>{classDetails.location}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Attendance: </Text>
+                      <Text style={styles.detailText}>{classDetails.attendance}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Type: </Text>
+                      <Text style={styles.detailText}>{classDetails.type ? 'Group' : 'Individual'}</Text>
+                    </View>
                 </View>
                 <Text style={styles.title}>Teachers</Text>
                 {teachers.length > 0 ? (
@@ -212,7 +220,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     detailsContainer: {
-        marginBottom: 20,
+        marginBottom: 5,
     },
     detailLabel: {
         fontSize: 18,
@@ -220,9 +228,13 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         color: 'white',
     },
+    detailRow: {
+      flexDirection: 'row',
+      marginBottom: 10,
+    },
     detailText: {
         fontSize: 16,
-        marginBottom: 10,
+        marginBottom: 5,
         color: 'white',
     },
     reviewsContainer: {
