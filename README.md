@@ -42,7 +42,7 @@ Organizes the UI components specific to different user roles and functionalities
 
 - Student Specific Screens: ClassReview.js, ClassInfo.js, StudentClass.js
 - Teacher Specific Screens: TeacherClass.js, TeacherProfile.js
-- Common Screens: DisplayInfo.js, HomeScreen.js, LoginScreen.js, ProfileScreen.js, SignUpScreen.js
+- Common Screens: DisplayInfo.js, HomeScreen.js, LoginScreen.js, ProfileScreen.js, SignUpScreen.js, SplashScreen.js
 
 ### App.js
 Manages navigation stacks of all screens.
