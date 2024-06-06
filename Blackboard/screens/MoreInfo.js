@@ -35,27 +35,29 @@ const MoreInfoScreen = () => {
     // Mapp teacher names
     const teacherName = classTeachers.map(teacher => teacher.name); 
 
-    // Calculate the average rating for that specific teacher
-    // calculates the average rating score for teacher
     const calcTeacherRating = async (teacherId) => {
         setIsLoading(true);
         try {
+            // acquire teacher ratings using the teacher ID
             const userRef = doc(db, "Users", teacherId);
             const userDoc = await getDoc(userRef);
             const ratings = userDoc.data().ratings;
 
             let totalRating = 0;
             let ratingCount = 0;
-
+            
+            // for each review,
             for (const ratingId of ratings) {
                 const reviewRef = doc(db, "Reviews", ratingId);
                 const reviewDoc = await getDoc(reviewRef);
+                // if the ratings exists and a star rating was selected,
                 if (reviewDoc.exists() && reviewDoc.data().starRating !== undefined) {
+                    // add the rating to the total
                     totalRating += reviewDoc.data().starRating;
                     ratingCount++;
                 }
             }
-
+            // calculates the average rating by dividing totalRating with the number of reviews
             const averageRating = ratingCount > 0 ? totalRating / ratingCount : 0;
             setTeacherRating(averageRating);
         } catch (error) {
@@ -65,9 +67,9 @@ const MoreInfoScreen = () => {
         }
     }
 
-    // Acquire user reviews from 'Reviews' collection to be stored
     const fetchReviews = async () => {
         try {
+            // store the reviews associated with the teacherID in 'Reviews' collection
             const reviews = [];
             const teacherIds = classTeachers.map(teacher => teacher.id); 
             const reviewsRef = collection(db, "Reviews");
@@ -93,7 +95,6 @@ const MoreInfoScreen = () => {
         return '☆'.repeat(rating);
     };
 
-    // Handle the sorting of reviews according to the selected option
     const handleSortOptionSelect = (option) => {
         setSelectedSortOption(option);
         setShowSortOptions(false);

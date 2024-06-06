@@ -21,6 +21,7 @@ const TeacherProfileScreen = () => {
     const toggleSwitch = () => setIsClosed(previousState => !previousState);
 
     useEffect(() => {
+        // fetch Class details from ClassID
         const fetchClass = async () => {
             try {
                 const classDocRef = doc(db, 'Events', classId);
@@ -41,6 +42,7 @@ const TeacherProfileScreen = () => {
                 console.error('Error fetching class info:', error);
             }
         };
+        // acquire teacher name and ID 
         const fetchTeacher = async () => {
             try {
                 const usersRef = collection(db, 'Users');
@@ -58,6 +60,7 @@ const TeacherProfileScreen = () => {
                 console.error('Error fetching teacher info:', error);
             }
         };
+        // store students who have signed up for the class
         const fetchStudents = async () => {
             try {
                 const usersRef = collection(db, 'Users');
@@ -66,7 +69,9 @@ const TeacherProfileScreen = () => {
                 const studentsData = [];
                 querySnapshot.forEach((doc) => {
                     const userData = doc.data();
+                    // if the user is signed up for the selected class
                     if (userData.classes && userData.classes.includes(classId)) {
+                        // store student name and id
                         studentsData.push({ name: userData.name, id: doc.id });
                     }
                 });

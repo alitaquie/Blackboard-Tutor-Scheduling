@@ -15,6 +15,7 @@ const ProfileScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedIndex, setExpandedIndex] = useState(null);
 
+  // acquire Class name from ClassID
   const translateClassString = async (classId) => {
     try {
       const classDocRef = doc(db, 'Events', classId);
@@ -35,6 +36,7 @@ const ProfileScreen = () => {
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
           const userData = userDocSnap.data();
+          // store user role and classes that user has signed up
           setUserRole(userData.role);
           setUserClasses(userData.classes || []);
 

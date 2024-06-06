@@ -53,11 +53,13 @@ const ClassReviewScreen = () => {
     // Create a new review and update the teacher's document with the review ID
     const createReview = async () => {
         const newRef = collection(db, "Reviews");
+        // if no star rating is selected, user is not able to leave a review
         if (!starRating) {
             console.log("No star rating");
             Alert.alert("Error", "Please select a star rating before leaving a review.");
             return;
         } else {
+            // add the review and star rating into the teachers rating field in the database
             const reviewDoc = await addDoc(newRef, {
                 teacher: teacherId,
                 review: review,
@@ -114,6 +116,7 @@ const ClassReviewScreen = () => {
             const usersRef = collection(db, 'Users');
             const q = query(usersRef, where('role', '==', 'teacher'));
             const querySnapshot = await getDocs(q);
+            // acquire teacherID that is associated with the selected class
             querySnapshot.forEach((doc) => {
                 const userData = doc.data();
                 if (userData.classes && userData.classes.includes(classId)) {

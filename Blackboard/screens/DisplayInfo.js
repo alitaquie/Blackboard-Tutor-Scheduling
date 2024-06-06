@@ -172,12 +172,6 @@ const handleSortOptionSelect = (option) => {
                         </TouchableOpacity>
                         {showSortOptions && (
                             <View style={styles.sortOptions}>
-                                <TouchableOpacity onPress={() => handleSortOptionSelect('earliest date')}>
-                                    <Text style={styles.sortOption}>Earliest Date</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => handleSortOptionSelect('latest date')}>
-                                    <Text style={styles.sortOption}>Latest Date</Text>
-                                </TouchableOpacity>
                                 <TouchableOpacity onPress={() => handleSortOptionSelect('highest rating')}>
                                     <Text style={styles.sortOption}>Highest Rating</Text>
                                 </TouchableOpacity>
@@ -238,7 +232,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         paddingHorizontal: 10,
         maxHeight: 350,
-        borderRadius: 5,
+        borderRadius: 5
     },
     scrollView: {
         flex: 1,
@@ -263,43 +257,43 @@ const styles = StyleSheet.create({
     center: {
         alignContent: 'center',
         textAlign: 'center',
-        color: 'white',
+        color: 'white'
     },
     sortByContainer: {
-      marginTop: 10,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-  },
-  sortByText: {
-      color: 'white',
-      marginLeft: 20,
-      marginBottom: 10,
-      borderColor: 'white',
-      borderWidth: 1,
-      borderRadius: 15,
-      width: 80,
-      height: 30,
-      textAlign: 'center',
-      lineHeight: 30,
-      backgroundColor: 'rgba(255, 255, 255, 0.6)',
-      overflow: 'hidden',
-  },
-  sortOptions: {
-      position: 'absolute',
-      top: -100,
-      right: 10,
-      backgroundColor: 'black',
-      borderWidth: 1,
-      borderColor: 'white',
-      borderRadius: 5,
-      zIndex: 1,
-  },
-  sortOption: {
-      paddingHorizontal: 10,
-      paddingVertical: 5,
-      color: 'white',
-  },
+        marginTop: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    sortByText: {
+        color: 'white',
+        marginLeft: 20,
+        marginBottom: 10,
+        borderColor: 'white',
+        borderWidth: 1,
+        borderRadius: 15,
+        width: 80,
+        height: 30,
+        textAlign: 'center',
+        lineHeight: 30,
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+        overflow: 'hidden',
+    },
+    sortOptions: {
+        position: 'absolute',
+        top: '-150%',
+        right: '1%',
+        backgroundColor: 'black',
+        borderWidth: 1,
+        borderColor: 'white',
+        borderRadius: 5,
+        zIndex: 1,
+    },
+    sortOption: {
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        color: 'white',
+    },
 });
 
 export default DisplayInfoScreen;
