@@ -294,7 +294,9 @@ const ClassInfoScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center'
+        top: '10%',
+        borderRadius: "10%",
+        justifyContent: 'flex-start'
     },
     title: {
         fontSize: 35,
@@ -362,11 +364,11 @@ const styles = StyleSheet.create({
         color: "white", 
     },
     expandedItem: {
-        backgroundColor: '#011163', // Add your desired highlight color here
+        backgroundColor: '#011163', // desired highlight color here
     },
     exliststyle: {
         bottom: '-5%',
-        maxHeight: '55%'
+        maxHeight: '85%'
     },
     teacherName: {
         color: 'white'
