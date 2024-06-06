@@ -1,24 +1,28 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+//export default function SplashScreen({ navigation }) {
+const SplashScreen = () => {
+    const navigation = useNavigation();
+    useEffect(() => {
+        // Timeout length for loading screen
+        setTimeout(() => {
+        navigation.navigate('Login');
+        }, 3000);
+    });
 
-export default function SplashScreen({ navigation }) {
-  useEffect(() => {
-    // Timeout length for loading screen
-    setTimeout(() => {
-      navigation.replace('Login');
-    }, 3000);
-  }, [navigation]);
-
-  return (
-    //<View style={styles.container}>
-        <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.container}>
-            <Image source={require('../assets/full_logo.jpg')} style={styles.logo} />
-            <Text style={styles.text}>Blackboard</Text>
-            <Text style={styles.text}>Tutor Scheduling</Text>
-        </ImageBackground>
-    //</View>
-  );
+    return (
+        //<View style={styles.container}>
+            <ImageBackground source={require('../assets/blackboard-bg.jpg')} resizeMode="cover" style={styles.container}>
+                <Image source={require('../assets/full_logo.jpg')} style={styles.logo} />
+                <Text style={styles.text}>Blackboard</Text>
+                <Text style={styles.text}>Tutor Scheduling</Text>
+            </ImageBackground>
+        //</View>
+    );
 }
+
+export default SplashScreen
 
 const styles = StyleSheet.create({
   container: {
