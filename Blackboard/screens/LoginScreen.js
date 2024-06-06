@@ -85,16 +85,16 @@ const styles = StyleSheet.create({
         marginBottom: 40
     },
     logo: {
-        width: '100%',
-        height: '90%',
+        width: '90%',
+        height: '80%',
         borderRadius: 10,
-        bottom: '55%',
+        bottom: '35%',
         alignSelf: 'center'
     },
     inputContainer: {
         width: '150%',
         alignSelf: 'center',
-        bottom: '35%'
+        bottom: '5%'
         
     }, 
     input1: {
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
         width: '100%',
         alignSelf: 'center',
         marginTop: 40,
-        bottom: '20%'
+        top: '20%'
     },
     button: {
         backgroundColor: 'blue',

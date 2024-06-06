@@ -115,8 +115,8 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     backStyle: {
-        bottom: '85%',
-        left: '10%'
+        bottom: '70%',
+        left: '5%'
     },
     greetings: {
         color: 'white',
@@ -126,13 +126,14 @@ const styles = StyleSheet.create({
     },
     logo: {
         width: '50%',
-        height: '30%',
-        borderRadius: 30,
-        alignSelf: 'center',
-        bottom: '75%',
+        height: '70%',
+        borderRadius: 10,
+        bottom: '65%',
+        alignSelf: 'center'
     },
     inputContainer: {
         width: '80%',
+        top: '5%',
         alignSelf: 'center'
     }, 
     input: {
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
         width: '60%',
         justifyContent: 'center',
         alignSelf: 'center',
-        bottom: '45%'
+        bottom: '35%'
     },
     button: {
         backgroundColor: 'blue',
