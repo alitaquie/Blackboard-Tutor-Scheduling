@@ -1,3 +1,6 @@
+<img src="Blackboard/assets/full_logo.jpg" alt="Example Image" width="200">
+
+
 # Node.js
 Download the latest LTS (Long Term Support) version of Node.js from [Node.js Official Website](https://nodejs.org/en).
 
