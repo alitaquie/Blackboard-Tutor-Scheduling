@@ -1,4 +1,4 @@
-<img src="Blackboard/assets/full_logo.jpg" alt="Example Image" width="200">
+<img src="Blackboard/assets/full_logo.jpg" alt="Example Image" width="100">
 
 
 # Node.js
