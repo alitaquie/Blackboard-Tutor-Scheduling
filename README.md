@@ -1,6 +1,6 @@
 <img src="Blackboard/assets/full_logo.jpg" alt="Example Image" width="100">
 
-📽️ [Watch the Demo]([https://your-link.com/demo.mp4](https://drive.google.com/file/d/13kzWQ-bipuWQfFhlMJMwv0L8WQNNES9s/view?usp=sharing))
+📽️ [Watch the Demo](https://drive.google.com/file/d/13kzWQ-bipuWQfFhlMJMwv0L8WQNNES9s/view?usp=sharing)
 
 
 # Node.js
