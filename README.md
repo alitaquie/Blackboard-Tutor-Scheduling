@@ -1,10 +1,18 @@
-# BlackBoard 
+<h1>BlackBoard</h1>
 
-<img src="Blackboard/assets/full_logo.jpg" alt="Example Image" width="100"> 
+<table>
+  <tr>
+    <td>
+      <img src="Blackboard/assets/full_logo.jpg" alt="Logo" width="200">
+    </td>
+    <td>
+      <a href="https://www.youtube.com/watch?v=ITTPUm1-Wlc" target="_blank">
+        <img src="https://img.youtube.com/vi/ITTPUm1-Wlc/0.jpg" alt="Demo Video" width="300">
+      </a>
+    </td>
+  </tr>
+</table>
 
-# Demo 
-
-[![Demo Video](https://img.youtube.com/vi/ITTPUm1-Wlc/0.jpg)](https://www.youtube.com/watch?v=ITTPUm1-Wlc)
 
 # Node.js
 Download the latest LTS (Long Term Support) version of Node.js from [Node.js Official Website](https://nodejs.org/en).
