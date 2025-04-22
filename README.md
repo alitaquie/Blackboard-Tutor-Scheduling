@@ -1,7 +1,6 @@
 <img src="Blackboard/assets/full_logo.jpg" alt="Example Image" width="100">
 
-📽️ [Watch the Demo](https://drive.google.com/file/d/13kzWQ-bipuWQfFhlMJMwv0L8WQNNES9s/view?usp=sharing)
-
+[![Demo Video](https://img.youtube.com/vi/ITTPUm1-Wlc/0.jpg)](https://www.youtube.com/watch?v=ITTPUm1-Wlc)
 
 # Node.js
 Download the latest LTS (Long Term Support) version of Node.js from [Node.js Official Website](https://nodejs.org/en).
