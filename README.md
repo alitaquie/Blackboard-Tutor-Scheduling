@@ -1,9 +1,11 @@
-<h1>BlackBoard</h1>
+<h1>BlackBoard - Demo Video</h1>
 
 <table>
   <tr>
     <td>
-      <img src="Blackboard/assets/full_logo.jpg" alt="Logo" width="200">
+      <a href="https://www.youtube.com/watch?v=ITTPUm1-Wlc" target="_blank">
+        <img src="Blackboard/assets/full_logo.jpg" alt="Logo" width="200">
+      </a>
     </td>
     <td>
       <a href="https://www.youtube.com/watch?v=ITTPUm1-Wlc" target="_blank">
