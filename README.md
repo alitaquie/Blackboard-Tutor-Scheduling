@@ -1,4 +1,6 @@
-<img src="Blackboard/assets/full_logo.jpg" alt="Example Image" width="100">
+#BlackBoard 
+
+<img src="Blackboard/assets/full_logo.jpg" alt="Example Image" width="100"> 
 
 # Demo 
 
