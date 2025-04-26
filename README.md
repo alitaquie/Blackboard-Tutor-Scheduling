@@ -1,6 +1,5 @@
 # BlackBoard <img src="Blackboard/assets/full_logo.jpg" alt="BlackBoard Logo" width="60" />
 
-# Video Demo
 
 [![Demo Video](https://img.youtube.com/vi/ITTPUm1-Wlc/0.jpg)](https://www.youtube.com/watch?v=ITTPUm1-Wlc)
 
